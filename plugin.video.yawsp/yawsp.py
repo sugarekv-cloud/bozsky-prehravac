@@ -942,9 +942,9 @@ def smart_raw(params):
 # Webshare does not return an authoritative film catalogue or film premiere dates.
 def novinky_search_page(token, offset=0, what='', sort='recent'):
     try:
-        response = api('search', {'what': what, 'category': 'video', 'sort': sort if sort in ('recent','rating','largest','smallest') else 'recent',
+        response = _session.post(API + 'search/', data={'what': what, 'category': 'video', 'sort': sort if sort in ('recent','rating','largest','smallest') else 'recent',
                                   'limit': 100, 'offset': offset, 'wst': token,
-                                  'maybe_removed': 'true'})
+                                  'maybe_removed': 'true'}, timeout=(3,7))
         response.raise_for_status()
         doc = ET.fromstring(response.content)
         if not is_ok(doc):
@@ -957,9 +957,9 @@ def novinky_search_page(token, offset=0, what='', sort='recent'):
         found = [todict(f) for f in doc.iter('file')]
         if not found and what and ' ' in what:
             # Files are frequently named with periods instead of spaces.
-            response = api('search', {'what': what.replace(' ', '.'), 'category':'video',
+            response = _session.post(API + 'search/', data={'what': what.replace(' ', '.'), 'category':'video',
                                       'sort':sort if sort in ('recent','rating','largest','smallest') else 'recent', 'limit':100, 'offset':offset,
-                                      'wst':token, 'maybe_removed':'true'})
+                                      'wst':token, 'maybe_removed':'true'}, timeout=(3,7))
             response.raise_for_status()
             fallback = ET.fromstring(response.content)
             if is_ok(fallback):
