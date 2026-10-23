@@ -25,6 +25,8 @@ class CinemaService:
         self.calendar=calendar
         self.home_cache=None
         self.cache_path=os.path.join(profile,'cinema-v2-home.json') if profile else None
+        from cinema_artwork import Artwork
+        self.artwork=Artwork(profile, budget=12)
         self.search_cache={}
         self.series_cache={}
         self.last_diagnostics=''
@@ -34,7 +36,20 @@ class CinemaService:
             group['metadata']=metadata
         elif self.metadata:
             group['metadata']=self.metadata.lookup(group['title'],group.get('year',''))
-        return card(group)
+        entry=card(group)
+        if not entry.get('poster'):
+            # Only enrich an already confirmed Webshare file-backed title.
+            candidates=[entry.get('original') or '',group['title']]
+            for title in candidates:
+                if not title:
+                    continue
+                art=self.artwork.lookup(title,entry.get('year') or '',
+                                        kind=group.get('kind','movie'))
+                if art:
+                    entry['poster']=art.get('poster','')
+                    entry['fanart']=entry.get('fanart') or art.get('fanart','')
+                    break
+        return entry
 
     def _premieres(self, maximum=10):
         if not self.calendar:
