@@ -64,7 +64,7 @@ class DiscoveryTests(unittest.TestCase):
         received=[]
         def service(token,offset,term,sort='recent'):
             received.append((term,sort))
-            return [{'ident':'f_'+term,'name':'Sample Movie 2025 1080p CZ.mkv'}],1
+            return [{'ident':'f_'+term,'name':'Cinema Movie 2025 1080p CZ.mkv'}],1
         recent,popular,stats=discover('sample-session',service)
         self.assertTrue(recent)
         self.assertTrue(popular)
@@ -121,7 +121,8 @@ class WindowLayoutTests(unittest.TestCase):
     def test_skin_xml_is_local_to_plugin(self):
         self.assertEqual(self.window.tag,'window')
         self.assertIn('bozsky-cinema.xml', os.listdir(os.path.dirname(self.path)))
-        self.assertIn('row1_heading',open(self.path,encoding='utf8').read())
+        with open(self.path,encoding='utf8') as source:
+            self.assertIn('row1_heading',source.read())
 
 class GeneratedTextureTests(unittest.TestCase):
     def test_png_generated_without_nonstandard_packages(self):
