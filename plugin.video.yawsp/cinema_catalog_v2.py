@@ -89,15 +89,15 @@ def sort_cards(cards, key='date'):
         return sorted(cards,key=lambda c:max([file_score(f) for f in c['files']] or [0]),reverse=True)
     return list(cards)
 
-def grouped_episodes(files, title):
+def grouped_episodes(files, title, aliases=()):
     """Sort by numeric season+episode, deduplicate different quality versions."""
-    wanted=normalize(title)
+    wanted={normalize(name) for name in (title,)+tuple(aliases) if name}
     result={}
     for f in files:
         if not acceptable(f):
             continue
         p=parse_video_name(f['name'])
-        if p['kind']!='episode' or normalize(p['title'])!=wanted:
+        if p['kind']!='episode' or normalize(p['title']) not in wanted:
             continue
         k=(p['season'],p['episode'])
         result.setdefault(k,[]).append(f)
