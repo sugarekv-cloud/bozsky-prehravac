@@ -7,6 +7,7 @@ import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from xml.etree import ElementTree as ET
+from novinky_catalogue import quality_score
 import requests
 
 TTL_OK = 600
@@ -52,7 +53,7 @@ class Availability:
         groups = [g for g in groups if g.get('files')]
         candidates = []
         for g in groups:
-            candidates.extend([str(f.get('ident')) for f in g['files'][:3] if f.get('ident')])
+            candidates.extend([str(f.get('ident')) for f in sorted(g['files'],key=quality_score,reverse=True)[:3] if f.get('ident')])
         candidates = list(dict.fromkeys(candidates))
         results = {}
         with ThreadPoolExecutor(max_workers=max_workers) as pool:
@@ -64,7 +65,7 @@ class Availability:
                     results[pending[job]] = False
         filtered = []
         for g in groups:
-            good = [f for f in g['files'] if results.get(str(f.get('ident'))) is True]
+            good = [f for f in sorted(g['files'],key=quality_score,reverse=True) if results.get(str(f.get('ident'))) is True]
             if not good:
                 continue
             output = dict(g)
