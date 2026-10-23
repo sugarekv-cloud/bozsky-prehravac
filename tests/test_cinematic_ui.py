@@ -11,7 +11,7 @@ ROOT=os.path.abspath(os.path.join(os.path.dirname(__file__),'..'))
 PLUG=os.path.join(ROOT,'plugin.video.yawsp')
 sys.path.insert(0,PLUG)
 
-from cinematic_catalog import make_rows
+from cinematic_catalog import make_rows, webshare_image_url
 from cinematic_discovery import discover, empty_message, queries_for_home
 
 def f(ident,title,kind='movie'):
@@ -52,6 +52,20 @@ class DataTests(unittest.TestCase):
         self.assertEqual(len(rows['discover']),1)
         self.assertEqual(rows['discover'][0]['kind'],'show')
         self.assertEqual(rows['discover_title'],'SERIÁLY K OBJEVENÍ')
+
+    def test_webshare_relative_preview_url(self):
+        self.assertEqual(webshare_image_url('/thumb/movie.png'),
+                         'https://webshare.cz/thumb/movie.png')
+        self.assertEqual(webshare_image_url('//static.webshare.cz/movie.png'),
+                         'https://static.webshare.cz/movie.png')
+        self.assertEqual(webshare_image_url('plugin://untrusted/logo'),'')
+
+    def test_webshare_artwork_only_for_filebacked_title(self):
+        video=f('a','Film')
+        video['img']='/thumb/film.jpg'
+        rows=make_rows([video],[],Checker())
+        self.assertEqual(rows['new_movies'][0]['poster'],
+                         'https://webshare.cz/thumb/film.jpg')
 
     def test_no_unavailable_file(self):
         rows=make_rows([f('gone','Gone Film')],[],Checker(),Metadata())
