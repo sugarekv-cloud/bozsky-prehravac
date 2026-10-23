@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window>
+    <defaultcontrol always="true">401</defaultcontrol>
+    <coordinates>
+        <system>1</system>
+        <posx>0</posx>
+        <posy>0</posy>
+    </coordinates>
+    <controls>
+        <!-- Fullscreen midnight blue artwork; textures generated without external libraries. -->
+        <control type="image">
+            <left>0</left><top>0</top><width>1920</width><height>1080</height>
+            <texture>$INFO[Window.Property(cinema_background)]</texture>
+            <aspectratio>stretch</aspectratio>
+        </control>
+        <control type="image">
+            <left>720</left><top>104</top><width>1200</width><height>374</height>
+            <texture>$INFO[Window.Property(hero_art)]</texture>
+            <aspectratio>scale</aspectratio>
+        </control>
+        <control type="image">
+            <left>595</left><top>102</top><width>1325</width><height>376</height>
+            <texture>$INFO[Window.Property(cinema_fade)]</texture>
+            <aspectratio>stretch</aspectratio>
+        </control>
+        <!-- Header -->
+        <control type="label">
+            <left>75</left><top>28</top><width>510</width><height>65</height>
+            <font>font40_title</font><textcolor>FFF4CB86</textcolor>
+            <label>BOŽSKÝ PŘEHRÁVAČ</label>
+        </control>
+        <control type="image">
+            <left>72</left><top>98</top><width>1776</width><height>2</height>
+            <texture>$INFO[Window.Property(cinema_focus)]</texture>
+            <colordiffuse>55DCAA52</colordiffuse>
+        </control>
+        <!-- Remote-friendly horizontal top navigation -->
+        <control type="button" id="101">
+            <left>675</left><top>27</top><width>128</width><height>61</height>
+            <label>FILMY</label><font>font13</font>
+            <align>center</align><aligny>center</align>
+            <textcolor>FFE7EAF0</textcolor><focusedcolor>FF142032</focusedcolor>
+            <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
+            <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
+            <ondown>401</ondown><onright>102</onright><onleft>107</onleft>
+        </control>
+        <control type="button" id="102">
+            <left>809</left><top>27</top><width>135</width><height>61</height>
+            <label>SERIÁLY</label><font>font13</font>
+            <align>center</align><aligny>center</align>
+            <textcolor>FFE7EAF0</textcolor><focusedcolor>FF142032</focusedcolor>
+            <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
+            <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
+            <ondown>401</ondown><onleft>101</onleft><onright>103</onright>
+        </control>
+        <control type="button" id="103">
+            <left>950</left><top>27</top><width>139</width><height>61</height>
+            <label>HLEDAT</label><font>font13</font>
+            <align>center</align><aligny>center</align>
+            <textcolor>FFE7EAF0</textcolor><focusedcolor>FF142032</focusedcolor>
+            <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
+            <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
+            <ondown>401</ondown><onleft>102</onleft><onright>104</onright>
+        </control>
+        <control type="button" id="104">
+            <left>1095</left><top>27</top><width>160</width><height>61</height>
+            <label>PREMIÉRY</label><font>font13</font>
+            <align>center</align><aligny>center</align>
+            <textcolor>FFE7EAF0</textcolor><focusedcolor>FF142032</focusedcolor>
+            <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
+            <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
+            <ondown>401</ondown><onleft>103</onleft><onright>105</onright>
+        </control>
+        <control type="button" id="105">
+            <left>1261</left><top>27</top><width>153</width><height>61</height>
+            <label>FILTRY</label><font>font13</font>
+            <align>center</align><aligny>center</align>
+            <textcolor>FFE7EAF0</textcolor><focusedcolor>FF142032</focusedcolor>
+            <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
+            <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
+            <ondown>401</ondown><onleft>104</onleft><onright>106</onright>
+        </control>
+        <control type="button" id="106">
+            <left>1420</left><top>27</top><width>200</width><height>61</height>
+            <label>KLASICKÉ MENU</label><font>font13</font>
+            <align>center</align><aligny>center</align>
+            <textcolor>FFE7EAF0</textcolor><focusedcolor>FF142032</focusedcolor>
+            <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
+            <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
+            <ondown>401</ondown><onleft>105</onleft><onright>107</onright>
+        </control>
+        <control type="button" id="107">
+            <left>1626</left><top>27</top><width>160</width><height>61</height>
+            <label>NASTAVENÍ</label><font>font13</font>
+            <align>center</align><aligny>center</align>
+            <textcolor>FFE7EAF0</textcolor><focusedcolor>FF142032</focusedcolor>
+            <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
+            <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
+            <ondown>401</ondown><onleft>106</onleft><onright>101</onright>
+        </control>
+
+        <!-- Featured title changes as the user moves over posters. -->
+        <control type="label">
+            <left>80</left><top>153</top><width>990</width><height>62</height>
+            <font>font45_title</font><textcolor>FFFFF7E9</textcolor>
+            <label>$INFO[Window.Property(hero_title)]</label>
+            <scroll>true</scroll>
+        </control>
+        <control type="label">
+            <left>83</left><top>235</top><width>1100</width><height>44</height>
+            <font>font13</font><textcolor>FFF4C577</textcolor>
+            <label>$INFO[Window.Property(hero_info)]</label>
+            <scroll>true</scroll>
+        </control>
+        <control type="textbox">
+            <left>83</left><top>293</top><width>1020</width><height>126</height>
+            <font>font13</font><textcolor>FFCBD3E1</textcolor>
+            <label>$INFO[Window.Property(hero_plot)]</label>
+            <autoscroll time="1800" delay="1000" repeat="5000">true</autoscroll>
+        </control>
+        <control type="label">
+            <left>83</left><top>433</top><width>1210</width><height>37</height>
+            <font>font12</font><textcolor>FF9EADC1</textcolor>
+            <label>OK = OTEVŘÍT TITUL   •   ŠIPKY = PROHLÍŽET   •   ZPĚT = KODI</label>
+        </control>
+
+        <control type="label">
+            <left>83</left><top>490</top><width>1500</width><height>50</height>
+            <font>font32</font><textcolor>FFFFEDD2</textcolor>
+            <label>NOVĚ PŘIDANÉ FILMY NA WEBSHARE</label>
+        </control>
+        <control type="list" id="401">
+            <left>80</left><top>541</top><width>1760</width><height>218</height>
+            <orientation>horizontal</orientation>
+            <onup>101</onup><ondown>402</ondown>
+            <itemlayout width="203" height="216">
+                <control type="image">
+                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture>
+                    <aspectratio>scale</aspectratio>
+                </control>
+                <control type="label">
+                    <left>8</left><top>181</top><width>184</width><height>34</height>
+                    <font>font12</font><textcolor>FFC3CAD6</textcolor>
+                    <align>center</align>
+                    <label>$INFO[ListItem.Label]</label>
+                    <scroll>true</scroll>
+                </control>
+            </itemlayout>
+            <focusedlayout width="203" height="216">
+                <control type="image">
+                    <left>3</left><top>0</top><width>195</width><height>185</height>
+                    <texture>$INFO[Window.Property(cinema_focus)]</texture>
+                    <aspectratio>stretch</aspectratio>
+                </control>
+                <control type="image">
+                    <left>10</left><top>5</top><width>180</width><height>175</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture>
+                    <aspectratio>scale</aspectratio>
+                </control>
+                <control type="label">
+                    <left>8</left><top>182</top><width>184</width><height>34</height>
+                    <font>font12</font><textcolor>FFFFE3B7</textcolor>
+                    <align>center</align>
+                    <label>$INFO[ListItem.Label]</label>
+                    <scroll>true</scroll>
+                </control>
+            </focusedlayout>
+        </control>
+        <control type="label">
+            <left>83</left><top>763</top><width>1500</width><height>48</height>
+            <font>font32</font><textcolor>FFFFEDD2</textcolor>
+            <label>$INFO[Window.Property(row2_heading)]</label>
+        </control>
+        <control type="list" id="402">
+            <left>80</left><top>813</top><width>1760</width><height>218</height>
+            <orientation>horizontal</orientation>
+            <onup>401</onup><ondown>101</ondown>
+            <itemlayout width="203" height="216">
+                <control type="image">
+                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture>
+                    <aspectratio>scale</aspectratio>
+                </control>
+                <control type="label">
+                    <left>8</left><top>181</top><width>184</width><height>34</height>
+                    <font>font12</font><textcolor>FFC3CAD6</textcolor>
+                    <align>center</align>
+                    <label>$INFO[ListItem.Label]</label>
+                    <scroll>true</scroll>
+                </control>
+            </itemlayout>
+            <focusedlayout width="203" height="216">
+                <control type="image">
+                    <left>3</left><top>0</top><width>195</width><height>185</height>
+                    <texture>$INFO[Window.Property(cinema_focus)]</texture>
+                    <aspectratio>stretch</aspectratio>
+                </control>
+                <control type="image">
+                    <left>10</left><top>5</top><width>180</width><height>175</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture>
+                    <aspectratio>scale</aspectratio>
+                </control>
+                <control type="label">
+                    <left>8</left><top>182</top><width>184</width><height>34</height>
+                    <font>font12</font><textcolor>FFFFE3B7</textcolor>
+                    <align>center</align>
+                    <label>$INFO[ListItem.Label]</label>
+                    <scroll>true</scroll>
+                </control>
+            </focusedlayout>
+        </control>
+        <control type="label">
+            <left>82</left><top>1033</top><width>1760</width><height>37</height>
+            <font>font12</font><textcolor>FF9EA9BC</textcolor>
+            <label>$INFO[Window.Property(ui_status)]</label>
+            <scroll>true</scroll>
+        </control>
+    </controls>
+</window>
