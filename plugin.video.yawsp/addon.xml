@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.yawsp" name="Božský přehrávač" version="0.10.0" provider-name="cache-sk">
+<addon id="plugin.video.yawsp" name="Božský přehrávač" version="0.10.1" provider-name="cache-sk">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -21,6 +21,16 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.10.1 Oprava filmových obrázků a načítání katalogu[/B]
+- Opraveno prázdné vyhledávání novinek na úvodní obrazovce; používají se konkrétní dotazy na Webshare
+- Úvodní katalog nově rozlišuje chybu připojení, chybějící výsledky a nedostupné náhledy
+- Relativní URL náhledových obrázků Webshare se převádějí na úplné adresy
+- Zvýšen počet titulů obohacovaných plakáty a českými metadaty přes CZDB
+- Při nepřítomnosti filmů už nejsou navigační položky zobrazené jako plakáty s opakovaným logem
+- Dynamické názvy filmových řad, zachování ručního přehrávání a dostupnosti potvrzené Webshare
+- Přidány regresní testy vyhledávání, ověřování souborů a posterů
+
+
 [B]0.10.0 Filmový vzhled – vlastní okno Kodi[/B]
 - Nová celoobrazovková filmová domovská obrazovka s vlastním Kodi XML rozhraním
 - Velký dynamický filmový banner, český název, popis a dostupné hodnocení
