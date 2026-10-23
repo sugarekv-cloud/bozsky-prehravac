@@ -44,15 +44,15 @@ def groups(files, kind):
     return list(by_key.values())
 
 def verified_groups(raw, availability, maximum=24, checked=65):
-    """Scan beyond first few dead candidates and retain bounded downloadable rows."""
+    """Bounded parallel checks; skip dead first files and keep searching."""
     result=[]
-    for g in raw[:checked]:
-        verified=availability.check_groups([g],max_workers=1)
-        if verified:
-            result.append(verified[0])
+    candidates=raw[:checked]
+    for pos in range(0,len(candidates),12):
+        group=candidates[pos:pos+12]
+        result.extend(availability.check_groups(group,max_workers=6))
         if len(result)>=maximum:
             break
-    return result
+    return result[:maximum]
 
 def add_metadata(groups_list, client, maximum=12):
     if client and groups_list:
