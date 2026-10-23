@@ -49,7 +49,7 @@ class FilenameTests(unittest.TestCase):
 
     def test_dots_in_query(self):
         self.assertIn('murder.mystery',variants('Murder Mystery'))
-        self.assertIn('český název',variants('Český název'))
+        self.assertIn('Český název',variants('Český název'))
 
     def test_language_tags_and_codes(self):
         name='Film.2025.2160p.WEB-DL.HDR10.HEVC.CZ.mkv'
