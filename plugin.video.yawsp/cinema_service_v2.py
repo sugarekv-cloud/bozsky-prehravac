@@ -234,7 +234,8 @@ class CinemaService:
                 if other:
                     entries.extend(other)
             existing=card.get('files') or []
-            self.series_cache[key]=grouped_episodes(entries+existing,raw)
+            self.series_cache[key]=grouped_episodes(entries+existing,raw,
+                aliases=(original,) if original else ())
         return self.series_cache[key]
 
     def episode_variants(self, card, season, episode, quality='all', language='all'):
