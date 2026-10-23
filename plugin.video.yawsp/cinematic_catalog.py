@@ -8,7 +8,7 @@ from novinky_catalogue import build_groups
 from catalog_engine import file_label
 
 
-def _decorate(groups, catalogue, max_metadata=5):
+def _decorate(groups, catalogue, max_metadata=10):
     if catalogue and groups:
         catalogue.lookup_many(groups[:max_metadata], max_new=max_metadata)
     cards=[]
