@@ -10,6 +10,7 @@ from datetime import date
 
 VIDEO_EXT = re.compile(r'\.(?:mkv|mp4|avi|wmv|mov|m4v|ts|mpeg|mpg|webm)$', re.I)
 EPISODE = re.compile(r'(?<!\w)(?:s(\d{1,2})[ ._-]*e(\d{1,3})|(\d{1,2})x(\d{1,3}))(?!\d)', re.I)
+EPISODE_DASH = re.compile(r'(?i)\s+-\s+(\d{1,3})(?=\s+(?:cz|sk|en|eng|\[?(?:2160p|1080p|720p)))')
 SEASON = re.compile(r'(?<!\w)(?:s(\d{1,2})|season[ ._-]*(\d{1,2})|serie[ ._-]*(\d{1,2}))(?!\w)', re.I)
 YEAR = re.compile(r'(?<!\d)((?:19|20)\d\d)(?!\d)')
 QUALITY = re.compile(r'(?<!\w)(2160p|4k|uhd|1080[pi]|720p|480p)(?!\w)', re.I)
@@ -24,20 +25,25 @@ def normalize(value):
 
 
 def resolution(name):
-    match = QUALITY.search(name or '')
-    if not match:
-        return 0
-    token = match.group(1).lower()
-    return 2160 if token in ('2160p', '4k', 'uhd') else 1080 if token.startswith('1080') else 720 if token == '720p' else 480
+    """Prefer explicit 1080p/2160p over vague 4K-remastered labels."""
+    value=name or ''
+    explicit=re.search(r'(?<!\d)(2160p|1080[pi]|720p|480p)(?!\d)',value,re.I)
+    if explicit:
+        token=explicit.group(1).lower()
+        return 2160 if token=='2160p' else 1080 if token.startswith('1080') else 720 if token=='720p' else 480
+    return 2160 if re.search(r'(?i)(?<!\w)(?:4k|uhd)(?!\w)',value) else 0
 
 
 def is_czech_audio_marked(name):
-    """A filename hint, NOT a verified language-track measurement."""
-    name = normalize(name)
-    # Distinguish subtitles-only labels from Czech audio labels.
-    if re.search(r'\b(?:czsub|czsubs|cz[ ]?sub|cz[ ]?subs|cz[ ]?subtitles|czech[ ]?subs|cz[ ]?titulky|titulky|subtitles|subs)\b', name) and not re.search(r'\b(?:czdab|czdub|dabing|czech[ ]?audio|cz[ ]?audio|dual)\b', name):
+    """Only explicit Czech tags; MULTI/DUAL alone never proves CZ audio."""
+    n=normalize(name)
+    subtitles=bool(re.search(r'\b(?:czsub|czsubs|cz sub|cz subs|cz subtitles|'
+                             r'czech subs|cz titulky|titulky|subtitles)\b',n))
+    explicit=bool(re.search(r'\b(?:czdab|czdub|cz dabing|cz dub|'
+                            r'czech dub|czech audio|cz audio|cesky dabing)\b',n))
+    if subtitles and not explicit:
         return False
-    return bool(re.search(r'\b(?:cz|cze|czech|cesky|cestina|czdab|czdub|dabing|dual)\b', name))
+    return explicit or bool(re.search(r'\b(?:cz|cze|czech|cesky|cestina|czsk)\b',n))
 
 
 def is_hdr(name):
@@ -53,8 +59,9 @@ def parse_video_name(filename):
     if not stem or len(stem) > 256:
         return None
     ep = EPISODE.search(stem)
-    sea = None if ep else SEASON.search(stem)
-    marker = ep or sea or RELEASE.search(stem)
+    ep_dash = None if ep else EPISODE_DASH.search(stem)
+    sea = None if ep or ep_dash else SEASON.search(stem)
+    marker = ep or ep_dash or sea or RELEASE.search(stem)
     early = stem[:marker.start()] if marker else stem
     # Year before release tags is usually the title year, unlike a year in a series episode date.
     yrs = list(YEAR.finditer(early))
@@ -73,9 +80,9 @@ def parse_video_name(filename):
         return None
     if re.fullmatch(r'(?i)(?:video|film|movie|serial|episode|capture|recording|untitled|sample|test|screenshot|clip)\s*\d*', title):
         return None
-    season = int(ep.group(1) or ep.group(3)) if ep else int(next((x for x in sea.groups() if x), 0)) if sea else None
-    episode = int(ep.group(2) or ep.group(4)) if ep else None
-    kind = 'episode' if ep else 'series' if sea else 'movie'
+    season = int(ep.group(1) or ep.group(3)) if ep else (1 if ep_dash else int(next((x for x in sea.groups() if x), 0)) if sea else None)
+    episode = int(ep.group(2) or ep.group(4)) if ep else int(ep_dash.group(1)) if ep_dash else None
+    kind = 'episode' if ep or ep_dash else 'series' if sea else 'movie'
     return {'title':title, 'kind':kind, 'year':year, 'season':season, 'episode':episode}
 
 
