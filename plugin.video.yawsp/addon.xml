@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="plugin.video.yawsp" name="Božský přehrávač" version="0.6.1" provider-name="cache-sk">
+    <requires>
+        <import addon="xbmc.python" version="3.0.0"/>
+        <import addon="script.module.requests" version="2.18.4"/>
+        <import addon="script.module.unidecode" version="0.4.16"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="main.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary>Božský přehrávač – filmy, seriály, kalendář premiér a Webshare</summary>
+        <disclaimer lang="en_GB">The plugin does not provide any content, it is only a simulation of the browser of a publicly available web site. I am not responsible for the content provided by this site.</disclaimer>
+        <disclaimer lang="sk_SK">Plugin neposkytuje žiaden obsah, je to len simulácia prehliadača verejne dostupnej web stránky. Nie som zodpovedný za obsah, ktorý táto stránka poskytuje.</disclaimer>
+        <disclaimer lang="cs_CZ">Plugin neposkytuje žádný obsah, je to jen simulace prohlížeče veřejně dostupné web stránky. Nejsem zodpovědný za obsah, který tato stránka poskytuje.</disclaimer>
+        <platform>all</platform>
+        <license>AGPL 3.0</license>
+        <forum>https://www.xbmc-kodi.cz/prispevek-yet-another-webshare-plugin</forum>
+        <source>https://github.com/cache-sk/plugin.video.yawsp</source>
+        <assets>
+            <icon>resources/icon.png</icon>
+        </assets>
+        <news>
+[B]0.6.1 Božský přehrávač[/B]
+- Nový název, popisky a vlastní ikona bez původního loga
+- Zachováno původní ID plugin.video.yawsp kvůli kompatibilitě a nastavení
+- Příprava na distribuci aktualizací z vlastního repozitáře
+
+[B]0.6.0 Filmové premiéry ČR[/B]
+- Novinky podle českého filmového kalendáře premiér (Fuxoft/UFD iCalendar)
+- Posledních 7/30/90 dní, budoucí premiéry a měsíce
+- Cache 24 h, záložní zobrazení při výpadku zdroje
+- ČSFD metadata přes CZDB (volitelně), vyhledání na Webshare ručně
+- Nově nahrané soubory Webshare jsou oddělená sekce
+- Premiéra kina neznamená dostupnost souboru
+
+[B]0.5.0 Katalog ČSFD (experimentální)[/B]
+- Plakáty, popisy, hodnocení, žánry a originální názvy prostřednictvím CZDB
+- Paměťová cache metadat, filtrování žánru/hodnocení, řazení podle hodnocení
+- Vyhledání filmu z katalogu a dohledání souborů přes Webshare
+- Ruční výběr kvality, žádné automatické přehrání
+- CZDB je neoficiální a dostupnost metadat nelze zaručit
+
+[B]0.4.0 Novinky (SCC-styl)[/B]
+- Nově přidané filmové soubory, epizody, seriály podle Webshare recent
+- Seskupení názvů a výběr konkrétní kvality až po rozkliknutí
+- Filtry kvality/CZ/HDR, rok z názvu, stránkování, ruční přehrání
+- Webshare newest není datum filmové premiéry
+
+[B]0.3.0 Smart Search[/B]
+- Přímé vyhledávání Webshare, řazení podle kvality a preference CZ
+- Experimentální výběr z ČSFD
+- Ruční výběr souboru bez automatického přehrání
+
+[B]0.2.0[/B]
+- nexus compatibility
+[B]0.1.9[/B]
+- matrix compatibility pt3
+[B]0.1.8[/B]
+- matrix compatibility pt2
+[B]0.1.7[/B]
+- matrix compatibility pt1
+[B]0.1.6[/B]
+- experimenty s uuid/headermi aby neukladalo historiu viac krat - nepomohlo..
+- uuid je generovane
+[B]0.1.5[/B]
+- fixed stahovanie, aby slo aj na sambu
+[B]0.1.4[/B]
+- experimental
+[B]0.1.3[/B]
+- experimental
+[B]0.1.2[/B]
+- pridane stahovanie
+[B]0.1.1[/B]
+- pridane v menu hladania aj vsetky najnovsie a najvacsie (pozor, zobrazuje to aj adult obsah)
+[B]0.1.0[/B]
+- prvy verejny release
+- TODO stahovanie
+- TODO hladanie pomocou TMDB
+        </news>
+    </extension>
+</addon>
