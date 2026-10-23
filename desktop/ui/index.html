@@ -1,0 +1,17 @@
+<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; media-src 'self' https: blob:; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'"/><title>Božský přehrávač</title><link rel="stylesheet" href="./style.css"></head><body>
+<div class="app" id="app">
+<aside class="rail"><div class="brand-icon" title="Božský přehrávač">▶</div><nav aria-label="Hlavní navigace">
+<button class="nav active" data-view="home" aria-label="Domů" title="Domů"><span>⌂</span></button>
+<button class="nav" data-view="movies" aria-label="Filmy" title="Filmy"><span>▣</span></button>
+<button class="nav" data-view="series" aria-label="Seriály" title="Seriály"><span>▤</span></button>
+<button class="nav" data-view="search" aria-label="Hledat" title="Hledat"><span>⌕</span></button>
+<button class="nav" data-view="favorites" aria-label="Oblíbené" title="Oblíbené"><span>♡</span></button>
+<button class="nav" data-view="history" aria-label="Historie" title="Historie"><span>◷</span></button>
+</nav><div class="nav-bottom"><button class="nav" data-view="settings" title="Nastavení" aria-label="Nastavení"><span>⚙</span></button></div></aside>
+<main class="main"><header class="topbar"><div class="logo"><span class="logo-mark">▶</span><span>BOŽSKÝ <em>PŘEHRÁVAČ</em></span><small>2.0 ALPHA</small></div><div class="searchwrap"><span>⌕</span><input id="globalSearch" placeholder="Hledat film, seriál, rok…" autocomplete="off" aria-label="Vyhledat na Webshare"><kbd>↵</kbd></div><button id="account" class="account" type="button">◉ <span id="accountText">Nepřihlášen</span></button></header>
+<div class="content" id="content"><div class="welcome"><span class="eyebrow">BOŽSKÝ PŘEHRÁVAČ 2.0</span><h1>Tvoje filmy.<br><span>Tvůj svět.</span></h1><p>Samostatný přehrávač pro Webshare, bez Kodi.</p><button class="primary" id="onboardLogin">Připojit Webshare →</button></div></div></main>
+</div>
+<div id="modalBackdrop" class="modalBackdrop hidden" role="presentation"><section class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Detail obsahu"></section></div>
+<div id="player" class="player hidden"><div class="playerbar"><span id="playingTitle"></span><button id="closePlayer" aria-label="Zavřít přehrávač">✕ Zavřít</button></div><video id="video" controls playsinline preload="metadata"></video><div class="playerfoot">Podporované formáty lze přehrát přímo. Pro MKV, HEVC a pokročilé zvukové stopy použij externí mpv.</div></div>
+<div id="toast" role="status" class="toast hidden"></div>
+<script src="./app.js" defer></script></body></html>

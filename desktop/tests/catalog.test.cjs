@@ -1,0 +1,16 @@
+'use strict';
+const test=require('node:test');const assert=require('node:assert/strict');
+const {parseFile,groupFiles,sortEpisodes,filterAndSort,matchMetadata}=require('../src/catalog.cjs');
+const {md5crypt,tag,xmlFiles,Webshare}=require('../src/webshare.cjs');
+const f=(id,name)=>({ident:id,name,size:'4000000000',password:'0'});
+test('Webshare salted password hash matches OpenSSL reference',()=>assert.equal(md5crypt('test','abcdefgh'),'$1$abcdefgh$irWbblnpmw.5z7wgBnprh0'));
+test('Czech dubbed movie',()=>{const r=parseFile(f('1','Murder Mystery (2019) CZ dabing ,WEB-DL,1080p,H264.DD5.1,.mkv'));assert.equal(r.title,'Murder Mystery');assert.equal(r.year,2019);assert.equal(r.resolution,1080);assert.equal(r.cz,true);});
+test('Series merge episodes across seasons',()=>{const rows=[f('1','Silo.S02E11.1080p.mkv'),f('2','Silo.S01E03.720p.mkv'),f('3','Silo.S01E01.2160p.CZ.mkv'),f('4','Silo.S01E01.1080p.mkv')];const result=groupFiles(rows);assert.equal(result.length,1);assert.deepEqual(sortEpisodes(result[0]).map(x=>[x.season,x.episode]),[[1,1],[1,3],[2,11]]);});
+test('Distinguish subtitles, dubbing and remastered resolution',()=>{assert.equal(parseFile(f('1','Interstellar.2014.CZ.SUB.1080p.mkv')).cz,false);assert.equal(parseFile(f('2','Interstellar.2014.4K.Remastered.1080p.mkv')).resolution,1080);});
+test('No Webshare => no catalog cards',()=>assert.deepEqual(groupFiles([]),[]));
+test('Locked, sample files, duplicates excluded',()=>{const rows=[f('a','Sample.mkv'),{...f('b','Silo.S01E01.mkv'),password:'1'},f('b','Silo.S01E01.mkv'),f('b','Silo.S01E01.mkv')];assert.equal(groupFiles(rows)[0].files.length,1);});
+test('Metadata requires exact title and sensible year',()=>{const list=[{name:'Dune',releaseInfo:'1984',poster:'a'},{name:'Dune',releaseInfo:'2021',poster:'b'}];assert.equal(matchMetadata('Dune',2021,list).poster,'b');});
+test('Filters require a matching file variant',()=>{const rows=groupFiles([f('1','Silo.S01E01.1080p.CZ.mkv'),f('2','Dune.2021.2160p.mkv')]);assert.equal(filterAndSort(rows,{quality:'2160',cz:true}).length,0);});
+test('Parse Webshare XML entities and file list',()=>{const xml='<response><status>OK</status><total>1</total><file><ident>a</ident><name>Tom &amp; Jerry.mkv</name><password>0</password></file></response>';assert.equal(tag(xml,'total'),'1');assert.equal(xmlFiles(xml)[0].name,'Tom & Jerry.mkv');});
+test('Never send an empty discovery query',async()=>{const c=new Webshare(async()=>{throw new Error('Network should not be used');});assert.deepEqual(await c.search(''),[]);});
+test('Fake Webshare availability is verified',async()=>{let n=0;const fetcher=async(url,init)=>({ok:true,text:async()=>{n++;return '<response><status>OK</status><exists>1</exists><downloadable>1</downloadable></response>';}});const c=new Webshare(fetcher);assert.equal(await c.verify('abc'),true);assert.equal(n,1);});
