@@ -11,8 +11,10 @@ def variants(title,other=None):
     out=[]
     for n in names:
         n=re.sub(r'\s*\((?:19|20)\d\d\)\s*$','',n).strip()
-        for v in (n,normalize(n)):
-            if v and v not in out:out.append(v)
+        normalized=normalize(n)
+        for v in (n,normalized,normalized.replace(' ','.')):
+            if v and v.casefold() not in [x.casefold() for x in out]:
+                out.append(v)
     return out
 
 def get_resolution(name):
