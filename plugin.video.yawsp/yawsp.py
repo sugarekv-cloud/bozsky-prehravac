@@ -1050,7 +1050,7 @@ def novinky_menu(params):
     novinky_item('PREMIÉRY PODLE MĚSÍCŮ', 'premiere_months')
     novinky_item('OBNOVIT FILMOVÝ KALENDÁŘ', 'premiere_list', view='recent30', force=1)
     novinky_item('WEB SHARE [COLOR gray](nové soubory – samostatně)[/COLOR]', 'novinky_files')
-    novinky_item('HLEDAT FILM V ČSFD / NA WEB SHARE', 'catalog_search')
+    novinky_item('HLEDAT DOSTUPNÝ FILM PODLE ČSFD', 'catalog_search')
     novinky_item('FILTRY KVALITY / CZ / ŽÁNRU / HODNOCENÍ', 'novinky_filters')
     novinky_item('O KALENDÁŘI PREMIÉR', 'premiere_about')
     xbmcplugin.endOfDirectory(_handle)
@@ -1095,77 +1095,97 @@ def premiere_months(params):
 
 
 def premiere_list(params):
-    """Calendar-first browse; Webshare login is not required to view cinema releases."""
+    """Premieres are a date source, but show only movies confirmed on Webshare."""
     from datetime import date
     from premiere_calendar import select_events, nice_date
-    allowed = ('recent7','recent30','recent90','upcoming30','upcoming90','month')
-    view = params.get('view','recent30')
+    from available_catalog import matching_movies, names_for
+    from ws_availability import Availability
+    allowed=('recent7','recent30','recent90','upcoming30','upcoming90','month')
+    view=params.get('view','recent30')
     if view not in allowed:
-        view = 'recent30'
-    month = params.get('month','')
+        view='recent30'
+    month=params.get('month','')
     try:
-        page = max(0, min(int(params.get('page',0)), 250))
-    except (TypeError, ValueError):
-        page = 0
-    client = _premiere_client()
-    events = client.load(force=params.get('force') == '1')
-    all_items = select_events(events, view=view, month=month, today=date.today())
-    xbmcplugin.setPluginCategory(_handle, 'České kinopremiéry / ' +
-          (month if view == 'month' else view))
-    xbmcplugin.setContent(_handle, 'movies')
+        page=max(0,min(int(params.get('page',0)),250))
+    except (TypeError,ValueError):
+        page=0
+    calendar=_premiere_client()
+    events=calendar.load(force=params.get('force')=='1')
+    all_items=select_events(events,view=view,month=month,today=date.today())
+    xbmcplugin.setPluginCategory(_handle,'Premiéry dostupné na Webshare / ' +
+                                  (month if view=='month' else view))
+    xbmcplugin.setContent(_handle,'movies')
     if not events:
-        novinky_item('Kalendář se nepodařilo načíst. Zkusit znovu', 'premiere_list',
-                     view=view, month=month, force=1)
-        novinky_item('O zdroji kalendáře a připojení', 'premiere_about')
+        novinky_item('Kalendář nelze načíst – opakovat','premiere_list',
+                     view=view,month=month,force=1)
         xbmcplugin.endOfDirectory(_handle)
         return
-    if client.stale:
-        novinky_item('POZOR: zobrazen poslední uložený kalendář (server nedostupný)',
-                     'premiere_list', view=view, month=month, force=1)
-    page_size = 15
-    start = page * page_size
-    chosen = all_items[start:start+page_size]
-    # Preserve filtering by genre/rating when metadata can be fetched.
-    genre = _addon.getSetting('smart_genre')
+    # Webshare must be online; do not show unverified films during an outage.
+    token=revalidate()
+    if not token:
+        novinky_item('Přihlaš se k Webshare a zkus znovu','settings')
+        xbmcplugin.endOfDirectory(_handle)
+        return
+    if calendar.stale:
+        novinky_item('Použit uložený kalendář – ověřuji soubory na Webshare',
+                     'premiere_list',view=view,month=month,force=1)
+    page_size=12
+    start=page*page_size
+    candidates=all_items[start:start+page_size]
+    genre=_addon.getSetting('smart_genre')
     try:
-        min_rating = int(_addon.getSetting('smart_rating') or '0')
+        min_rating=int(_addon.getSetting('smart_rating') or '0')
     except ValueError:
-        min_rating = 0
-    with_metadata = _addon.getSetting('smart_metadata') != 'false' or bool(genre or min_rating)
-    if with_metadata and chosen:
-        catalogue = _csfd_client()
-        groups = [{'title':x['title'], 'year':'', 'metadata':None} for x in chosen]
-        catalogue.lookup_many(groups, max_new=len(groups))
-        for item, group in zip(chosen, groups):
-            item['metadata'] = group.get('metadata')
+        min_rating=0
+    metadata_enabled=(_addon.getSetting('smart_metadata')!='false' or bool(genre or min_rating))
+    client=_csfd_client() if metadata_enabled else None
+    checker=Availability(_profile)
+    added=0
+    for event in candidates:
+        title=event['title']
+        metadata=client.lookup(title) if client else None
+        names=names_for(title,event.get('original',''),metadata)
+        result=_smart_results(title,names[1:])
+        if result is None:
+            continue
+        # Strict comparison with calendar title, original title or matched ČSFD title.
+        possible=matching_movies(result,names)
+        verified=checker.check_files(possible,limit=3) if possible else []
+        if not verified:
+            continue
         if genre or min_rating:
             from csfd_metadata import passes_metadata_filter
-            chosen = [x for x in chosen if passes_metadata_filter(x, genre, min_rating)]
+            if not passes_metadata_filter({'metadata':metadata},genre,min_rating):
+                continue
+        name=(metadata or {}).get('title') or title
+        label='%s [COLOR gray]· %s · %s[/COLOR]' % (
+            name,nice_date(event['premiere']),
+            '4K / CZ / další kvality' if len(possible)>1 else 'Webshare dostupné')
+        li=xbmcgui.ListItem(label=label)
+        li.setInfo('video',{'title':name,'mediatype':'movie',
+            'plot':'Kino premiéra ČR: %s; ověřený soubor na Webshare.' %
+                   nice_date(event['premiere'])})
+        if verified[0].get('img'):
+            li.setArt({'thumb':verified[0]['img']})
+        if metadata:
+            _attach_movie_metadata(li,{'title':title,'group_kind':'movie'},metadata)
+        xbmcplugin.addDirectoryItem(_handle,get_url(action='premiere_title',
+            title=title,original=event.get('original',''),
+            date=event['premiere'],distributor=event.get('distributor',''),
+            language=event.get('language','')),li,True)
+        added+=1
+    if client:
+        client.save()
     if page:
-        novinky_item('◀ PŘEDCHOZÍ STRÁNKA', 'premiere_list', view=view,
-                     month=month, page=page-1)
-    for item in chosen:
-        label = '%s  [COLOR gray]• %s (kino ČR)[/COLOR]' % (
-                item['title'], nice_date(item['premiere']))
-        li = xbmcgui.ListItem(label=label)
-        info = {'title':item['title'], 'mediatype':'movie',
-                'plot':'Premiéra v českých kinech: %s\nDistributor: %s\nKino jazyk: %s' % (
-                       nice_date(item['premiere']),item['distributor'] or 'neuveden',
-                       item['language'] or 'neuvedeno')}
-        try:
-            li.setInfo('video', info)
-        except Exception:
-            pass
-        _attach_movie_metadata(li, {'title':item['title'], 'group_kind':'movie'}, item.get('metadata'))
-        xbmcplugin.addDirectoryItem(_handle, get_url(action='premiere_title',
-              title=item['title'], original=item['original'], date=item['premiere'],
-              distributor=item['distributor'], language=item['language']), li, True)
-    if not chosen:
-        novinky_item('V tomto období nejsou položky odpovídající filtrům.', 'novinky_filters')
-    if start+page_size < len(all_items):
-        novinky_item('DALŠÍ PREMIÉRY ▶', 'premiere_list', view=view, month=month, page=page+1)
+        novinky_item('◀ PŘEDCHOZÍ STRÁNKA','premiere_list',view=view,
+                     month=month,page=page-1)
+    if not added:
+        novinky_item('Na této stránce nejsou potvrzené filmy na Webshare',
+                     'premiere_list',view=view,month=month,page=page)
+    if start+page_size<len(all_items):
+        novinky_item('DALŠÍ PREMIÉRY ▶','premiere_list',view=view,
+                     month=month,page=page+1)
     xbmcplugin.endOfDirectory(_handle)
-
 
 def premiere_title(params):
     from premiere_calendar import nice_date
@@ -1184,7 +1204,7 @@ def premiere_title(params):
     text = ('Premiéra v českých kinech: %s\nČeský název: %s\n'
             'Původní název: %s\nDistributor: %s\n'
             'Kino jazyková verze: %s\n\n'
-            'Tento kalendář nesleduje dostupnost na Webshare.' % (
+            'Při procházení byly vybrány pouze premiéry s ověřeným souborem Webshare.' % (
             date_label, title, original or 'neuveden',
             params.get('distributor') or 'neuveden',
             params.get('language') or 'neuvedena'))
@@ -1231,7 +1251,7 @@ def premiere_about(params):
        'Automatická aktualizace každých 24 hodin; při výpadku se použije starší cache '
        '(maximálně 45 dnů).\n'
        'ČSFD plakáty, popisy a hodnocení jsou volitelně přes neoficiální CZDB.\n'
-       'Na Webshare se vyhledává až po výběru filmu, přehrávání je pouze ruční.\n'
+       'Na seznam se dostanou pouze premiéry s ověřeným souborem na Webshare.\n'
        'Filtry rozlišení/CZ/HDR platí pro videosoubory, nikoli filmové premiéry.')
     xbmcplugin.endOfDirectory(_handle)
 
@@ -1317,30 +1337,15 @@ def catalog_about(params):
 
 
 def catalog_search(params):
-    """Use a title from the Czech catalogue, then browse real Webshare candidates."""
-    query = params.get('title')
+    """The ČSFD name is just a search seed; never show a film without a WS file."""
+    query=params.get('title')
     if query is None:
-        query = ask('')
+        query=ask('')
     if not query:
         xbmcplugin.endOfDirectory(_handle)
         return
-    xbmcplugin.setPluginCategory(_handle, 'Katalog ČSFD / ' + query)
-    client = _csfd_client()
-    data = client.lookup(query)
-    client.save()
-    if data:
-        item = {'title':data['title'], 'year':data['year'], 'group_kind':'movie'}
-        li = xbmcgui.ListItem(label=data['title'] + (' (%s)'%data['year'] if data['year'] else ''))
-        _attach_movie_metadata(li, item, data)
-        xbmcplugin.addDirectoryItem(_handle, get_url(action='novinky_detail',
-            title=data['title'], year=data['year'], kind='movie', original=data.get('original','')), li, True)
-        if data.get('original') and data['original'] != data['title']:
-            li2 = xbmcgui.ListItem(label='Vyhledat na Webshare také: ' + data['original'])
-            xbmcplugin.addDirectoryItem(_handle, get_url(action='smart_search', what=data['original']), li2, True)
-    else:
-        li = xbmcgui.ListItem(label='ČSFD metadata nejsou dostupná; vyhledat na Webshare: ' + query)
-        xbmcplugin.addDirectoryItem(_handle, get_url(action='smart_search', what=query), li, True)
-    xbmcplugin.endOfDirectory(_handle)
+    smart_search({'what':query})
+
 
 
 def novinky_list(params):
@@ -1524,7 +1529,7 @@ def novinky_detail(params):
     xbmcplugin.endOfDirectory(_handle)
 
 def menu():
-    # Calendar browse must work even if the Webshare account is not configured.
+    # Every film in the catalogue requires a Webshare search result.
     # Actual Webshare operations call revalidate() when needed.
     xbmcplugin.setPluginCategory(_handle, _addon.getAddonInfo('name'))
     li = xbmcgui.ListItem(label='FILMOVÉ PREMIÉRY ČR | Kalendář · ČSFD · Webshare')
