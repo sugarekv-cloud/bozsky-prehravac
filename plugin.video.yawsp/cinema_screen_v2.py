@@ -122,6 +122,23 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self.stack.append((self.mode,self.context))
         self._screen(view,context,stack=False)
 
+    def _filtered(self,cards):
+        from cinema_catalog_v2 import sort_cards,choose_files
+        selected=[]
+        for c in cards:
+            if c.get('kind') not in ('movie','show'):
+                selected.append(c)
+                continue
+            if self.year!='all' and str(c.get('year') or '')!=self.year:
+                continue
+            if self.genre!='all' and self.genre.casefold() not in (
+                    c.get('genre') or '').casefold():
+                continue
+            if not choose_files(c.get('files') or [],self.quality,self.language):
+                continue
+            selected.append(c)
+        return sort_cards(selected,self.sort)
+
     def _screen(self,view,context=None,stack=False):
         self.mode=view
         self.context=context
@@ -148,10 +165,11 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         elif view in ('movies','shows','premieres'):
             load=self._loading('Řadím dostupné tituly…')
             try:
-                ordered=self.service.browse(view,self.sort,self.quality,self.language)
+                ordered=self._filtered(self.service.browse(view,self.sort,
+                    self.quality,self.language))
                 if not ordered:
                     ordered=[tile('VYHLEDAT NÁZEV','search')]
-                row_one=ordered[:16];row_two=ordered[16:32]
+                row_one=ordered[:24];row_two=ordered[24:48]
                 self._fill('FILMY NA WEBSHARE' if view=='movies' else
                            'SERIÁLY NA WEBSHARE' if view=='shows' else
                            'PREMIÉRY PODLE ČSFD',row_one,'DALŠÍ TITULY',row_two,
@@ -171,8 +189,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             load=self._loading('Vyhledávám "'+query[:60]+'" na Webshare…')
             try:
                 found=self.service.search(query)
-                movies=[c for c in found if c['kind']=='movie']
-                shows=[c for c in found if c['kind']=='show']
+                movies=self._filtered([c for c in found if c['kind']=='movie'])
+                shows=self._filtered([c for c in found if c['kind']=='show'])
                 self.context=query
                 if not movies and not shows:
                     movies=[tile('ZKUSIT JINÝ NÁZEV','search')]
@@ -233,7 +251,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
     def _filters(self):
         choice=xbmcgui.Dialog().select('Katalog · filtrování a řazení',[
             'Řazení: '+self.sort,'Rozlišení: '+self.quality,
-            'Jazyk: '+self.language,'Resetovat filtry'])
+            'Jazyk: '+self.language,'Rok: '+self.year,
+            'Žánr: '+self.genre,'Resetovat filtry'])
         if choice<0:return
         if choice==0:
             arr=['date','year','rating','title','quality']
@@ -249,8 +268,21 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             arr=['all','cz']
             n=xbmcgui.Dialog().select('Jazyk',['Vše','CZ v názvu souboru'])
             if n>=0:self.language=arr[n]
-        else:
+        elif choice==3:
+            from datetime import date
+            years=['all']+[str(v) for v in range(date.today().year,date.today().year-35,-1)]
+            n=xbmcgui.Dialog().select('Rok vydání', ['Všechny roky']+years[1:])
+            if n>=0:self.year=years[n]
+        elif choice==4:
+            genres=['all','Akční','Animovaný','Dobrodružný','Drama','Fantasy',
+                    'Horor','Komedie','Krimi','Rodinný','Romantický','Sci-Fi',
+                    'Thriller','Válečný','Dokumentární']
+            n=xbmcgui.Dialog().select('Žánr ČSFD',['Všechny žánry']+genres[1:])
+            if n>=0:self.genre=genres[n]
+        elif choice==5:
             self.sort='date';self.quality='all';self.language='all'
+            self.year='all';self.genre='all'
+        # Rerender without leaving the cinematic window.
         self._screen(self.mode,self.context)
 
     def onFocus(self,control_id):
@@ -311,7 +343,7 @@ def launch(addon,profile,get_url,token,search_page,
     from cinematic_home import ensure_textures
     metadata=metadata_factory() if addon.getSetting('smart_metadata')!='false' else None
     service=CinemaService(token,search_page,Availability(profile),
-                          metadata,calendar_factory())
+                          metadata,calendar_factory(),profile=profile)
     win=CinemaScreen('bozsky-cinema-v2.xml',addon.getAddonInfo('path'),'Default','1080i')
     win.service=service
     win.textures=ensure_textures(profile)
@@ -321,6 +353,8 @@ def launch(addon,profile,get_url,token,search_page,
     win.sort='date'
     win.quality='all'
     win.language='all'
+    win.year='all'
+    win.genre='all'
     try:
         win.doModal()
         return win.destination,win.is_play
