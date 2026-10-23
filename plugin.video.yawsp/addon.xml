@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.yawsp" name="Božský přehrávač" version="0.9.0" provider-name="cache-sk">
+<addon id="plugin.video.yawsp" name="Božský přehrávač" version="0.10.0" provider-name="cache-sk">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -21,6 +21,19 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.10.0 Filmový vzhled – vlastní okno Kodi[/B]
+- Nová celoobrazovková filmová domovská obrazovka s vlastním Kodi XML rozhraním
+- Velký dynamický filmový banner, český název, popis a dostupné hodnocení
+- Dvě vodorovné řady plakátů: nové filmy a seriály / oblíbené filmy
+- Ovládání šipkami a tlačítkem OK na televizním dálkovém ovladači
+- Horní navigace: Filmy, Seriály, Hledat, Premiéry, Filtry, Klasické menu, Nastavení
+- Otevřením plakátu se pouze zobrazí nabídka souborů nebo seriál, nic se nepřehraje automaticky
+- Do filmových řad jsou zařazeny jen ověřené dostupné soubory Webshare
+- Možnost vypnutí filmového rozhraní v nastavení, zachování původního Kodi menu
+- Bez externích knihoven obrázků; grafické podklady se generují lokálně při prvním otevření
+- Plakáty a fanarty ČSFD/CZDB pouze při dostupnosti metadat, bez jejich přítomnosti funguje fallback
+
+
 [B]0.9.0 Filmový katalog a pokročilé vyhledávání[/B]
 - Úvod: samostatné Filmy, Seriály, Filmové premiéry a Hledání
 - Katalogy: nově přidané soubory Webshare, oblíbené soubory podle hodnocení Webshare, 4K, CZ označení, roky a žánry
