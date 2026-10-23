@@ -1754,20 +1754,28 @@ def classic_menu():
     xbmcplugin.endOfDirectory(_handle)
 
 def cinematic_menu():
-    """Full-screen TV catalogue with safe fallback to the usual Kodi directory."""
+    """All film, series, search and quality views share one Kodi TV interface."""
     try:
-        from cinematic_home import launch
-        selected=launch(_addon,_profile,get_url,revalidate,novinky_search_page,_csfd_client)
+        from cinema_screen_v2 import launch
+        token=revalidate()
+        if not token:
+            popinfo('Pro katalog se nejprve přihlas k Webshare')
+            classic_menu()
+            return
+        destination,is_play=launch(_addon,_profile,get_url,token,
+            novinky_search_page,_csfd_client,_premiere_client)
     except Exception:
         traceback.print_exc()
-        popinfo('Filmové rozhraní není dostupné; používá se klasické menu',
+        popinfo('Filmové rozhraní nelze spustit; otevřeno klasické menu',
                 icon=xbmcgui.NOTIFICATION_WARNING)
         classic_menu()
         return
     xbmcplugin.endOfDirectory(_handle,succeeded=False,cacheToDisc=False)
-    if selected:
-        # Navigate after the modal dialog is closed; the original handlers own playback.
-        xbmc.executebuiltin('ActivateWindow(Videos,%s,return)' % selected)
+    if destination:
+        if is_play:
+            xbmc.executebuiltin('PlayMedia(%s)' % destination)
+        else:
+            xbmc.executebuiltin('ActivateWindow(Videos,%s,return)' % destination)
 
 
 def menu():
