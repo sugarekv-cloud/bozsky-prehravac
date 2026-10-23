@@ -1711,7 +1711,7 @@ def novinky_detail(params):
     novinky_item('SMART SEARCH: zobrazit další varianty', 'smart_search', what=title)
     xbmcplugin.endOfDirectory(_handle)
 
-def menu():
+def classic_menu():
     # Every film in the catalogue requires a Webshare search result.
     # Actual Webshare operations call revalidate() when needed.
     xbmcplugin.setPluginCategory(_handle, _addon.getAddonInfo('name'))
@@ -1721,6 +1721,9 @@ def menu():
     li=xbmcgui.ListItem(label='📺  SERIÁLY  |  Série · Epizody · Novinky')
     li.setArt({'icon':'DefaultTVShows.png'})
     xbmcplugin.addDirectoryItem(_handle,get_url(action='catalog_home',kind='show'),li,True)
+    li=xbmcgui.ListItem(label='🎬  FILMOVÉ ROZHRANÍ | Plakáty a filmové řady')
+    li.setArt({'icon':'DefaultVideo.png'})
+    xbmcplugin.addDirectoryItem(_handle,get_url(action='cinematic_home'),li,True)
     li = xbmcgui.ListItem(label='📅  PREMIÉRY V KINECH  |  Pouze ověřené na Webshare')
     li.setArt({'icon':'DefaultAddonsRecentlyUpdated.png'})
     xbmcplugin.addDirectoryItem(_handle, get_url(action='novinky'), li, True)
@@ -1749,6 +1752,30 @@ def menu():
     xbmcplugin.addDirectoryItem(_handle, get_url(action='settings'), listitem, False)
 
     xbmcplugin.endOfDirectory(_handle)
+
+def cinematic_menu():
+    """Full-screen TV catalogue with safe fallback to the usual Kodi directory."""
+    try:
+        from cinematic_home import launch
+        selected=launch(_addon,_profile,get_url,revalidate,novinky_search_page,_csfd_client)
+    except Exception:
+        traceback.print_exc()
+        popinfo('Filmové rozhraní není dostupné; používá se klasické menu',
+                icon=xbmcgui.NOTIFICATION_WARNING)
+        classic_menu()
+        return
+    xbmcplugin.endOfDirectory(_handle,succeeded=False,cacheToDisc=False)
+    if selected:
+        # Navigate after the modal dialog is closed; the original handlers own playback.
+        xbmc.executebuiltin('ActivateWindow(Videos,%s,return)' % selected)
+
+
+def menu():
+    if _addon.getSetting('cinematic_ui') == 'false':
+        classic_menu()
+    else:
+        cinematic_menu()
+
 
 def router(paramstring):
     params = dict(parse_qsl(paramstring))
@@ -1783,6 +1810,10 @@ def router(paramstring):
             novinky_filters()
         elif params.get('action') == 'novinky_set':
             novinky_set(params)
+        elif params.get('action') == 'cinematic_home':
+            cinematic_menu()
+        elif params.get('action') == 'classic_menu':
+            classic_menu()
         elif params.get('action') == 'catalog_home':
             catalog_home(params)
         elif params.get('action') == 'catalog_browse':
