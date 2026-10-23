@@ -1084,8 +1084,11 @@ def catalog_browse(params):
     from ws_availability import Availability
     p=_browse_params(params)
     kind=p['kind']
+    browse_title=('Oblíbené soubory Webshare' if p['source']=='rating' else
+                  'Největší soubory Webshare' if p['source']=='largest' else
+                  SORT_LABELS[p['sort']])
     xbmcplugin.setPluginCategory(_handle,
-        ('Filmy' if kind=='movie' else 'Seriály') + ' / '+SORT_LABELS[p['sort']])
+        ('Filmy' if kind=='movie' else 'Seriály') + ' / '+browse_title)
     xbmcplugin.setContent(_handle,'movies' if kind=='movie' else 'tvshows')
     _smart_item('⚙  FILTRY A ŘAZENÍ  |  %s  |  %s  |  %s' % (
                 SORT_LABELS[p['sort']],QUALITY_LABELS[p['quality']],
@@ -1144,9 +1147,9 @@ def catalog_browse(params):
             get_url(action=action,title=group['title'],year=group.get('year',''),
                     kind='movie' if kind=='movie' else 'series',
                     original=meta.get('original','')),li,True)
-    if not groups:
-        _smart_item('Na této stránce nebyl nalezen dostupný titul – další stránka',
-                    'catalog_browse',**dict(p,page=p['page']+1))
+    if not groups and (p['page']+1)*100 >= total:
+        _smart_item('Žádné další dostupné tituly – změnit filtry',
+                    'catalog_controls',**p)
     if (p['page']+1)*100 < total:
         _smart_item('DALŠÍ TITULY ▶','catalog_browse',**dict(p,page=p['page']+1))
     xbmcplugin.addSortMethod(_handle,xbmcplugin.SORT_METHOD_UNSORTED)
