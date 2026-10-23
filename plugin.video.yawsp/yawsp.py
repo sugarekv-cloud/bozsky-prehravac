@@ -774,25 +774,8 @@ def _smart_end(kind=None):
 
 
 def smart_search(params):
-    from search_catalog import grouped
     term = params.get('what', '').strip()
-    if params.get('catalogue') == '1':
-        from smartsearch import csfd_lookup
-        if not term:
-            term = ask('')
-        if not term:
-            xbmcplugin.endOfDirectory(_handle)
-            return
-        entries = csfd_lookup(term, _session)
-        if entries:
-            index = xbmcgui.Dialog().select('ČSFD – vyber titul', [i['title'] for i in entries])
-            if index < 0:
-                xbmcplugin.endOfDirectory(_handle)
-                return
-            term = entries[index]['title']
-        else:
-            popinfo('ČSFD nedostupné – hledám podle napsaného názvu')
-    xbmcplugin.setPluginCategory(_handle, 'Hledání filmů a seriálů')
+    xbmcplugin.setPluginCategory(_handle, 'Hledat v dostupných filmech a seriálech')
     if not term:
         _smart_item('🔎  ZADAT NÁZEV FILMU NEBO SERIÁLU', 'smart_type')
         _smart_item('📂  Pokročilé hledání souborů', 'search')
@@ -801,19 +784,22 @@ def smart_search(params):
         _smart_end()
         return
     storesearch(term)
-    files = _smart_results(term)
-    if files is None:
+    groups = _smart_catalog(term)
+    if groups is None:
+        _smart_item('Webshare není dostupný. Zkontroluj přihlášení a připojení.', 'smart_search', what=term)
         _smart_end()
         return
-    groups = grouped(files, term)
     _smart_item('🔎  NOVÉ HLEDÁNÍ', 'smart_type')
     if groups['movies']:
-        _smart_item('🎬  FILMY  (%d titulů)' % len(groups['movies']), 'smart_category', what=term, kind='movie')
+        _smart_item('🎬  FILMY NA WEBSHARE (%d)' % len(groups['movies']),
+                    'smart_category', what=term, kind='movie')
     if groups['shows']:
-        _smart_item('📺  SERIÁLY  (%d titulů)' % len(groups['shows']), 'smart_category', what=term, kind='show')
-    _smart_item('📁  Všechny odpovídající videosoubory', 'smart_raw', what=term)
-    if not groups['movies'] and not groups['shows']:
-        _smart_item('Žádné přesné shody – zkus jiný název', 'smart_type')
+        _smart_item('📺  SERIÁLY NA WEBSHARE (%d)' % len(groups['shows']),
+                    'smart_category', what=term, kind='show')
+    if groups['movies'] or groups['shows']:
+        _smart_item('📁  Dostupné videosoubory', 'smart_raw', what=term)
+    else:
+        _smart_item('Nenalezen žádný dostupný soubor. Změnit hledání.', 'smart_type')
     _smart_end()
 
 
@@ -825,108 +811,132 @@ def smart_type(params):
 
 
 def smart_category(params):
-    from search_catalog import grouped, compact_quality
+    from search_catalog import compact_quality
+    from available_catalog import display_name
     term, kind = params.get('what',''), params.get('kind','movie')
     xbmcplugin.setPluginCategory(_handle, ('Filmy' if kind=='movie' else 'Seriály') + ' / ' + term)
-    data = _smart_results(term)
-    if data is None:
+    groups = _smart_catalog(term)
+    if groups is None:
         _smart_end()
         return
-    for g in grouped(data,term)['movies' if kind=='movie' else 'shows']:
-        title = g['title'] + (' ('+g['year']+')' if g['year'] and kind=='movie' else '')
-        label = '%s  [COLOR gray]· %s · %s souborů[/COLOR]' % (title,compact_quality(g['best']),len(g['files']))
+    for g in groups['movies' if kind=='movie' else 'shows']:
+        meta = g.get('metadata') or {}
+        title = display_name(g)
+        year = meta.get('year') or g.get('year','')
+        label = '%s%s [COLOR gray]· %s · %s souborů[/COLOR]' % (
+                title, ' (%s)' % year if year else '',
+                compact_quality(g['best']), len(g['files']))
         li = xbmcgui.ListItem(label=label)
         if g['best'].get('img'):
             li.setArt({'thumb':g['best']['img']})
-        li.setInfo('video', {'title':g['title']})
+        li.setInfo('video', {'title':title, 'mediatype':'movie' if kind=='movie' else 'tvshow'})
+        if meta:
+            _attach_movie_metadata(li, {'title':g['title'],
+                    'group_kind':'movie' if kind=='movie' else 'show', 'year':g['year']}, meta)
         action = 'smart_files' if kind=='movie' else 'smart_seasons'
-        xbmcplugin.addDirectoryItem(_handle, get_url(action=action,what=term,title=g['title'],kind=kind,year=g['year']),li,True)
+        xbmcplugin.addDirectoryItem(_handle, get_url(action=action,
+            what=term,key=g['id'],title=g['title'],kind=kind,year=g['year']),li,True)
     _smart_end('movies' if kind=='movie' else 'tvshows')
 
 
 def smart_seasons(params):
-    from search_catalog import grouped,select_group,seasons
-    term,title = params.get('what',''),params.get('title','')
-    xbmcplugin.setPluginCategory(_handle,'Seriál / '+title)
-    data = _smart_results(term)
-    if data is None:
-        _smart_end()
-        return
-    group = select_group(grouped(data,term),'show',title)
+    from search_catalog import seasons
+    term=params.get('what','')
+    xbmcplugin.setPluginCategory(_handle,'Seriál / '+params.get('title',''))
+    group = _smart_selected(term,'show',params)
     if group:
         for season in seasons(group['files']):
-            _smart_item('SÉRIE %d' % season, 'smart_episodes',what=term,title=title,season=season)
-        _smart_item('📁  Všechny soubory seriálu', 'smart_files',what=term,title=title,kind='show')
+            _smart_item('SÉRIE %d' % season, 'smart_episodes',what=term,
+                        title=group['title'],key=group['id'],season=season)
+        _smart_item('📁  Všechny soubory seriálu', 'smart_files',
+                    what=term,title=group['title'],key=group['id'],kind='show')
     _smart_end('seasons')
 
 
 def smart_episodes(params):
-    from search_catalog import grouped,select_group,episodes,compact_quality
-    term,title = params.get('what',''),params.get('title','')
-    season = int(params.get('season',1))
-    xbmcplugin.setPluginCategory(_handle,'%s / %d. série' % (title,season))
-    data = _smart_results(term)
-    if data is None:
-        _smart_end()
-        return
-    group = select_group(grouped(data,term),'show',title)
+    from search_catalog import episodes, compact_quality
+    from ws_availability import Availability
+    term=params.get('what','')
+    season=int(params.get('season',1))
+    xbmcplugin.setPluginCategory(_handle,'%s / %d. série' % (params.get('title',''),season))
+    group = _smart_selected(term,'show',params)
     if group:
+        checker=Availability(_profile)
         for number,files in episodes(group['files'],season):
-            li = xbmcgui.ListItem(label='%02d. epizoda  [COLOR gray]· %s · %s verzí[/COLOR]' % (number,compact_quality(files[0]),len(files)))
-            xbmcplugin.addDirectoryItem(_handle, get_url(action='smart_files',what=term,title=title,kind='show',season=season,episode=number),li,True)
+            verified=checker.check_files(files,limit=8)
+            if not verified:
+                continue
+            li = xbmcgui.ListItem(label='%02d. epizoda  [COLOR gray]· %s · %s verzí[/COLOR]' % (
+                number,compact_quality(verified[0]),len(verified)))
+            xbmcplugin.addDirectoryItem(_handle, get_url(action='smart_files',
+                what=term,title=group['title'],key=group['id'],
+                kind='show',season=season,episode=number),li,True)
     _smart_end('episodes')
 
 
 def smart_files(params):
-    from search_catalog import grouped,select_group,variants,compact_quality
-    term,title,kind = params.get('what',''),params.get('title',''),params.get('kind','movie')
-    season,episode = params.get('season') or None,params.get('episode') or None
-    flt = params.get('filter','all')
-    xbmcplugin.setPluginCategory(_handle,'Vybrat kvalitu / '+title)
-    data = _smart_results(term)
-    if data is None:
-        _smart_end()
-        return
-    group = select_group(grouped(data,term),kind,title,params.get('year',''))
+    from search_catalog import variants, compact_quality
+    from ws_availability import Availability
+    term,kind=params.get('what',''),params.get('kind','movie')
+    season,episode=params.get('season') or None,params.get('episode') or None
+    flt=params.get('filter','all')
+    xbmcplugin.setPluginCategory(_handle,'Vybrat kvalitu / '+params.get('title',''))
+    group = _smart_selected(term,kind,params)
     if group is None:
-        _smart_item('Výsledky vypršely, spustit hledání znovu', 'smart_search',what=term)
+        _smart_item('Žádné dostupné soubory – spustit nové hledání', 'smart_search',what=term)
         _smart_end()
         return
-    _smart_item('⚙  FILTR: '+{'all':'Všechny','cz':'Označení CZ','4k':'Jen 4K','1080':'Minimálně 1080p'}.get(flt,'Všechny')+' – změnit',
-                'smart_filter', what=term,title=title,kind=kind,year=group['year'],season=season or '',episode=episode or '')
+    _smart_item('⚙  FILTR: '+{'all':'Všechny','cz':'Označení CZ',
+                '4k':'Jen 4K','1080':'Minimálně 1080p'}.get(flt,'Všechny')+' – změnit',
+                'smart_filter',what=term,title=group['title'],kind=kind,
+                key=group['id'],year=group.get('year',''),
+                season=season or '',episode=episode or '')
     selected = variants(group['files'],season=season,episode=episode,filter_name=flt)
-    for f in selected:
-        li = tolistitem(f)
-        li.setLabel('%s  |  %s' % (compact_quality(f),labelize(f)))
-        xbmcplugin.addDirectoryItem(_handle,get_url(action='play',ident=f['ident'],name=f['name']),li,False)
-    if not selected:
-        _smart_item('Žádná verze nevyhovuje filtru – zobrazit všechny', 'smart_files',what=term,title=title,kind=kind,year=group['year'],season=season or '',episode=episode or '',filter='all')
+    confirmed = Availability(_profile).check_files(selected,limit=30)
+    for f in confirmed:
+        li=tolistitem(f)
+        li.setLabel('%s | %s' % (compact_quality(f),labelize(f)))
+        xbmcplugin.addDirectoryItem(_handle,get_url(action='play',ident=f['ident'],
+                                                     name=f['name']),li,False)
+    if not confirmed:
+        _smart_item('Filtr nemá dostupné výsledky – zobrazit všechny', 'smart_files',
+                    what=term,title=group['title'],kind=kind,key=group['id'],
+                    year=group.get('year',''),season=season or '',episode=episode or '',filter='all')
     _smart_end('files')
 
 
 def smart_filter(params):
-    options = ['Všechny kvality a jazyky','Jen CZ podle názvu','Pouze 4K','Minimálně 1080p']
-    selected = xbmcgui.Dialog().select('Filtrovat nabídku souborů', options)
+    options=['Všechny kvality a jazyky','Jen CZ podle názvu','Pouze 4K','Minimálně 1080p']
+    selected=xbmcgui.Dialog().select('Filtrovat dostupné soubory',options)
     if selected >= 0:
-        kwargs = {k:v for k,v in params.items() if k not in ('action','filter')}
-        kwargs['filter'] = ('all','cz','4k','1080')[selected]
+        kwargs={k:v for k,v in params.items() if k not in ('action','filter')}
+        kwargs['filter']=('all','cz','4k','1080')[selected]
         xbmc.executebuiltin('Container.Update(' + get_url(action='smart_files',**kwargs) + ')')
     xbmcplugin.endOfDirectory(_handle)
 
 
 def smart_raw(params):
-    from search_catalog import visible_files,compact_quality,quality_score
+    from search_catalog import compact_quality, quality_score
+    from ws_availability import Availability
     term=params.get('what','')
-    xbmcplugin.setPluginCategory(_handle,'Všechny videosoubory / '+term)
-    files=_smart_results(term)
-    if files is None:
+    xbmcplugin.setPluginCategory(_handle,'Dostupné soubory / '+term)
+    groups=_smart_catalog(term)
+    if groups is None:
         _smart_end()
         return
-    for f,p in sorted(visible_files(files,term),key=lambda x:quality_score(x[0]),reverse=True)[:150]:
+    found={}
+    for g in groups['movies']+groups['shows']:
+        for f in g['files']:
+            found[f['ident']]=f
+    confirmed=Availability(_profile).check_files(
+        sorted(found.values(),key=quality_score,reverse=True),limit=60)
+    for f in confirmed:
         li=tolistitem(f)
-        li.setLabel(compact_quality(f) + ' | ' + labelize(f))
-        xbmcplugin.addDirectoryItem(_handle,get_url(action='play',ident=f['ident'],name=f['name']),li,False)
+        li.setLabel(compact_quality(f)+' | '+labelize(f))
+        xbmcplugin.addDirectoryItem(_handle,get_url(action='play',ident=f['ident'],
+                                                    name=f['name']),li,False)
     _smart_end('files')
+
 
 # SCC-style browse experience built on the official Webshare filename search.
 # Webshare does not return an authoritative film catalogue or film premiere dates.
@@ -1523,9 +1533,9 @@ def menu():
     li = xbmcgui.ListItem(label='VYHLEDAT FILM NEBO SERIÁL | Přehledné výsledky')
     li.setArt({'icon':'DefaultAddonsSearch.png'})
     xbmcplugin.addDirectoryItem(_handle, get_url(action='smart_search'), li, True)
-    li = xbmcgui.ListItem(label='Hledat podle ČSFD (experimentální)')
+    li = xbmcgui.ListItem(label='Hledat i podle českých / původních názvů')
     li.setArt({'icon':'DefaultVideoPlaylists.png'})
-    xbmcplugin.addDirectoryItem(_handle, get_url(action='smart_search',catalogue=1), li, True)
+    xbmcplugin.addDirectoryItem(_handle, get_url(action='smart_search'), li, True)
     listitem = xbmcgui.ListItem(label='Pokročilé hledání · jednotlivé soubory')
     listitem.setArt({'icon': 'DefaultAddonsSearch.png'})
     xbmcplugin.addDirectoryItem(_handle, get_url(action='search'), listitem, True)
