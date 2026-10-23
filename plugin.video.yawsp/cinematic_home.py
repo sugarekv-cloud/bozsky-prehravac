@@ -74,8 +74,7 @@ def ensure_textures(profile):
 
 
 def _fallback_card(addon, label, target):
-    return {'title':label,'file_title':'','year':'','poster':os.path.join(
-        addon.getAddonInfo('path'),'resources','icon.png'),'fanart':'',
+    return {'title':label,'file_title':'','year':'','poster':'','fanart':'',
         'plot':'Otevřít katalog, nastavení nebo vyhledávání.',
         'quality':'','genre':'','rating':None,'kind':'link','url':target,
         'original':'','files':0}
@@ -97,10 +96,13 @@ class CinemaWindow(xbmcgui.WindowXMLDialog):
             items = []
             for card in row:
                 li=xbmcgui.ListItem(label=card.get('title',''))
-                art = {'poster':card.get('poster') or self.default_icon,
-                       'thumb':card.get('poster') or self.default_icon,
-                       'fanart':card.get('fanart') or ''}
-                li.setArt(art)
+                art = {}
+                if card.get('poster'):
+                    art.update({'poster':card['poster'], 'thumb':card['poster']})
+                if card.get('fanart'):
+                    art['fanart'] = card['fanart']
+                if art:
+                    li.setArt(art)
                 li.setProperty('quality',card.get('quality') or '')
                 li.setProperty('year',str(card.get('year') or ''))
                 li.setProperty('kind',card.get('kind') or '')
@@ -177,6 +179,7 @@ class CinemaWindow(xbmcgui.WindowXMLDialog):
 def launch(addon, profile, get_url, revalidate, search_page, catalogue_factory):
     """Return a plugin URL selected in cinematic UI, or None on Back."""
     from cinematic_catalog import make_rows
+    from cinematic_discovery import discover, empty_message
     from ws_availability import Availability
     cards=[]
     status='Vyberte film nebo seriál; přehrání je vždy ruční'
@@ -188,17 +191,17 @@ def launch(addon, profile, get_url, revalidate, search_page, catalogue_factory):
             progress.create('Božský přehrávač', 'Načítám dostupné filmy z Webshare…')
             token=revalidate()
             if token:
-                recent,_=search_page(token,0,'',sort='recent')
-                progress.update(30,'Hledám oblíbené filmy a seriály…')
-                popular,_=search_page(token,0,'',sort='rating')
+                recent,popular,stats=discover(token,search_page)
                 progress.update(55,'Ověřuji dostupnost videí a načítám plakáty…')
                 checked=Availability(profile)
                 metadata=(catalogue_factory() if addon.getSetting('smart_metadata')!='false' else None)
                 groups=make_rows(recent,popular,checked,metadata,limit=11)
                 cards=[groups['new_movies'],groups['discover']]
                 heading=groups['discover_title']
-                if not cards[0]:
-                    status='Webshare nevrátil žádné dostupné nové filmy; použijte Hledat'
+                status=empty_message(stats,len(cards[0]),len(cards[1]))
+                if not cards[0] and cards[1]:
+                    cards[0],cards[1]=cards[1],[]
+                    heading='DALŠÍ DOPORUČENÍ'
             else:
                 status='Webshare vyžaduje přihlášení. Otevřete Nastavení.'
         except Exception:
