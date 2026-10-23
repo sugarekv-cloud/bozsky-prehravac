@@ -61,7 +61,7 @@ class DataTests(unittest.TestCase):
         self.assertEqual(webshare_image_url('plugin://untrusted/logo'),'')
 
     def test_webshare_artwork_only_for_filebacked_title(self):
-        video=f('a','Film')
+        video=f('a','Cinema')
         video['img']='/thumb/film.jpg'
         rows=make_rows([video],[],Checker())
         self.assertEqual(rows['new_movies'][0]['poster'],
