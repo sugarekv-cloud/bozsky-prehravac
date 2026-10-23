@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.yawsp" name="Božský přehrávač" version="0.6.1" provider-name="cache-sk">
+<addon id="plugin.video.yawsp" name="Božský přehrávač" version="0.7.0" provider-name="cache-sk">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -21,6 +21,13 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.7.0 Přehledné vyhledávání[/B]
+- Filmy a seriály jsou oddělené, více kvalit stejného filmu je pod jednou položkou
+- Seriály: výběr série, epizody a konkrétního souboru
+- Filtry CZ podle názvu, 4K, 1080p; ruční přehrávání Webshare
+- Mezipaměť výsledků 15 minut bez přihlašovacích údajů
+- Původní hledání jednotlivých souborů dostupné jako Pokročilé hledání
+
 [B]0.6.1 Božský přehrávač[/B]
 - Nový název, popisky a vlastní ikona bez původního loga
 - Zachováno původní ID plugin.video.yawsp kvůli kompatibilitě a nastavení
