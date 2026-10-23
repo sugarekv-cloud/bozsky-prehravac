@@ -37,25 +37,30 @@ def match_strength(title, query):
     return SequenceMatcher(None, title, query).ratio() * .8
 
 
-def visible_files(files, query):
-    """Require a plausible title match, hide protected files/trailers and duplicates."""
+def visible_files(files, query, aliases=()):
+    """Require a strong title match; catalog entries always originate in Webshare."""
     results, seen = [], set()
+    targets = [query] + list(aliases)
     for f in files:
         ident = str(f.get('ident') or '')
-        if not ident or ident in seen or str(f.get('password', '0')) == '1':
+        if not ident or ident in seen:
+            continue
+        if str(f.get('password','0')) == '1' or str(f.get('removed','0')) == '1':
+            continue
+        if str(f.get('available','1')) == '0' or str(f.get('copyrighted','0')) == '1':
             continue
         parsed = parse_video_name(f.get('name', ''))
-        if not parsed or match_strength(parsed['title'], query) < .46:
+        if not parsed or max(match_strength(parsed['title'],t) for t in targets if t) < .70:
             continue
         seen.add(ident)
         results.append((f, parsed))
     return results
 
 
-def grouped(files, query):
+def grouped(files, query, aliases=()):
     movies, shows = {}, {}
-    for f, parsed in visible_files(files, query):
-        strength = match_strength(parsed['title'], query)
+    for f, parsed in visible_files(files, query, aliases):
+        strength = max(match_strength(parsed['title'],t) for t in [query]+list(aliases) if t)
         if parsed['kind'] == 'movie':
             key = (normalize(parsed['title']), parsed['year'])
             bag = movies
