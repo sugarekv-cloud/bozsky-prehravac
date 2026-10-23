@@ -940,9 +940,9 @@ def smart_raw(params):
 
 # SCC-style browse experience built on the official Webshare filename search.
 # Webshare does not return an authoritative film catalogue or film premiere dates.
-def novinky_search_page(token, offset=0, what=''):
+def novinky_search_page(token, offset=0, what='', sort='recent'):
     try:
-        response = api('search', {'what': what, 'category': 'video', 'sort': 'recent',
+        response = api('search', {'what': what, 'category': 'video', 'sort': sort if sort in ('recent','rating','largest','smallest') else 'recent',
                                   'limit': 100, 'offset': offset, 'wst': token,
                                   'maybe_removed': 'true'})
         response.raise_for_status()
@@ -958,7 +958,7 @@ def novinky_search_page(token, offset=0, what=''):
         if not found and what and ' ' in what:
             # Files are frequently named with periods instead of spaces.
             response = api('search', {'what': what.replace(' ', '.'), 'category':'video',
-                                      'sort':'recent', 'limit':100, 'offset':offset,
+                                      'sort':sort if sort in ('recent','rating','largest','smallest') else 'recent', 'limit':100, 'offset':offset,
                                       'wst':token, 'maybe_removed':'true'})
             response.raise_for_status()
             fallback = ET.fromstring(response.content)
@@ -973,6 +973,184 @@ def novinky_search_page(token, offset=0, what=''):
         traceback.print_exc()
         popinfo('Webshare není dostupný. Zkontroluj připojení.', icon=xbmcgui.NOTIFICATION_WARNING)
         return None, 0
+
+
+
+# Catalog navigation: metadata is decoration; only Webshare-confirmed files are shown.
+def catalog_home(params):
+    kind=params.get('kind','movie')
+    if kind not in ('movie','show'):
+        kind='movie'
+    xbmcplugin.setPluginCategory(_handle, 'Filmy' if kind=='movie' else 'Seriály')
+    title='filmy' if kind=='movie' else 'seriály'
+    _smart_item('🔎  HLEDAT '+title.upper(), 'smart_search')
+    _smart_item('🆕  NOVĚ PŘIDANÉ NA WEBSHARE', 'catalog_browse',kind=kind)
+    _smart_item('⭐  OBLÍBENÉ SOUBORY NA WEBSHARE', 'catalog_browse',kind=kind,source='rating')
+    _smart_item('🎥  4K UHD', 'catalog_browse',kind=kind,quality='4k')
+    _smart_item('🇨🇿  ČESKÝ DABING (PODLE NÁZVU)', 'catalog_browse',kind=kind,language='cz')
+    _smart_item('📅  VYBRAT ROK', 'catalog_years',kind=kind)
+    _smart_item('🎭  VYBRAT ŽÁNR', 'catalog_genres',kind=kind)
+    _smart_item('⚙  VŠECHNY FILTRY A ŘAZENÍ', 'catalog_controls',kind=kind)
+    _smart_end()
+
+
+def _browse_params(params):
+    p={k:params.get(k,'') for k in ('kind','source','quality','language','sort','year','genre','page')}
+    p['kind']=p['kind'] if p['kind'] in ('movie','show') else 'movie'
+    p['source']=p['source'] if p['source'] in ('recent','rating','largest') else 'recent'
+    p['quality']=p['quality'] if p['quality'] in ('all','720','1080','4k') else 'all'
+    p['language']=p['language'] if p['language'] in ('all','cz') else 'all'
+    p['sort']=p['sort'] if p['sort'] in ('recent','title','year','quality','rating','size') else 'recent'
+    p['year']=p['year'] if (p['year'] or '').isdigit() and len(p['year'])==4 else 'all'
+    if p['genre'] not in ('','all') and len(p['genre'])>40:
+        p['genre']='all'
+    try:
+        p['page']=max(0,min(int(p['page'] or 0),200))
+    except (TypeError,ValueError):
+        p['page']=0
+    return p
+
+
+def catalog_controls(params):
+    from catalog_engine import SORT_LABELS, QUALITY_LABELS, LANG_LABELS
+    p=_browse_params(params)
+    choices=[
+        'ŘAZENÍ: '+SORT_LABELS[p['sort']],
+        'KVALITA: '+QUALITY_LABELS[p['quality']],
+        'JAZYK: '+LANG_LABELS[p['language']],
+        'ROK: '+str(p['year'] if p['year']!='all' else 'Všechny roky'),
+        'ŽÁNR: '+str(p['genre'] if p['genre'] not in ('all','') else 'Všechny žánry'),
+        'ZRUŠIT VŠECHNY FILTRY'
+    ]
+    selected=xbmcgui.Dialog().select('Filtry katalogu',choices)
+    if selected<0:
+        xbmcplugin.endOfDirectory(_handle)
+        return
+    if selected==0:
+        opts=list(SORT_LABELS)
+        n=xbmcgui.Dialog().select('Řazení', [SORT_LABELS[x] for x in opts])
+        if n>=0:p['sort']=opts[n]
+    elif selected==1:
+        opts=list(QUALITY_LABELS)
+        n=xbmcgui.Dialog().select('Rozlišení', [QUALITY_LABELS[x] for x in opts])
+        if n>=0:p['quality']=opts[n]
+    elif selected==2:
+        opts=list(LANG_LABELS)
+        n=xbmcgui.Dialog().select('Jazyk', [LANG_LABELS[x] for x in opts])
+        if n>=0:p['language']=opts[n]
+    elif selected==3:
+        from datetime import date
+        opts=['all']+[str(x) for x in range(date.today().year+1,date.today().year-36,-1)]
+        n=xbmcgui.Dialog().select('Rok vydání', ['Všechny roky']+opts[1:])
+        if n>=0:p['year']=opts[n]
+    elif selected==4:
+        opts=['all','Akční','Animovaný','Dobrodružný','Drama','Fantasy','Horor',
+              'Komedie','Krimi','Rodinný','Romantický','Sci-Fi','Thriller',
+              'Válečný','Western','Dokumentární']
+        n=xbmcgui.Dialog().select('Žánr ČSFD', ['Všechny žánry']+opts[1:])
+        if n>=0:p['genre']=opts[n]
+    elif selected==5:
+        p.update({'sort':'recent','quality':'all','language':'all',
+                  'year':'all','genre':'all','source':'recent'})
+    p['page']=0
+    xbmc.executebuiltin('Container.Update(' + get_url(action='catalog_browse',**p) + ')')
+    xbmcplugin.endOfDirectory(_handle)
+
+
+def catalog_years(params):
+    from datetime import date
+    kind=_browse_params(params)['kind']
+    xbmcplugin.setPluginCategory(_handle,'Katalog / Roky')
+    for y in range(date.today().year+1,date.today().year-31,-1):
+        _smart_item('📅  '+str(y),'catalog_browse',kind=kind,year=y)
+    _smart_end()
+
+
+def catalog_genres(params):
+    kind=_browse_params(params)['kind']
+    xbmcplugin.setPluginCategory(_handle,'Katalog / Žánry')
+    for genre in ('Akční','Animovaný','Dobrodružný','Drama','Fantasy','Horor',
+                  'Komedie','Krimi','Rodinný','Romantický','Sci-Fi','Thriller',
+                  'Válečný','Western','Dokumentární'):
+        _smart_item('🎭  '+genre,'catalog_browse',kind=kind,genre=genre)
+    _smart_end()
+
+
+def catalog_browse(params):
+    from catalog_engine import (file_label, sort_groups, filter_groups, sort_files,
+                                is_visible, SORT_LABELS, QUALITY_LABELS, LANG_LABELS)
+    from novinky_catalogue import build_groups
+    from available_catalog import display_name
+    from ws_availability import Availability
+    p=_browse_params(params)
+    kind=p['kind']
+    xbmcplugin.setPluginCategory(_handle,
+        ('Filmy' if kind=='movie' else 'Seriály') + ' / '+SORT_LABELS[p['sort']])
+    xbmcplugin.setContent(_handle,'movies' if kind=='movie' else 'tvshows')
+    _smart_item('⚙  FILTRY A ŘAZENÍ  |  %s  |  %s  |  %s' % (
+                SORT_LABELS[p['sort']],QUALITY_LABELS[p['quality']],
+                'CZ' if p['language']=='cz' else 'Vše'), 'catalog_controls',**p)
+    token=revalidate()
+    if not token:
+        _smart_item('Pro katalog se přihlas k Webshare','settings')
+        _smart_end()
+        return
+    query=p['year'] if p['year']!='all' else ''
+    files,total=novinky_search_page(token,p['page']*100,query,
+        sort=p['source'])
+    if files is None:
+        _smart_item('Webshare neodpovídá – opakovat','catalog_browse',**p)
+        _smart_end()
+        return
+    groupkind='movies' if kind=='movie' else 'shows'
+    groups=build_groups(files,kind=groupkind)
+    groups=filter_groups(groups,p['quality'],p['language'],year=p['year'])
+    if groups:
+        # Bound network operations; the catalog only contains confirmed file-backed titles.
+        groups=Availability(_profile).check_groups(groups[:28])
+    genre=p['genre'] if p['genre'] not in ('','all') else ''
+    if groups and (_addon.getSetting('smart_metadata')!='false' or
+                   genre or p['sort'] in ('rating','year','title')):
+        client=_csfd_client()
+        client.lookup_many(groups[:24],max_new=24)
+        if genre:
+            from csfd_metadata import passes_metadata_filter
+            groups=[g for g in groups if passes_metadata_filter(g,genre,0)]
+    groups=sort_groups(groups, p['sort'])
+    if p['page']:
+        prev=dict(p,page=p['page']-1)
+        _smart_item('◀  PŘEDCHOZÍ STRÁNKA','catalog_browse',**prev)
+    for group in groups[:28]:
+        meta=group.get('metadata') or {}
+        # The quality shown on the card must respect the active filter.
+        permitted=[f for f in group['files'] if is_visible(
+            dict(group,files=[f]),p['quality'],p['language'])]
+        if not permitted:
+            continue
+        best=sort_files(permitted)[0]
+        title=display_name(group)
+        year=meta.get('year') or group.get('year') or ''
+        label=title+(' (%s)'%year if year else '')+'  [COLOR gray]'+file_label(best)+'[/COLOR]'
+        li=xbmcgui.ListItem(label=label)
+        li.setInfo('video',{'title':title,
+                    'mediatype':'movie' if kind=='movie' else 'tvshow',
+                    'plot':'Soubor nalezen a ověřen na Webshare.'})
+        if best.get('img'):
+            li.setArt({'thumb':best['img']})
+        if meta:
+            _attach_movie_metadata(li,group,meta)
+        action='novinky_detail' if kind=='movie' else 'novinky_show'
+        xbmcplugin.addDirectoryItem(_handle,
+            get_url(action=action,title=group['title'],year=group.get('year',''),
+                    kind='movie' if kind=='movie' else 'series',
+                    original=meta.get('original','')),li,True)
+    if not groups:
+        _smart_item('Na této stránce nebyl nalezen dostupný titul – další stránka',
+                    'catalog_browse',**dict(p,page=p['page']+1))
+    if (p['page']+1)*100 < total:
+        _smart_item('DALŠÍ TITULY ▶','catalog_browse',**dict(p,page=p['page']+1))
+    xbmcplugin.addSortMethod(_handle,xbmcplugin.SORT_METHOD_UNSORTED)
+    _smart_end('movies' if kind=='movie' else 'tvshows')
 
 
 def novinky_item(label, action, art='DefaultFolder.png', **kwargs):
@@ -1534,16 +1712,22 @@ def menu():
     # Every film in the catalogue requires a Webshare search result.
     # Actual Webshare operations call revalidate() when needed.
     xbmcplugin.setPluginCategory(_handle, _addon.getAddonInfo('name'))
-    li = xbmcgui.ListItem(label='FILMOVÉ PREMIÉRY ČR | Kalendář · ČSFD · Webshare')
+    li=xbmcgui.ListItem(label='🎬  FILMY  |  Plakáty · Novinky · 4K · CZ · Žánry')
+    li.setArt({'icon':'DefaultVideo.png'})
+    xbmcplugin.addDirectoryItem(_handle,get_url(action='catalog_home',kind='movie'),li,True)
+    li=xbmcgui.ListItem(label='📺  SERIÁLY  |  Série · Epizody · Novinky')
+    li.setArt({'icon':'DefaultTVShows.png'})
+    xbmcplugin.addDirectoryItem(_handle,get_url(action='catalog_home',kind='show'),li,True)
+    li = xbmcgui.ListItem(label='📅  PREMIÉRY V KINECH  |  Pouze ověřené na Webshare')
     li.setArt({'icon':'DefaultAddonsRecentlyUpdated.png'})
     xbmcplugin.addDirectoryItem(_handle, get_url(action='novinky'), li, True)
-    li = xbmcgui.ListItem(label='VYHLEDAT FILM NEBO SERIÁL | Přehledné výsledky')
+    li = xbmcgui.ListItem(label='🔎  VYHLEDÁVÁNÍ  |  Filmy a seriály podle názvu')
     li.setArt({'icon':'DefaultAddonsSearch.png'})
     xbmcplugin.addDirectoryItem(_handle, get_url(action='smart_search'), li, True)
-    li = xbmcgui.ListItem(label='Hledat i podle českých / původních názvů')
+    li = xbmcgui.ListItem(label='🌍  ČESKÉ A ORIGINÁLNÍ NÁZVY')
     li.setArt({'icon':'DefaultVideoPlaylists.png'})
     xbmcplugin.addDirectoryItem(_handle, get_url(action='smart_search'), li, True)
-    listitem = xbmcgui.ListItem(label='Pokročilé hledání · jednotlivé soubory')
+    listitem = xbmcgui.ListItem(label='📁  SOUBORY  |  Pokročilé vyhledávání')
     listitem.setArt({'icon': 'DefaultAddonsSearch.png'})
     xbmcplugin.addDirectoryItem(_handle, get_url(action='search'), listitem, True)
     
@@ -1599,6 +1783,16 @@ def router(paramstring):
             novinky_filters()
         elif params.get('action') == 'novinky_set':
             novinky_set(params)
+        elif params.get('action') == 'catalog_home':
+            catalog_home(params)
+        elif params.get('action') == 'catalog_browse':
+            catalog_browse(params)
+        elif params.get('action') == 'catalog_controls':
+            catalog_controls(params)
+        elif params.get('action') == 'catalog_years':
+            catalog_years(params)
+        elif params.get('action') == 'catalog_genres':
+            catalog_genres(params)
         elif params.get('action') == 'smart_search':
             smart_search(params)
         elif params.get('action') == 'smart_type':
