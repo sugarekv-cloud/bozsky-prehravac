@@ -68,20 +68,19 @@ class Availability:
             if not good:
                 continue
             output = dict(g)
-            output['files'] = good
-            output['best'] = good[0] if g.get('best',{}).get('ident') not in {f.get('ident') for f in good} else g['best']
+            # Keep candidate variants for detail view; detail will verify each before display.
+            output['best'] = good[0]
             filtered.append(output)
         self.save()
         return filtered
 
-    def check_files(self, files):
-        """Check a few candidate files, return downloadable matches only."""
-        good=[]
-        for f in files[:3]:
-            if f.get('ident') and self._check(str(f['ident'])):
-                good.append(f)
+    def check_files(self, files, limit=24):
+        """Return only currently downloadable variants. Never assume search means playable."""
+        files = files[:limit]
+        with ThreadPoolExecutor(max_workers=4) as pool:
+            results = list(pool.map(lambda f: self._check(str(f.get('ident',''))) if f.get('ident') else False, files))
         self.save()
-        return good
+        return [f for f,ok in zip(files,results) if ok]
 
     def save(self):
         now = time.time()
