@@ -56,7 +56,7 @@ class CinemaService:
         # A cinema premiere does not imply a copy exists on Webshare.
         prepared=[]
         seen=set()
-        for e in candidates[:25]:
+        for e in candidates[:14]:
             title=e['title']
             original=e.get('original') or ''
             md=self.metadata.lookup(title) if self.metadata else None
@@ -66,12 +66,18 @@ class CinemaService:
                 if n and normalize(n) not in {normalize(a) for a in aliases}:
                     aliases.append(n)
             found=[]
-            for alias in aliases[:3]:
+            api_failed=False
+            for alias in aliases[:2]:
                 page=collect_pages(self.fetch,self.token,alias,max_pages=1)
-                if page is not None:
-                    found.extend(page)
+                if page is None:
+                    api_failed=True
+                    break
+                found.extend(page)
                 if len(found)>55:
                     break
+            if api_failed:
+                self.last_diagnostics='Webshare neodpovídá; premiéry nelze ověřit'
+                break
             matches=matching_release(found,aliases,kind='movie')
             if not matches:
                 continue
@@ -137,7 +143,7 @@ class CinemaService:
             'movies':additional or recent,
             'shows':shows
         }
-        if self.cache_path:
+        if self.cache_path and (premieres or recent or shows):
             try:
                 with io.open(self.cache_path+'.tmp','w',encoding='utf8') as handle:
                     json.dump({'saved':time.time(),'home':self.home_cache},handle,
