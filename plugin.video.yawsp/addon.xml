@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.yawsp" name="Božský přehrávač" version="0.8.0" provider-name="cache-sk">
+<addon id="plugin.video.yawsp" name="Božský přehrávač" version="0.9.0" provider-name="cache-sk">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -21,6 +21,18 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.9.0 Filmový katalog a pokročilé vyhledávání[/B]
+- Úvod: samostatné Filmy, Seriály, Filmové premiéry a Hledání
+- Katalogy: nově přidané soubory Webshare, oblíbené soubory podle hodnocení Webshare, 4K, CZ označení, roky a žánry
+- Interaktivní filtry v Kodi: kvalita 720/1080/4K, jazyk CZ podle názvu, rok, žánr ČSFD
+- Řazení: nejnovější uploady Webshare, abecedně, podle roku, kvality, hodnocení ČSFD a velikosti
+- Čitelné detaily vydání: 4K, 1080p, Blu-ray, WEB-DL, Remux, HDR, HEVC, CZ
+- Vylepšené rozpoznávání českých dabingů, titulků a číslovaných anime epizod
+- Plakáty, fanart, popisy a hodnocení ČSFD přes neoficiální CZDB, pokud metadata fungují
+- Katalog nadále zahrnuje jen filmy s ověřeným souborem na Webshare
+- Ovládání používá nativní zobrazení Kodi; skutečné rozvržení plakátů závisí na zvoleném skinu
+
+
 [B]0.8.0 Český filmový katalog – pouze dostupné na Webshare[/B]
 - Výsledky hledání zobrazují české názvy, plakáty, hodnocení, žánry a popisy z ČSFD/CZDB, pokud jsou dostupné
 - Filmy z ČSFD samy o sobě nezakládají položky; podmínkou je odpovídající videosoubor na Webshare
