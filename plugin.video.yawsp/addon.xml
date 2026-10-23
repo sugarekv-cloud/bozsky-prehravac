@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.yawsp" name="Božský přehrávač" version="0.10.1" provider-name="cache-sk">
+<addon id="plugin.video.yawsp" name="Božský přehrávač" version="0.11.0" provider-name="cache-sk">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -21,6 +21,20 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.11.0 Jednotný filmový katalog[/B]
+- Vlastní filmové okno zůstává otevřené v kategoriích, hledání, výběru série, epizody i kvality
+- České kinopremiéry + ČSFD/CZDB určují názvy, datum a metadata; Webshare ověřuje dostupnost
+- Přidány veřejné obrázky Cinemeta jen jako záloha při chybějícím plakátu ČSFD; přesná shoda názvu a roku
+- Opraveno rozpoznávání názvů začínajících slovem Czech, dříve chybně považovaných za značku dabingu
+- Seriály se znovu dohledávají na více stránkách Webshare (až 2000 výsledků) a řadí se číselně podle série a epizody
+- České a původní názvy seriálů se seskupují; film před výběrem kvality dohledá další dostupné soubory
+- Třídění dle roku, názvu, ČSFD hodnocení a rozlišení; filtry na rok, žánr, CZ označení a kvalitu
+- Prázdné logo se nezobrazuje jako filmový plakát; pokud zdroj nemá obrázek, zobrazuje se přehledný textový náhradní obal
+- Osmiminutová cache ověřeného katalogu, časové limity dotazů Webshare a bezpečné odstranění nedostupných filmů
+- Nové rozhraní je označené verzí v0.11.0; možnost návratu do klasického menu v horní liště
+- Automatické testy pro dostupnost, názvy, řazení, seriály, plakáty a Kodi navigaci
+
+
 [B]0.10.1 Oprava filmových obrázků a načítání katalogu[/B]
 - Opraveno prázdné vyhledávání novinek na úvodní obrazovce; používají se konkrétní dotazy na Webshare
 - Úvodní katalog nově rozlišuje chybu připojení, chybějící výsledky a nedostupné náhledy
