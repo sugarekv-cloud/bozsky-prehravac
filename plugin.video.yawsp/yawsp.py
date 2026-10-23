@@ -652,18 +652,20 @@ def db(params):
 
 
 # Organized search: title -> movies/shows -> episode -> quality -> manual play.
-def _smart_cache_path(term):
-    return os.path.join(_profile, 'search-' + hashlib.sha1(term.strip().lower().encode('utf-8')).hexdigest() + '.json')
+def _smart_cache_path(term, aliases=()):
+    queries = [term] + sorted(set(aliases or ()))
+    return os.path.join(_profile, 'search-' + hashlib.sha1(
+        '|'.join(queries).strip().lower().encode('utf-8')).hexdigest() + '.json')
 
 
-def _smart_results(term):
+def _smart_results(term, aliases=()):
     import time
     from smartsearch import variants as search_variants
-    filename = _smart_cache_path(term)
+    filename = _smart_cache_path(term, aliases)
     try:
         with io.open(filename, 'r', encoding='utf8') as handle:
             data = json.load(handle)
-        if time.time() - float(data.get('time', 0)) < 900 and isinstance(data.get('files'), list):
+        if time.time() - float(data.get('time', 0)) < 600 and isinstance(data.get('files'), list):
             return data['files']
     except (OSError, ValueError, TypeError):
         pass
@@ -671,11 +673,16 @@ def _smart_results(term):
     if not token:
         return None
     result = {}
-    for q in search_variants(term)[:3]:
+    queries = []
+    for name in [term] + list(aliases or ()):
+        for variant in search_variants(name):
+            if variant and variant.casefold() not in [x.casefold() for x in queries]:
+                queries.append(variant)
+    for q in queries[:6]:
         try:
             response = _session.post(API + 'search/', data={
                 'what': q, 'category': 'video', 'sort': 'rating', 'limit': 100,
-                'offset': 0, 'wst': token, 'maybe_removed': 'true'}, timeout=15)
+                'offset': 0, 'wst': token}, timeout=(3, 8))
             response.raise_for_status()
             xml = ET.fromstring(response.content)
             if not is_ok(xml):
@@ -684,8 +691,9 @@ def _smart_results(term):
                 f = todict(entry)
                 ident = f.get('ident')
                 if ident and f.get('name') and ident not in result:
-                    # Cache only public listing fields, not credentials or session tokens.
-                    result[ident] = {k:f[k] for k in ('ident','name','size','img','password') if k in f}
+                    # No credentials or Webshare token stored in cache.
+                    result[ident] = {k:f[k] for k in ('ident','name','size','img',
+                        'password','removed','available','copyrighted') if k in f}
         except Exception:
             traceback.print_exc()
     files = list(result.values())
@@ -697,6 +705,60 @@ def _smart_results(term):
     except (OSError, TypeError):
         pass
     return files
+
+
+def _smart_catalog(term):
+    """Only a Webshare file makes a catalogue card; ČSFD only decorates it."""
+    from search_catalog import grouped
+    from available_catalog import names_for, localize_groups
+    from ws_availability import Availability
+    from novinky_catalogue import normalize
+    client = _csfd_client() if _addon.getSetting('smart_metadata') != 'false' else None
+    seed = client.lookup(term) if client else None
+    names = names_for(term, metadata=seed)
+    files = _smart_results(term, names[1:])
+    if files is None:
+        return None
+    result = grouped(files, term, names[1:])
+    for kind in ('movies', 'shows'):
+        groups = result[kind]
+        if client and groups:
+            client.lookup_many(groups[:20], max_new=20)
+            if seed:
+                aliases = {normalize(n) for n in names}
+                for g in groups:
+                    if g.get('metadata') or normalize(g['title']) not in aliases:
+                        continue
+                    if g.get('year') and seed.get('year'):
+                        if abs(int(g['year']) - int(seed['year'])) > 1:
+                            continue
+                    g['metadata'] = seed
+        result[kind] = localize_groups(groups)
+    if client:
+        client.save()
+    checker = Availability(_profile)
+    # Fail closed: no verified downloadable video = no catalogue card.
+    for kind in ('movies', 'shows'):
+        result[kind] = checker.check_groups(result[kind][:24])
+    return result
+
+
+def _smart_selected(term, kind, params):
+    from available_catalog import find_group
+    from novinky_catalogue import normalize
+    result = _smart_catalog(term)
+    if result is None:
+        return None
+    groups = result['movies' if kind == 'movie' else 'shows']
+    ident = params.get('key')
+    if ident:
+        return find_group(groups, ident)
+    # Backward compatibility for links opened from version 0.7.0.
+    for g in groups:
+        if normalize(g['title']) == normalize(params.get('title','')) and (
+                kind != 'movie' or g.get('year','') == params.get('year','')):
+            return g
+    return None
 
 
 def _smart_item(label, action, **params):
