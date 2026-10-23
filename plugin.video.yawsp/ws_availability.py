@@ -49,31 +49,20 @@ class Availability:
         return ok
 
     def check_groups(self, groups, max_workers=4):
-        """Retain only file-backed titles with a currently downloadable candidate."""
-        groups = [g for g in groups if g.get('files')]
-        candidates = []
-        for g in groups:
-            candidates.extend([str(f.get('ident')) for f in sorted(g['files'],key=quality_score,reverse=True)[:3] if f.get('ident')])
-        candidates = list(dict.fromkeys(candidates))
-        results = {}
+        """Check best quality first, stop at first downloadable file per movie."""
+        groups=[g for g in groups if g.get('files')]
+        def confirm(g):
+            for file in sorted(g['files'],key=quality_score,reverse=True)[:3]:
+                ident=str(file.get('ident') or '')
+                if ident and self._check(ident):
+                    result=dict(g)
+                    result['best']=file
+                    return result
+            return None
         with ThreadPoolExecutor(max_workers=max_workers) as pool:
-            pending = {pool.submit(self._check, ident):ident for ident in candidates}
-            for job in as_completed(pending):
-                try:
-                    results[pending[job]] = job.result()
-                except Exception:
-                    results[pending[job]] = False
-        filtered = []
-        for g in groups:
-            good = [f for f in sorted(g['files'],key=quality_score,reverse=True) if results.get(str(f.get('ident'))) is True]
-            if not good:
-                continue
-            output = dict(g)
-            # Keep candidate variants for detail view; detail will verify each before display.
-            output['best'] = good[0]
-            filtered.append(output)
+            verified=list(pool.map(confirm,groups))
         self.save()
-        return filtered
+        return [g for g in verified if g is not None]
 
     def check_files(self, files, limit=24):
         """Return only currently downloadable variants. Never assume search means playable."""
