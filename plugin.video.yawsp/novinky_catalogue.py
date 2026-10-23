@@ -61,7 +61,11 @@ def parse_video_name(filename):
     ep = EPISODE.search(stem)
     ep_dash = None if ep else EPISODE_DASH.search(stem)
     sea = None if ep or ep_dash else SEASON.search(stem)
-    marker = ep or ep_dash or sea or RELEASE.search(stem)
+    release = next((m for m in RELEASE.finditer(stem)
+                    if m.start() > 0), None)
+    # "Czech Story" can be a film title. A language tag at the very
+    # beginning is not enough evidence that the filename has no title.
+    marker = ep or ep_dash or sea or release
     early = stem[:marker.start()] if marker else stem
     # Year before release tags is usually the title year, unlike a year in a series episode date.
     yrs = list(YEAR.finditer(early))
