@@ -42,6 +42,34 @@ class Calendar:
           'premiere':(date.today()-timedelta(days=180)).isoformat()}]
     def load(self):return self.events
 
+class ArtworkTests(unittest.TestCase):
+    def test_matching_poster_must_come_from_same_title_and_year(self):
+        from cinema_artwork import select_poster
+        result=select_poster({'metas':[
+            {'name':'Different Movie','releaseInfo':'2025',
+             'poster':'https://example.org/wrong.jpg'},
+            {'name':'Czech Story','releaseInfo':'2025',
+             'poster':'https://example.org/correct.jpg'}]},
+             'Czech Story','2025')
+        self.assertEqual(result['poster'],'https://example.org/correct.jpg')
+        self.assertIsNone(select_poster({'metas':[
+            {'name':'Czech Story','releaseInfo':'2001',
+             'poster':'https://example.org/wrong-year.jpg'}]},
+             'Czech Story','2025'))
+
+    def test_poster_fallback_does_not_create_films(self):
+        from cinema_artwork import Artwork
+        class Response:
+            def raise_for_status(self):pass
+            def json(self):
+                return {'metas':[{'name':'Czech Story','releaseInfo':'2025',
+                         'poster':'https://example.org/correct.jpg'}]}
+        art=Artwork(transport=lambda url,timeout:Response())
+        self.assertEqual(art.lookup('Czech Story','2025')['poster'],
+                         'https://example.org/correct.jpg')
+        # No video cards are created just by this artwork lookup.
+
+
 class DataLayer(unittest.TestCase):
     def test_czech_word_at_start_is_title_not_language_marker(self):
         from novinky_catalogue import parse_video_name
@@ -139,7 +167,8 @@ class WindowContracts(unittest.TestCase):
         tree=ET.parse(path).getroot()
         ids={e.attrib.get('id') for e in tree.findall('.//control')}
         self.assertTrue({'401','402','101','102','103','104','105','106','107'}<=ids)
-        content=open(path,encoding='utf8').read()
+        with open(path,encoding='utf8') as xml:
+            content=xml.read()
         self.assertIn('app_version',content)
         self.assertIn('hero_art',content)
         self.assertIn('String.IsEmpty',content)
