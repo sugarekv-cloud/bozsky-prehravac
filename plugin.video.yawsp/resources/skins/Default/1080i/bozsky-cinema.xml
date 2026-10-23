@@ -38,7 +38,7 @@
         <control type="button" id="101">
             <left>675</left><top>27</top><width>128</width><height>61</height>
             <label>FILMY</label><font>font13</font>
-            <align>center</align><aligny>center</align>
+            <align>center</align><aligny>center</aligny>
             <textcolor>FFE7EAF0</textcolor><focusedcolor>FF142032</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
@@ -47,7 +47,7 @@
         <control type="button" id="102">
             <left>809</left><top>27</top><width>135</width><height>61</height>
             <label>SERIÁLY</label><font>font13</font>
-            <align>center</align><aligny>center</align>
+            <align>center</align><aligny>center</aligny>
             <textcolor>FFE7EAF0</textcolor><focusedcolor>FF142032</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
@@ -56,7 +56,7 @@
         <control type="button" id="103">
             <left>950</left><top>27</top><width>139</width><height>61</height>
             <label>HLEDAT</label><font>font13</font>
-            <align>center</align><aligny>center</align>
+            <align>center</align><aligny>center</aligny>
             <textcolor>FFE7EAF0</textcolor><focusedcolor>FF142032</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
@@ -65,7 +65,7 @@
         <control type="button" id="104">
             <left>1095</left><top>27</top><width>160</width><height>61</height>
             <label>PREMIÉRY</label><font>font13</font>
-            <align>center</align><aligny>center</align>
+            <align>center</align><aligny>center</aligny>
             <textcolor>FFE7EAF0</textcolor><focusedcolor>FF142032</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
@@ -74,7 +74,7 @@
         <control type="button" id="105">
             <left>1261</left><top>27</top><width>153</width><height>61</height>
             <label>FILTRY</label><font>font13</font>
-            <align>center</align><aligny>center</align>
+            <align>center</align><aligny>center</aligny>
             <textcolor>FFE7EAF0</textcolor><focusedcolor>FF142032</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
@@ -83,7 +83,7 @@
         <control type="button" id="106">
             <left>1420</left><top>27</top><width>200</width><height>61</height>
             <label>KLASICKÉ MENU</label><font>font13</font>
-            <align>center</align><aligny>center</align>
+            <align>center</align><aligny>center</aligny>
             <textcolor>FFE7EAF0</textcolor><focusedcolor>FF142032</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
@@ -92,7 +92,7 @@
         <control type="button" id="107">
             <left>1626</left><top>27</top><width>160</width><height>61</height>
             <label>NASTAVENÍ</label><font>font13</font>
-            <align>center</align><aligny>center</align>
+            <align>center</align><aligny>center</aligny>
             <textcolor>FFE7EAF0</textcolor><focusedcolor>FF142032</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
