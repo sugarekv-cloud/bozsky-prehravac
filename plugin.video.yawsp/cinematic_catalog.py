@@ -8,6 +8,18 @@ from novinky_catalogue import build_groups
 from catalog_engine import file_label
 
 
+def webshare_image_url(value):
+    """Resolve Webshare thumbnail paths; omit unsupported artwork schemes."""
+    value=str(value or '').strip()
+    if value.startswith('//'):
+        value='https:'+value
+    elif value.startswith('/'):
+        value='https://webshare.cz'+value
+    if value.startswith(('https://','http://')):
+        return value[:1500]
+    return ''
+
+
 def _decorate(groups, catalogue, max_metadata=10):
     if catalogue and groups:
         catalogue.lookup_many(groups[:max_metadata], max_new=max_metadata)
@@ -30,7 +42,7 @@ def _decorate(groups, catalogue, max_metadata=10):
                      if not show else 'Vyberte sezónu a epizodu.'),
             'rating':meta.get('rating'),
             'genre':', '.join(meta.get('genres') or []),
-            'poster':meta.get('poster') or file.get('img') or '',
+            'poster':meta.get('poster') or webshare_image_url(file.get('img')),
             'fanart':meta.get('fanart') or '',
             'original':meta.get('original') or '',
             'quality':file_label(file),
