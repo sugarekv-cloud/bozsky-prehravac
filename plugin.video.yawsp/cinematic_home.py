@@ -201,6 +201,10 @@ def launch(addon, profile, get_url, revalidate, search_page, catalogue_factory):
                 cards=[groups['new_movies'],groups['discover']]
                 heading=groups['discover_title']
                 status=empty_message(stats,len(cards[0]),len(cards[1]))
+                if (cards[0] or cards[1]) and not any(
+                        c.get('poster') for row in cards for c in row):
+                    status=('Videa na Webshare nalezena, ale zdroj neposkytl '
+                            'plakáty ani náhledy. Vyberte film podle názvu.')
                 if not cards[0] and cards[1]:
                     cards[0],cards[1]=cards[1],[]
                     top_heading=heading
