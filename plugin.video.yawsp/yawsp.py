@@ -1099,6 +1099,7 @@ def premiere_list(params):
     from datetime import date
     from premiere_calendar import select_events, nice_date
     from available_catalog import matching_movies, names_for
+    from search_catalog import compact_quality
     from ws_availability import Availability
     allowed=('recent7','recent30','recent90','upcoming30','upcoming90','month')
     view=params.get('view','recent30')
@@ -1149,7 +1150,8 @@ def premiere_list(params):
         if result is None:
             continue
         # Strict comparison with calendar title, original title or matched ČSFD title.
-        possible=matching_movies(result,names)
+        possible=matching_movies(result,names,
+            year=(metadata or {}).get('year',''))
         verified=checker.check_files(possible,limit=3) if possible else []
         if not verified:
             continue
@@ -1160,7 +1162,7 @@ def premiere_list(params):
         name=(metadata or {}).get('title') or title
         label='%s [COLOR gray]· %s · %s[/COLOR]' % (
             name,nice_date(event['premiere']),
-            '4K / CZ / další kvality' if len(possible)>1 else 'Webshare dostupné')
+            compact_quality(verified[0]))
         li=xbmcgui.ListItem(label=label)
         li.setInfo('video',{'title':name,'mediatype':'movie',
             'plot':'Kino premiéra ČR: %s; ověřený soubor na Webshare.' %
