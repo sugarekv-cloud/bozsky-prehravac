@@ -12,6 +12,7 @@ PLUG=os.path.join(ROOT,'plugin.video.yawsp')
 sys.path.insert(0,PLUG)
 
 from cinematic_catalog import make_rows
+from cinematic_discovery import discover, empty_message, queries_for_home
 
 def f(ident,title,kind='movie'):
     suffix='S01E03' if kind=='show' else '2025'
@@ -56,6 +57,43 @@ class DataTests(unittest.TestCase):
         rows=make_rows([f('gone','Gone Film')],[],Checker(),Metadata())
         self.assertFalse(rows['new_movies'])
 
+
+class DiscoveryTests(unittest.TestCase):
+    def test_home_never_uses_empty_search_term(self):
+        self.assertTrue(all(term for _,term,_ in queries_for_home()))
+        received=[]
+        def service(token,offset,term,sort='recent'):
+            received.append((term,sort))
+            return [{'ident':'f_'+term,'name':'Sample Movie 2025 1080p CZ.mkv'}],1
+        recent,popular,stats=discover('sample-session',service)
+        self.assertTrue(recent)
+        self.assertTrue(popular)
+        self.assertGreater(stats['movie_candidates'],0)
+        self.assertTrue(all(q[0] for q in received))
+
+    def test_empty_api_results_explain_reason(self):
+        recent,popular,stats=discover('sample-session',lambda token,offset,term,sort='recent':([],0))
+        self.assertEqual(recent,[])
+        self.assertEqual(popular,[])
+        self.assertIn('nenašlo',empty_message(stats,0,0))
+
+    def test_auth_failure_is_not_reported_as_missing_movies(self):
+        _,_,stats=discover('sample-session',lambda token,offset,term,sort='recent':(None,0))
+        self.assertEqual(stats['responses'],0)
+        self.assertIn('neodpovídá',empty_message(stats,0,0))
+
+    def test_navigation_tiles_have_no_movie_posters(self):
+        if 'xbmcgui' not in sys.modules:
+            fake=types.ModuleType('xbmcgui')
+            fake.WindowXMLDialog=type('WindowXMLDialog',(),{})
+            sys.modules['xbmcgui']=fake
+        from cinematic_home import _fallback_card
+        fake_addon=type('Addon',(),{'getAddonInfo':lambda self,name:'/tmp/test'})()
+        result=_fallback_card(fake_addon,'KATALOG FILMŮ','plugin://menu/')
+        self.assertEqual(result['poster'],'')
+        self.assertEqual(result['kind'],'link')
+
+
 class WindowLayoutTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -83,6 +121,7 @@ class WindowLayoutTests(unittest.TestCase):
     def test_skin_xml_is_local_to_plugin(self):
         self.assertEqual(self.window.tag,'window')
         self.assertIn('bozsky-cinema.xml', os.listdir(os.path.dirname(self.path)))
+        self.assertIn('row1_heading',open(self.path,encoding='utf8').read())
 
 class GeneratedTextureTests(unittest.TestCase):
     def test_png_generated_without_nonstandard_packages(self):
