@@ -89,6 +89,7 @@ class CinemaWindow(xbmcgui.WindowXMLDialog):
         self.setProperty('hero_info','Všechny dostupné filmy na jednom místě')
         self.setProperty('hero_plot','Pohyb šipkami • OK pro výběr • Zpět pro návrat')
         self.setProperty('hero_art','')
+        self.setProperty('row1_heading',self.row1_heading)
         self.setProperty('row2_heading',self.row2_heading)
         self.setProperty('ui_status',self.status)
         for index,control_id in enumerate(ROW_IDS):
@@ -184,6 +185,7 @@ def launch(addon, profile, get_url, revalidate, search_page, catalogue_factory):
     cards=[]
     status='Vyberte film nebo seriál; přehrání je vždy ruční'
     heading='NOVÉ SERIÁLY'
+    top_heading='NOVĚ PŘIDANÉ FILMY NA WEBSHARE'
     if addon.getSetting('wsuser') and addon.getSetting('wspass'):
         progress=None
         try:
@@ -201,6 +203,7 @@ def launch(addon, profile, get_url, revalidate, search_page, catalogue_factory):
                 status=empty_message(stats,len(cards[0]),len(cards[1]))
                 if not cards[0] and cards[1]:
                     cards[0],cards[1]=cards[1],[]
+                    top_heading=heading
                     heading='DALŠÍ DOPORUČENÍ'
             else:
                 status='Webshare vyžaduje přihlášení. Otevřete Nastavení.'
@@ -218,6 +221,7 @@ def launch(addon, profile, get_url, revalidate, search_page, catalogue_factory):
         cards[0]=[_fallback_card(addon,'VYHLEDAT FILM',get_url(action='smart_search')),
                   _fallback_card(addon,'KATALOG FILMŮ',get_url(action='catalog_home',kind='movie')),
                   _fallback_card(addon,'NASTAVENÍ WEBSHARE',get_url(action='settings'))]
+        top_heading='ZAČNĚTE VÝBĚREM'
     if not cards[1]:
         cards[1]=[_fallback_card(addon,'PROCHÁZET SERIÁLY',get_url(action='catalog_home',kind='show')),
                   _fallback_card(addon,'NOVINKY',get_url(action='novinky')),
@@ -225,6 +229,7 @@ def launch(addon, profile, get_url, revalidate, search_page, catalogue_factory):
         heading='PROZKOUMEJTE DALŠÍ OBSAH'
     dialog=CinemaWindow(XML_NAME,addon.getAddonInfo('path'),'Default','1080i')
     dialog.cards=cards
+    dialog.row1_heading=top_heading
     dialog.row2_heading=heading
     dialog.default_icon=os.path.join(addon.getAddonInfo('path'),'resources','icon.png')
     dialog.textures=ensure_textures(profile)
