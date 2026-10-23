@@ -1,0 +1,29 @@
+name: Import standalone desktop source
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'desktop-source.b64'
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Restore self-contained desktop source
+        run: |
+          mkdir -p desktop
+          base64 --decode desktop-source.b64 | tar -xJ -C desktop
+          cp desktop/.github/workflows/desktop-windows.yml .github/workflows/desktop-windows.yml
+      - name: Commit expanded source files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add desktop .github/workflows/desktop-windows.yml
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish standalone desktop application source"
+            git push origin HEAD:main
+          fi
