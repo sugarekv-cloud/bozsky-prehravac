@@ -103,7 +103,8 @@ def episodes(files, season):
             continue
         n=int(p['episode'])
         groups.setdefault(n, []).append(f)
-    return [(number,sorted(group,key=quality_score,reverse=True)) for number,group in sorted(groups.items())]
+    from catalog_engine import file_score
+    return [(number,sorted(group,key=file_score,reverse=True)) for number,group in sorted(groups.items())]
 
 
 def variants(files, season=None, episode=None, filter_name='all'):
@@ -121,14 +122,10 @@ def variants(files, season=None, episode=None, filter_name='all'):
         if filter_name=='1080' and resolution(f.get('name',''))<1080:
             continue
         selected.append(f)
-    return sorted(selected,key=quality_score,reverse=True)
+    from catalog_engine import file_score
+    return sorted(selected,key=file_score,reverse=True)
 
 
 def compact_quality(f):
-    res=resolution(f.get('name',''))
-    result='4K' if res==2160 else ('%dp'%res if res else 'Kvalita ?')
-    if is_hdr(f.get('name','')):
-        result+=' HDR'
-    if is_czech_audio_marked(f.get('name','')):
-        result+=' | CZ*'
-    return result
+    from catalog_engine import file_label
+    return file_label(f)
