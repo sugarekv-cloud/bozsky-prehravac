@@ -43,6 +43,12 @@ class Calendar:
     def load(self):return self.events
 
 class DataLayer(unittest.TestCase):
+    def test_czech_word_at_start_is_title_not_language_marker(self):
+        from novinky_catalogue import parse_video_name
+        p=parse_video_name('Czech.Story.2025.1080p.CZ.mkv')
+        self.assertEqual(p['title'],'Czech Story')
+        self.assertEqual(p['year'],'2025')
+
     def test_series_merges_cross_year_results(self):
         files=[ws('a','Some.Show.S01E01.2024.1080p.mkv'),
                ws('b','Some.Show.S03E12.2026.720p.CZ.mkv')]
@@ -115,8 +121,8 @@ class DataLayer(unittest.TestCase):
         self.assertEqual(results[0]['kind'],'movie')
 
     def test_selection_keeps_only_matching_cz_quality(self):
-        entries=[ws('a','Movie.2025.1080p.CZ.mkv'),
-                 ws('b','Movie.2025.2160p.MULTi.mkv')]
+        entries=[ws('a','Mystery.Film.2025.1080p.CZ.mkv'),
+                 ws('b','Mystery.Film.2025.2160p.MULTi.mkv')]
         self.assertEqual(len(choose_files(entries,quality='4k',language='cz')),0)
         self.assertEqual(len(choose_files(entries,quality='all',language='cz')),1)
 
