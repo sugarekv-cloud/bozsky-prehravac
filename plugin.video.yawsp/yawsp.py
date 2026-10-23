@@ -1110,12 +1110,12 @@ def catalog_browse(params):
     groups=filter_groups(groups,p['quality'],p['language'],year=p['year'])
     if groups:
         # Bound network operations; the catalog only contains confirmed file-backed titles.
-        groups=Availability(_profile).check_groups(groups[:28])
+        groups=Availability(_profile).check_groups(groups[:18],max_workers=6)
     genre=p['genre'] if p['genre'] not in ('','all') else ''
     if groups and (_addon.getSetting('smart_metadata')!='false' or
                    genre or p['sort'] in ('rating','year','title')):
         client=_csfd_client()
-        client.lookup_many(groups[:24],max_new=24)
+        client.lookup_many(groups[:18],max_new=18)
         if genre:
             from csfd_metadata import passes_metadata_filter
             groups=[g for g in groups if passes_metadata_filter(g,genre,0)]
@@ -1123,7 +1123,7 @@ def catalog_browse(params):
     if p['page']:
         prev=dict(p,page=p['page']-1)
         _smart_item('◀  PŘEDCHOZÍ STRÁNKA','catalog_browse',**prev)
-    for group in groups[:28]:
+    for group in groups[:18]:
         meta=group.get('metadata') or {}
         # The quality shown on the card must respect the active filter.
         permitted=[f for f in group['files'] if is_visible(
@@ -1726,9 +1726,6 @@ def menu():
     xbmcplugin.addDirectoryItem(_handle, get_url(action='novinky'), li, True)
     li = xbmcgui.ListItem(label='🔎  VYHLEDÁVÁNÍ  |  Filmy a seriály podle názvu')
     li.setArt({'icon':'DefaultAddonsSearch.png'})
-    xbmcplugin.addDirectoryItem(_handle, get_url(action='smart_search'), li, True)
-    li = xbmcgui.ListItem(label='🌍  ČESKÉ A ORIGINÁLNÍ NÁZVY')
-    li.setArt({'icon':'DefaultVideoPlaylists.png'})
     xbmcplugin.addDirectoryItem(_handle, get_url(action='smart_search'), li, True)
     listitem = xbmcgui.ListItem(label='📁  SOUBORY  |  Pokročilé vyhledávání')
     listitem.setArt({'icon': 'DefaultAddonsSearch.png'})
