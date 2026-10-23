@@ -170,7 +170,7 @@ class CinemaWindow(xbmcgui.WindowXMLDialog):
         else:
             self._navigate(self.make_url(
                 action='novinky_detail', title=card['file_title'],
-                year=card.get('year') or '',
+                year=card.get('file_year') or '',
                 original=card.get('original') or '',kind='movie'))
 
 
@@ -182,11 +182,16 @@ def launch(addon, profile, get_url, revalidate, search_page, catalogue_factory):
     status='Vyberte film nebo seriál; přehrání je vždy ruční'
     heading='NOVÉ SERIÁLY'
     if addon.getSetting('wsuser') and addon.getSetting('wspass'):
+        progress=None
         try:
+            progress=xbmcgui.DialogProgress()
+            progress.create('Božský přehrávač', 'Načítám dostupné filmy z Webshare…')
             token=revalidate()
             if token:
                 recent,_=search_page(token,0,'',sort='recent')
+                progress.update(30,'Hledám oblíbené filmy a seriály…')
                 popular,_=search_page(token,0,'',sort='rating')
+                progress.update(55,'Ověřuji dostupnost videí a načítám plakáty…')
                 checked=Availability(profile)
                 metadata=(catalogue_factory() if addon.getSetting('smart_metadata')!='false' else None)
                 groups=make_rows(recent,popular,checked,metadata,limit=11)
@@ -199,6 +204,9 @@ def launch(addon, profile, get_url, revalidate, search_page, catalogue_factory):
         except Exception:
             traceback.print_exc()
             status='Načtení Webshare se nezdařilo. Zkuste Hledat nebo Nastavení.'
+        finally:
+            if progress is not None:
+                progress.close()
     else:
         status='Nejdříve v Nastavení zadejte účet Webshare.'
     if not cards:
