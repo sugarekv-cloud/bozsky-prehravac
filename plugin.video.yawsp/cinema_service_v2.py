@@ -5,6 +5,10 @@ The cinema feed supplies order and artwork, never an unverified title.
 The on-screen listings are guaranteed to have at least one checked file ident.
 """
 from datetime import date, timedelta
+import os
+import io
+import json
+import time
 from cinema_catalog_v2 import (groups,verified_groups,add_metadata,card,
     sort_cards,grouped_episodes,choose_files,collect_pages,matching_release)
 from cinematic_discovery import discover
@@ -13,13 +17,14 @@ from catalog_engine import file_label
 
 
 class CinemaService:
-    def __init__(self, token, fetch, availability, catalogue=None, calendar=None):
+    def __init__(self, token, fetch, availability, catalogue=None, calendar=None, profile=None):
         self.token=token
         self.fetch=fetch
         self.availability=availability
         self.metadata=catalogue
         self.calendar=calendar
         self.home_cache=None
+        self.cache_path=os.path.join(profile,'cinema-v2-home.json') if profile else None
         self.search_cache={}
         self.series_cache={}
         self.last_diagnostics=''
@@ -107,8 +112,22 @@ class CinemaService:
                 [self._decorate(g,g.get('metadata')) for g in shows])
 
     def home(self):
-        if self.home_cache:
+        if self.home_cache is not None:
             return self.home_cache
+        # The short cache avoids repeating expensive ČSFD/Webshare calls
+        # every time the user returns to the television home screen.
+        if self.cache_path:
+            try:
+                with io.open(self.cache_path,'r',encoding='utf8') as handle:
+                    cached=json.load(handle)
+                if (isinstance(cached,dict) and
+                    time.time()-float(cached.get('saved',0)) < 480 and
+                    isinstance(cached.get('home'),dict)):
+                    self.home_cache=cached['home']
+                    self.last_diagnostics='Katalog načten z ověřené 8minutové mezipaměti'
+                    return self.home_cache
+            except (OSError,ValueError,TypeError):
+                pass
         premieres=self._premieres(9)
         recent,shows=self._from_webshare()
         seen={normalize(c['raw']) for c in premieres}
@@ -118,6 +137,14 @@ class CinemaService:
             'movies':additional or recent,
             'shows':shows
         }
+        if self.cache_path:
+            try:
+                with io.open(self.cache_path+'.tmp','w',encoding='utf8') as handle:
+                    json.dump({'saved':time.time(),'home':self.home_cache},handle,
+                              ensure_ascii=False)
+                os.replace(self.cache_path+'.tmp',self.cache_path)
+            except (OSError,TypeError):
+                pass
         return self.home_cache
 
     def browse(self, view, sort='date', quality='all', language='all'):
@@ -179,11 +206,18 @@ class CinemaService:
         return [c for c in combined if kind=='all' or c['kind']==kind]
 
     def files(self, card, quality='all', language='all'):
-        filenames=card.get('files') or []
-        if not filenames:
-            return []
+        # On title selection, find ALL variants of the movie; broad discovery
+        # typically discovers only one copy of each quality.
+        candidates=list(card.get('files') or [])
+        aliases=[card.get('raw') or '',card.get('original') or '']
+        for name in aliases:
+            if name:
+                fetched=collect_pages(self.fetch,self.token,name,max_pages=4)
+                candidates.extend(matching_release(fetched,aliases,'movie',
+                                                    card.get('file_year') or ''))
+        unique={f['ident']:f for f in candidates if f.get('ident')}
         return self.availability.check_files(
-            choose_files(filenames,quality,language),limit=48)
+            choose_files(list(unique.values()),quality,language),limit=60)
 
     def seasons(self, card):
         raw=card['raw']
