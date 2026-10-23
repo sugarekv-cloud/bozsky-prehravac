@@ -24,6 +24,7 @@ def _decorate(groups, catalogue, max_metadata=5):
             'title':title,
             'file_title':g['title'],
             'year':year,
+            'file_year':g.get('year') or '',
             'plot':meta.get('plot') or
                     ('Dostupné soubory na Webshare. Vyberte konkrétní kvalitu.'
                      if not show else 'Vyberte sezónu a epizodu.'),
