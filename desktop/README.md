@@ -38,3 +38,5 @@ GitHub Actions `.github/workflows/desktop-windows.yml` sestavuje Windows soubory
 ## Bezpečnost a legální použití
 
 Aplikace pouze vyhledává skutečně dostupné soubory přes Webshare. Používej ji jen na obsah, ke kterému máš práva. Nepřipojuje se k serveru tvůrce. Přístupové údaje a tokeny nikdy nepublikuj v repozitáři. Přihlašovací token se uloží pouze tehdy, když Electron nabízí systémové šifrované úložiště.
+
+Zdrojový projekt je uložen přímo v `desktop/` tohoto repozitáře. Instalační balíčky se generují pomocí Windows GitHub Actions.
