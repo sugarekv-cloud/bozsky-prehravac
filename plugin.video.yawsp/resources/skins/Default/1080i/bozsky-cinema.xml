@@ -127,7 +127,7 @@
         <control type="label">
             <left>83</left><top>490</top><width>1500</width><height>50</height>
             <font>font32</font><textcolor>FFFFEDD2</textcolor>
-            <label>NOVĚ PŘIDANÉ FILMY NA WEBSHARE</label>
+            <label>$INFO[Window.Property(row1_heading)]</label>
         </control>
         <control type="list" id="401">
             <left>80</left><top>541</top><width>1760</width><height>218</height>
@@ -136,8 +136,22 @@
             <itemlayout width="203" height="216">
                 <control type="image">
                     <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <texture>$INFO[Window.Property(cinema_button)]</texture>
+                    <aspectratio>stretch</aspectratio>
+                </control>
+                <control type="label">
+                    <left>20</left><top>63</top><width>158</width><height>51</height>
+                    <font>font13</font>
+                    <textcolor>FFF4C577</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>OTEVŘÍT</label>
+                    <visible>String.IsEmpty(ListItem.Art(poster))</visible>
+                </control>
+                <control type="image">
+                    <left>10</left><top>3</top><width>180</width><height>177</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
                     <aspectratio>scale</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="label">
                     <left>8</left><top>181</top><width>184</width><height>34</height>
@@ -154,9 +168,23 @@
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="image">
+                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <texture>$INFO[Window.Property(cinema_button)]</texture>
+                    <aspectratio>stretch</aspectratio>
+                </control>
+                <control type="label">
+                    <left>20</left><top>63</top><width>158</width><height>51</height>
+                    <font>font13</font>
+                    <textcolor>FFF4C577</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>OTEVŘÍT</label>
+                    <visible>String.IsEmpty(ListItem.Art(poster))</visible>
+                </control>
+                <control type="image">
                     <left>10</left><top>5</top><width>180</width><height>175</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
                     <aspectratio>scale</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="label">
                     <left>8</left><top>182</top><width>184</width><height>34</height>
@@ -179,8 +207,22 @@
             <itemlayout width="203" height="216">
                 <control type="image">
                     <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <texture>$INFO[Window.Property(cinema_button)]</texture>
+                    <aspectratio>stretch</aspectratio>
+                </control>
+                <control type="label">
+                    <left>20</left><top>63</top><width>158</width><height>51</height>
+                    <font>font13</font>
+                    <textcolor>FFF4C577</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>OTEVŘÍT</label>
+                    <visible>String.IsEmpty(ListItem.Art(poster))</visible>
+                </control>
+                <control type="image">
+                    <left>10</left><top>3</top><width>180</width><height>177</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
                     <aspectratio>scale</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="label">
                     <left>8</left><top>181</top><width>184</width><height>34</height>
@@ -197,9 +239,23 @@
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="image">
+                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <texture>$INFO[Window.Property(cinema_button)]</texture>
+                    <aspectratio>stretch</aspectratio>
+                </control>
+                <control type="label">
+                    <left>20</left><top>63</top><width>158</width><height>51</height>
+                    <font>font13</font>
+                    <textcolor>FFF4C577</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>OTEVŘÍT</label>
+                    <visible>String.IsEmpty(ListItem.Art(poster))</visible>
+                </control>
+                <control type="image">
                     <left>10</left><top>5</top><width>180</width><height>175</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
                     <aspectratio>scale</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="label">
                     <left>8</left><top>182</top><width>184</width><height>34</height>
