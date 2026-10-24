@@ -1,26 +1,62 @@
-# Božský přehrávač – vlastní aktualizace Kodi
+# Božský přehrávač pro Kodi
 
-Tento projekt obsahuje upravený doplněk YAWsP 0.6.1 a generátor repozitáře Kodi. Jde o neoficiální fork. Licence doplňku: AGPL-3.0, původní autorství zachováno v `addon.xml`.
+Komunitní video doplněk Kodi založený na YAWsP, licence AGPL-3.0.
+Technické ID doplňku zůstává `plugin.video.yawsp`.
+Filmografická metadata jsou pomocná; katalog zobrazuje pouze videa
+ověřená přes uživatelovo připojení k Webshare.
 
-## Publikace na GitHub Pages
+## Instalace přes repozitář (doporučeno)
 
-1. Vytvořte na GitHubu **veřejný** repozitář s přesným názvem `bozsky-prehravac`.
-2. Nahrajte do něj **obsah tohoto ZIPu** (soubory musí být v kořeni repozitáře, nikoli ve vnořené složce).
-3. V GitHub repozitáři otevřete **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-4. Na záložce **Actions** spusťte `Publish Božský repozitář`, pokud se nespustí automaticky.
-5. Po úspěšném zveřejnění najdete stránku na `https://VAŠE_JMÉNO.github.io/bozsky-prehravac/`. Odkaz na instalaci repozitáře bude na této stránce.
-6. V Kodi nainstalujte ZIP repozitáře, potom otevřete **Instalovat z repozitáře → Božský repozitář → Video doplňky → Božský přehrávač**.
+**Stránka komunitního repozitáře:**
+https://sugarekv-cloud.github.io/bozsky-prehravac/
 
-Pozor: neinstalujte ZIP repozitáře před zveřejněním webu; jinak se bude snažit přistupovat k dosud neexistující adrese.
+1. Stáhněte ZIP repozitáře:
+   https://sugarekv-cloud.github.io/bozsky-prehravac/repository.bozskyprehravac-1.0.0.zip
+   (archiv nerozbalujte).
+2. Otevřete Kodi → **Nastavení (ozubené kolečko) → Systém → Doplňky**.
+   Pro instalaci neoficiálního ZIPu povolte **Neznámé zdroje**.
+3. Kodi → **Doplňky → Instalovat ze souboru ZIP**. Vyberte právě
+   stažený `repository.bozskyprehravac-1.0.0.zip`.
+   Na televizoru lze ZIP zkopírovat přes USB nebo síťový disk.
+4. Kodi → **Doplňky → Instalovat z repozitáře → Božský repozitář →
+   Video doplňky → Božský přehrávač → Instalovat**.
+5. Otevřete Božský přehrávač. Ozubené kolečko v pravém horním rohu
+   nabízí přihlášení Webshare, filtry a ruční aktualizaci katalogu.
 
-## Aktualizace
+Pokud je doplněk již instalován *ručně z jeho vlastního ZIPu*:
+neodinstalovávejte jej ani nemažte data. Otevřete **Moje doplňky →
+Video doplňky → Božský přehrávač → Verze / Aktualizovat** a pokud
+je v nabídce, vyberte verzi z **Božského repozitáře**.
+V nastavení Kodi je možné zvolit automatické aktualizace a
+v prohlížeči doplňků spustit **Zkontrolovat aktualizace**.
 
-Zvyšte číslo `version` v `plugin.video.yawsp/addon.xml` (například `0.6.2`) a upravte kód, commitněte/pushněte na větev `main`. GitHub Actions automaticky přebalí doplněk a aktualizuje `addons.xml` a jeho kontrolní součet. Kodi pak při další kontrole uvidí novou verzi.
+## Katalog a synchronizace
 
-Technický identifikátor pluginu je stále `plugin.video.yawsp` z důvodu zachování nastavení, případně může Kodi vyžadovat povolení aktualizací z vybraného repozitáře.
+Cinemeta (veřejná katalogová metadata, bez API klíče) poskytuje názvy,
+roky, plakáty a případně hodnocení IMDb. Volitelná CZDB/ČSFD metadata
+jsou preferována pro české názvy a hodnocení. Cinemeta je *seznam
+kandidátů*, nikoliv důkaz dostupnosti na Webshare. Kodi při otevření
+postupně prověřuje omezený počet titulů přes Webshare API a ukládá
+index na zařízení. Ozubené kolečko → **Načíst další tituly a
+aktualizovat Webshare** spustí další dávku. Režim není trvalá
+synchronizační služba spuštěná na pozadí.
 
-## Test před nasazením
+Použité zdroje:
+- https://cinemeta-catalogs.strem.io/top/catalog/movie/top.json
+- https://v3-cinemeta.strem.io/manifest.json
 
-`python3 build_repo.py --owner testuser --output site`
+Přítomnost filmu v katalogu neznamená, že je soubor trvale dostupný.
+Jazykové označení v názvu souboru není záruka dabingu.
 
-Vygenerovaná testovací URL není skutečně zveřejněná. Živý Kodi, Webshare a katalogová API dosud nebyly integračně ověřeny.
+## Údržba a automatické aktualizace
+
+GitHub Actions při změně větve `main` spouští testy, generují
+`addons.xml`, `addons.xml.md5` a instalační ZIP doplňku.
+GitHub Pages následně nabízí Kodi nové verze přes repozitář.
+Vydávání se řídí verzí z `plugin.video.yawsp/addon.xml`.
+
+Testy: `python -m unittest discover -s tests -v`.
+Sestavení: `python build_repo.py --owner sugarekv-cloud --output site`.
+
+Katalogový kód nedistribuuje filmy a nepoužívá heslo Webshare při
+stahování veřejných metadat. Používejte pouze obsah, k němuž máte oprávnění.
