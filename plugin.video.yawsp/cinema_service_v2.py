@@ -291,6 +291,7 @@ class CinemaService:
         return sort_cards(filtered,sort)
 
     def search(self, query, kind='all'):
+        """Search Czech/original titles and release variants, validate files."""
         term=(query or '').strip()
         if not term:
             return []
@@ -299,39 +300,37 @@ class CinemaService:
             cards=self.search_cache[key]
             return [c for c in cards if kind=='all' or c['kind']==kind]
         md=self.metadata.lookup(term) if self.metadata else None
-        aliases=[]
-        for x in (term,(md or {}).get('title',''),(md or {}).get('original','')):
-            if x and normalize(x) not in {normalize(v) for v in aliases}:
-                aliases.append(x)
-        all_files=[]
-        for term in aliases[:3]:
-            found=collect_pages(self.fetch,self.token,term,max_pages=3)
-            if found:
-                all_files.extend(found)
-        # Search is intentionally permissive for partial titles, but the
-        # movie cards still need a valid verified Webshare file.
-        cleaned=[]
-        for f in all_files:
-            from novinky_catalogue import parse_video_name
-            p=parse_video_name(f['name'])
-            if not p:
+        names=candidate_names(term,md)
+        matches={}
+        successful=0
+        # Short, bounded calls; searching Czech titles is followed by the
+        # original title and dot-separated release filenames when necessary.
+        for index,attempt in enumerate(query_plan(term,md,limit=10)):
+            page=collect_pages(self.fetch,self.token,attempt,
+                               max_pages=3 if index==0 else 1)
+            if page is None:
                 continue
-            name=normalize(p['title'])
-            if any(normalize(a) in name or name in normalize(a)
-                   for a in aliases if len(normalize(a))>=3):
-                cleaned.append(f)
+            valid=matching_files(page,names)
+            for f in valid:
+                matches[str(f['ident'])]=f
+            if valid:
+                successful+=1
+            if successful>=2 or (successful and len(matches)>=80):
+                break
         combined=[]
         for mode in ('movie','show'):
-            gr=groups(cleaned,mode)
-            gr=verified_groups(gr,self.availability,maximum=40,checked=70)
-            add_metadata(gr,self.metadata,maximum=12)
-            for g in gr:
-                # Use Czech metadata result when it matches the original title.
-                if md and normalize(g['title']) in {normalize(n) for n in aliases}:
-                    g['metadata']=md
+            candidates=groups(list(matches.values()),mode)
+            candidates=verified_groups(candidates,self.availability,
+                                       maximum=50,checked=90)
+            add_metadata(candidates,self.metadata,maximum=25)
+            for g in candidates:
+                # The Avengers (2012) metadata must not overwrite Endgame.
+                if md and normalize(g['title']) in {normalize(n) for n in names}:
+                    if not g['year'] or not md.get('year') or str(g['year'])==str(md['year']):
+                        g['metadata']=md
                 combined.append(self._decorate(g,g.get('metadata')))
-        combined=sorted(combined,key=lambda c:(0 if normalize(c['raw'])==key else 1,
-                               normalize(c['title'])))
+        combined.sort(key=lambda c:(0 if normalize(c['raw'])==key else 1,
+                      normalize(c['title']),str(c.get('year') or '')))
         self.search_cache[key]=combined
         return [c for c in combined if kind=='all' or c['kind']==kind]
 
