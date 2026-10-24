@@ -17,7 +17,6 @@
 		<setting label="30043" id="dnotify" type="bool" default="true" />
 		<setting label="30044" id="dnevery" type="select" values="1%|5%|10%|20%|25%|50%" default="10%" visible="eq(-1,true)" />
         <setting label="Vzhled a ovládání" type="lsep" />
-        <setting id="cinematic_ui" label="Filmový úvod s plakáty a televizní navigací" type="bool" default="true" />
         <setting label="ČR filmové premiéry / ČSFD / Webshare (CZ = jen název souboru)" type="lsep" />
         <setting id="smart_min_quality" label="Novinky: minimální rozlišení (0, 720, 1080, 2160)" type="number" default="0" />
         <setting id="smart_only_cz" label="Novinky: pouze CZ podle názvu" type="bool" default="false" />
