@@ -34,8 +34,8 @@ for _kind,_seeds in (('movie',MOVIE_SEEDS),('show',SHOW_SEEDS)):
 # A missing release year is common in filename variants. Map an alias only
 # if it corresponds to a single reference title; otherwise keep it ambiguous.
 _ALIASES={}
-for (_kind,_alias,_year),_canonical in _SEED_NAMES.items():
-    _ALIASES.setdefault((_kind,_alias),set()).add(_canonical)
+for (_seed_kind,_seed_alias,_seed_year),_seed_canonical in _SEED_NAMES.items():
+    _ALIASES.setdefault((_seed_kind,_seed_alias),set()).add(_seed_canonical)
 _UNAMBIGUOUS={key:next(iter(values)) for key,values in _ALIASES.items()
               if len(values)==1}
 
