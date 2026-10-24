@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """Kodi-only TV navigator. All browsing lives in one WindowXMLDialog.
 
-Only the voluntary fallback to the legacy menu and the actual player leave
-this window. Content lists are populated from real, availability-checked files.
+Settings stay inside the movie UI; only playing a selected file leaves it. Content lists are populated from real, availability-checked files.
 """
 import os
 import traceback
@@ -11,11 +10,11 @@ import xbmc
 
 TOP_ACTIONS={
     101:'movies', 102:'shows', 103:'search', 104:'premieres',
-    105:'filters', 106:'classic', 107:'settings'
+    107:'settings'
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=(401,402)
-VERSION='0.11.0'
+VERSION='0.11.1'
 
 
 def tile(name,kind,**extra):
@@ -47,7 +46,6 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self._fill('ZAČNĚTE VYHLEDÁVÁNÍM',[
                 tile('HLEDAT FILM / SERIÁL','search'),
                 tile('NASTAVENÍ WEBSHARE','settings'),
-                tile('KLASICKÉ MENU','classic'),
             ],'DALŠÍ MOŽNOSTI',[], 'Webshare či ČSFD nyní neodpovídá.')
 
     def _loading(self,text):
@@ -82,7 +80,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             if li:
                 lst.addItems(li)
         try:
-            self.setFocusId(401 if cards1 else 402 if cards2 else 103)
+            self.setFocusId(401 if cards1 else 402 if cards2 else 107)
         except RuntimeError:
             pass
         self._update_hero()
@@ -146,6 +144,13 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             'home':'DOMŮ','movies':'FILMY','shows':'SERIÁLY','premieres':'PREMIÉRY',
             'search':'VYHLEDÁVÁNÍ','seasons':'SÉRIE','episodes':'EPIZODY',
             'files':'VÝBĚR KVALITY'}.get(view,'KATALOG'))
+        if not self.service.token:
+            self._fill('PŘIHLÁŠENÍ K WEBSHARE',[
+                tile('NASTAVIT ÚČET WEBSHARE','settings',
+                     plot='Stiskni OK nebo ozubené kolečko vpravo nahoře.'),
+            ],'NASTAVENÍ',[], 
+                'Otevři ⚙ Nastavení pro přihlášení k Webshare.')
+            return
         if view=='home':
             load=self._loading('Načítám dostupné filmy a česká metadata…')
             try:
@@ -248,6 +253,36 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         else:
             self.close()
 
+    def _open_settings(self):
+        """Open the native add-on settings without leaving the cinematic window."""
+        try:
+            self.addon.openSettings()
+            if self.addon.getSetting('wsuser') and self.addon.getSetting('wspass'):
+                new_token=self.revalidate_callback()
+            else:
+                new_token=None
+            self.service.token=new_token
+            self.service.home_cache=None
+            self.service.search_cache.clear()
+            self.service.series_cache.clear()
+            self.stack=[]
+            self._screen('home')
+        except Exception:
+            traceback.print_exc()
+            xbmcgui.Dialog().notification('Božský přehrávač',
+                'Nastavení bylo zavřeno, zkus otevřít přehrávač znovu.',
+                xbmcgui.NOTIFICATION_WARNING)
+
+    def _gear_menu(self):
+        selected=xbmcgui.Dialog().select('⚙  Nastavení Božského přehrávače',[
+            'Nastavení doplňku a přihlášení Webshare',
+            'Filtry a řazení katalogu'
+        ])
+        if selected==0:
+            self._open_settings()
+        elif selected==1:
+            self._filters()
+
     def _filters(self):
         choice=xbmcgui.Dialog().select('Katalog · filtrování a řazení',[
             'Řazení: '+self.sort,'Rozlišení: '+self.quality,
@@ -297,14 +332,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
     def onClick(self,control_id):
         if control_id in TOP_ACTIONS:
             command=TOP_ACTIONS[control_id]
-            if command=='classic':
-                self.destination=self.make_url(action='classic_menu')
-                self.close()
-            elif command=='settings':
-                self.destination=self.make_url(action='settings')
-                self.close()
-            elif command=='filters':
-                self._filters()
+            if command=='settings':
+                self._gear_menu()
             else:
                 self._refresh(command)
             return
@@ -316,11 +345,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         if kind in ('movies','shows','premieres','search'):
             self._refresh(kind)
         elif kind=='settings':
-            self.destination=self.make_url(action='settings')
-            self.close()
-        elif kind=='classic':
-            self.destination=self.make_url(action='classic_menu')
-            self.close()
+            self._open_settings()
         elif kind=='movie':
             self._refresh('files',(c,None,None))
         elif kind=='show':
@@ -337,7 +362,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
 
 
 def launch(addon,profile,get_url,token,search_page,
-           metadata_factory,calendar_factory):
+           metadata_factory,calendar_factory,revalidate_callback):
     from cinema_service_v2 import CinemaService
     from ws_availability import Availability
     from cinematic_home import ensure_textures
@@ -346,6 +371,8 @@ def launch(addon,profile,get_url,token,search_page,
                           metadata,calendar_factory(),profile=profile)
     win=CinemaScreen('bozsky-cinema-v2.xml',addon.getAddonInfo('path'),'Default','1080i')
     win.service=service
+    win.addon=addon
+    win.revalidate_callback=revalidate_callback
     win.textures=ensure_textures(profile)
     win.make_url=get_url
     win.destination=None
