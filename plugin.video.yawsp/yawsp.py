@@ -1711,64 +1711,20 @@ def novinky_detail(params):
     novinky_item('SMART SEARCH: zobrazit další varianty', 'smart_search', what=title)
     xbmcplugin.endOfDirectory(_handle)
 
-def classic_menu():
-    # Every film in the catalogue requires a Webshare search result.
-    # Actual Webshare operations call revalidate() when needed.
-    xbmcplugin.setPluginCategory(_handle, _addon.getAddonInfo('name'))
-    li=xbmcgui.ListItem(label='🎬  FILMY  |  Plakáty · Novinky · 4K · CZ · Žánry')
-    li.setArt({'icon':'DefaultVideo.png'})
-    xbmcplugin.addDirectoryItem(_handle,get_url(action='catalog_home',kind='movie'),li,True)
-    li=xbmcgui.ListItem(label='📺  SERIÁLY  |  Série · Epizody · Novinky')
-    li.setArt({'icon':'DefaultTVShows.png'})
-    xbmcplugin.addDirectoryItem(_handle,get_url(action='catalog_home',kind='show'),li,True)
-    li=xbmcgui.ListItem(label='🎬  FILMOVÉ ROZHRANÍ | Plakáty a filmové řady')
-    li.setArt({'icon':'DefaultVideo.png'})
-    xbmcplugin.addDirectoryItem(_handle,get_url(action='cinematic_home'),li,True)
-    li = xbmcgui.ListItem(label='📅  PREMIÉRY V KINECH  |  Pouze ověřené na Webshare')
-    li.setArt({'icon':'DefaultAddonsRecentlyUpdated.png'})
-    xbmcplugin.addDirectoryItem(_handle, get_url(action='novinky'), li, True)
-    li = xbmcgui.ListItem(label='🔎  VYHLEDÁVÁNÍ  |  Filmy a seriály podle názvu')
-    li.setArt({'icon':'DefaultAddonsSearch.png'})
-    xbmcplugin.addDirectoryItem(_handle, get_url(action='smart_search'), li, True)
-    listitem = xbmcgui.ListItem(label='📁  SOUBORY  |  Pokročilé vyhledávání')
-    listitem.setArt({'icon': 'DefaultAddonsSearch.png'})
-    xbmcplugin.addDirectoryItem(_handle, get_url(action='search'), listitem, True)
-    
-    listitem = xbmcgui.ListItem(label=_addon.getLocalizedString(30202))
-    listitem.setArt({'icon': 'DefaultPlaylist.png'})
-    xbmcplugin.addDirectoryItem(_handle, get_url(action='queue'), listitem, True)
-    
-    listitem = xbmcgui.ListItem(label=_addon.getLocalizedString(30203))
-    listitem.setArt({'icon': 'DefaultAddonsUpdates.png'})
-    xbmcplugin.addDirectoryItem(_handle, get_url(action='history'), listitem, True)
-    
-    if 'true' == _addon.getSetting('experimental'):
-        listitem = xbmcgui.ListItem(label='Backup DB')
-        listitem.setArt({'icon': 'DefaultAddonsZip.png'})
-        xbmcplugin.addDirectoryItem(_handle, get_url(action='db'), listitem, True)
-
-    listitem = xbmcgui.ListItem(label=_addon.getLocalizedString(30204))
-    listitem.setArt({'icon': 'DefaultAddonService.png'})
-    xbmcplugin.addDirectoryItem(_handle, get_url(action='settings'), listitem, False)
-
-    xbmcplugin.endOfDirectory(_handle)
-
 def cinematic_menu():
-    """All film, series, search and quality views share one Kodi TV interface."""
+    """Start directly in the custom cinema window, including first-run settings."""
     try:
         from cinema_screen_v2 import launch
-        token=revalidate()
-        if not token:
-            popinfo('Pro katalog se nejprve přihlas k Webshare')
-            classic_menu()
-            return
+        token=None
+        if _addon.getSetting('wsuser') and _addon.getSetting('wspass'):
+            token=revalidate()
         destination,is_play=launch(_addon,_profile,get_url,token,
-            novinky_search_page,_csfd_client,_premiere_client)
+            novinky_search_page,_csfd_client,_premiere_client,revalidate)
     except Exception:
         traceback.print_exc()
-        popinfo('Filmové rozhraní nelze spustit; otevřeno klasické menu',
-                icon=xbmcgui.NOTIFICATION_WARNING)
-        classic_menu()
+        popinfo('Filmové rozhraní nelze spustit. Podrobnosti jsou v Kodi logu.',
+                icon=xbmcgui.NOTIFICATION_ERROR)
+        xbmcplugin.endOfDirectory(_handle,succeeded=False,cacheToDisc=False)
         return
     xbmcplugin.endOfDirectory(_handle,succeeded=False,cacheToDisc=False)
     if destination:
@@ -1779,10 +1735,8 @@ def cinematic_menu():
 
 
 def menu():
-    if _addon.getSetting('cinematic_ui') == 'false':
-        classic_menu()
-    else:
-        cinematic_menu()
+    """The add-on has one entrance: the cinematic interface."""
+    cinematic_menu()
 
 
 def router(paramstring):
@@ -1820,8 +1774,6 @@ def router(paramstring):
             novinky_set(params)
         elif params.get('action') == 'cinematic_home':
             cinematic_menu()
-        elif params.get('action') == 'classic_menu':
-            classic_menu()
         elif params.get('action') == 'catalog_home':
             catalog_home(params)
         elif params.get('action') == 'catalog_browse':
