@@ -13,8 +13,8 @@ TOP_ACTIONS={
     107:'settings'
 }
 BACK_ACTIONS=(9,10,92,216)
-ROW_IDS=(401,402,403,404,405,406)
-VERSION='0.12.0'
+ROW_IDS=(401,402,403,404,405,406,407)
+VERSION='0.13.0'
 
 
 def tile(name,kind,**extra):
@@ -170,6 +170,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                     return items or [tile('ŽÁDNÉ OVĚŘENÉ TITULY S HODNOCENÍM','none',
                         plot='Hodnocení ČSFD nebo dostupné soubory zatím chybí.')]
                 extra=[
+                    ('FILMOVÉ HITY A KLASIKY · OVĚŘENO NA WEBSHARE',
+                     home.get('classics') or [tile('HLEDAT OBLÍBENÝ FILM','search')]),
                     ('NEJLEPŠÍ FILMY VŠECH DOB · ČSFD',shelf(home.get('best_movies_all'))),
                     ('NEJLEPŠÍ FILMY ROKU %s · ČSFD'%year,shelf(home.get('best_movies_year'))),
                     ('NEJLEPŠÍ SERIÁLY VŠECH DOB · ČSFD',shelf(home.get('best_shows_all'))),
