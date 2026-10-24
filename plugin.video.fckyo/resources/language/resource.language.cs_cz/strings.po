@@ -1,6 +1,6 @@
 # XBMC Media Center language file
-# Addon Name: Božský přehrávač
-# Addon id: plugin.video.yawsp
+# Addon Name: FCKYO
+# Addon id: plugin.video.fckyo
 # Addon Provider: cache-sk
 
 msgid ""

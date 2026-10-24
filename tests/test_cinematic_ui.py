@@ -8,7 +8,7 @@ import unittest
 from xml.etree import ElementTree as ET
 
 ROOT=os.path.abspath(os.path.join(os.path.dirname(__file__),'..'))
-PLUG=os.path.join(ROOT,'plugin.video.yawsp')
+PLUG=os.path.join(ROOT,'plugin.video.fckyo')
 sys.path.insert(0,PLUG)
 
 from cinematic_catalog import make_rows, webshare_image_url
@@ -111,7 +111,7 @@ class DiscoveryTests(unittest.TestCase):
 class WindowLayoutTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.path=os.path.join(PLUG,'resources','skins','Default','1080i','bozsky-cinema.xml')
+        cls.path=os.path.join(PLUG,'resources','skins','Default','1080i','fckyo-cinema.xml')
         cls.window=ET.parse(cls.path).getroot()
 
     def test_two_horizontal_poster_rails(self):
@@ -134,7 +134,7 @@ class WindowLayoutTests(unittest.TestCase):
 
     def test_skin_xml_is_local_to_plugin(self):
         self.assertEqual(self.window.tag,'window')
-        self.assertIn('bozsky-cinema.xml', os.listdir(os.path.dirname(self.path)))
+        self.assertIn('fckyo-cinema.xml', os.listdir(os.path.dirname(self.path)))
         with open(self.path,encoding='utf8') as source:
             self.assertIn('row1_heading',source.read())
 

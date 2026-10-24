@@ -5,7 +5,7 @@ import sys
 import tempfile
 import unittest
 sys.path.insert(0,os.path.abspath(os.path.join(os.path.dirname(__file__),'..',
-                                               'plugin.video.yawsp')))
+                                               'plugin.video.fckyo')))
 from cinema_feed_v4 import CatalogFeed,parse_catalog
 from cinema_service_v2 import CinemaService
 from novinky_catalogue import normalize

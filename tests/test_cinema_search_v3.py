@@ -6,7 +6,7 @@ import tempfile
 import unittest
 
 PLUGIN=os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                    '..','plugin.video.yawsp'))
+                                    '..','plugin.video.fckyo'))
 sys.path.insert(0,PLUGIN)
 from cinema_search_v3 import (candidate_names,query_plan,matching_files,
                               localized_title,is_title_match,MOVIE_SEEDS,seed_batch)

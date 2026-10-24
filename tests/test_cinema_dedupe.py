@@ -5,7 +5,7 @@ import sys
 import unittest
 
 ROOT=os.path.abspath(os.path.join(os.path.dirname(__file__),'..'))
-sys.path.insert(0,os.path.join(ROOT,'plugin.video.yawsp'))
+sys.path.insert(0,os.path.join(ROOT,'plugin.video.fckyo'))
 from cinema_dedupe import consolidate, identity, unify_sections, unique_home_rails
 from cinema_service_v2 import CinemaService
 from cinema_catalog_v2 import grouped_episodes

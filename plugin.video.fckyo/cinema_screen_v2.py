@@ -35,7 +35,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.setProperty('app_version','v'+VERSION)
         self.setProperty('section_label','ÚVOD')
         self.setProperty('ui_status','Šipky = pohyb, OK = výběr, Zpět = předchozí obrazovka')
-        self.setProperty('hero_title','BOŽSKÝ PŘEHRÁVAČ')
+        self.setProperty('hero_title','FCKYO')
         self.setProperty('hero_info','Katalog ověřených souborů Webshare')
         self.setProperty('hero_plot','Nové filmy podle českých kinopremiér a jejich dostupnosti.')
         self.setProperty('hero_art','')
@@ -50,7 +50,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
 
     def _loading(self,text):
         d=xbmcgui.DialogProgress()
-        d.create('Božský přehrávač',text)
+        d.create('FCKYO',text)
         return d
 
     def _fill(self,title1,cards1,title2,cards2,status='',extra_rows=()):
@@ -61,7 +61,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         for index,(heading,cards) in enumerate(rows[:len(ROW_IDS)]):
             self.setProperty('row%d_heading'%(index+1),heading if cards else '')
         self.setProperty('ui_status',status or
-            ('Božský přehrávač '+VERSION+' · pouze tituly dostupné na Webshare'))
+            ('FCKYO '+VERSION+' · pouze tituly dostupné na Webshare'))
         for i,control_id in enumerate(ROW_IDS):
             lst=self.getControl(control_id)
             lst.reset()
@@ -104,7 +104,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
     def _update_hero(self):
         c=self._selected()
         if not c:
-            self.setProperty('hero_title','BOŽSKÝ PŘEHRÁVAČ')
+            self.setProperty('hero_title','FCKYO')
             self.setProperty('hero_info','FILMY · SERIÁLY · HLEDÁNÍ')
             self.setProperty('hero_plot','Vyber kategorii nebo titul.')
             self.setProperty('hero_art','')
@@ -288,12 +288,12 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self._screen('home')
         except Exception:
             traceback.print_exc()
-            xbmcgui.Dialog().notification('Božský přehrávač',
+            xbmcgui.Dialog().notification('FCKYO',
                 'Nastavení bylo zavřeno, zkus otevřít přehrávač znovu.',
                 xbmcgui.NOTIFICATION_WARNING)
 
     def _gear_menu(self):
-        selected=xbmcgui.Dialog().select('⚙  Nastavení Božského přehrávače',[
+        selected=xbmcgui.Dialog().select('⚙  Nastavení FCKYO',[
             'Nastavení doplňku a přihlášení Webshare',
             'Filtry a řazení katalogu',
             'Načíst další tituly a aktualizovat Webshare'
@@ -393,7 +393,7 @@ def launch(addon,profile,get_url,token,search_page,
     metadata=metadata_factory() if addon.getSetting('smart_metadata')!='false' else None
     service=CinemaService(token,search_page,Availability(profile),
                           metadata,calendar_factory(),profile=profile)
-    win=CinemaScreen('bozsky-cinema-v2.xml',addon.getAddonInfo('path'),'Default','1080i')
+    win=CinemaScreen('fckyo-cinema-v2.xml',addon.getAddonInfo('path'),'Default','1080i')
     win.service=service
     win.addon=addon
     win.revalidate_callback=revalidate_callback

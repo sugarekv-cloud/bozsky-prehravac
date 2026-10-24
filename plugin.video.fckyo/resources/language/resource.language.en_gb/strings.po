@@ -1,6 +1,6 @@
 # XBMC Media Center language file
-# Addon Name: Božský přehrávač
-# Addon id: plugin.video.yawsp
+# Addon Name: FCKYO
+# Addon id: plugin.video.fckyo
 # Addon Provider: cache-sk
 
 msgid ""
@@ -103,7 +103,7 @@ msgstr ""
 
 msgctxt "#30043"
 msgid "Notify progress"
-msgstr "Oznamova� priebeh"
+msgstr "Oznamova priebeh"
 
 msgctxt "#30044"
 msgid "Notify every"

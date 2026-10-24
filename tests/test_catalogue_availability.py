@@ -4,7 +4,7 @@ import os
 import sys
 import tempfile
 import unittest
-sys.path.insert(0,os.path.abspath(os.path.join(os.path.dirname(__file__),'..','plugin.video.yawsp')))
+sys.path.insert(0,os.path.abspath(os.path.join(os.path.dirname(__file__),'..','plugin.video.fckyo')))
 
 from available_catalog import matching_movies,localize_groups,names_for
 from search_catalog import grouped

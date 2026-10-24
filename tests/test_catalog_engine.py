@@ -5,7 +5,7 @@ import sys
 import unittest
 
 sys.path.insert(0,os.path.abspath(os.path.join(os.path.dirname(__file__),'..',
-                                               'plugin.video.yawsp')))
+                                               'plugin.video.fckyo')))
 from catalog_engine import (release_details, file_label, file_score,
                             filter_groups, sort_groups, sort_files, prefers_cz)
 from novinky_catalogue import parse_video_name, resolution, is_czech_audio_marked

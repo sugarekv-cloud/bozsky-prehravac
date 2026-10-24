@@ -7,7 +7,7 @@ from datetime import date,timedelta
 from xml.etree import ElementTree as ET
 
 ROOT=os.path.abspath(os.path.join(os.path.dirname(__file__),'..'))
-sys.path.insert(0,os.path.join(ROOT,'plugin.video.yawsp'))
+sys.path.insert(0,os.path.join(ROOT,'plugin.video.fckyo'))
 
 from cinema_catalog_v2 import (groups,grouped_episodes,collect_pages,
                                matching_release,sort_cards,choose_files)
@@ -162,8 +162,8 @@ class DataLayer(unittest.TestCase):
 
 class WindowContracts(unittest.TestCase):
     def test_v2_window_is_valid_and_has_both_rails(self):
-        path=os.path.join(ROOT,'plugin.video.yawsp','resources','skins',
-                          'Default','1080i','bozsky-cinema-v2.xml')
+        path=os.path.join(ROOT,'plugin.video.fckyo','resources','skins',
+                          'Default','1080i','fckyo-cinema-v2.xml')
         tree=ET.parse(path).getroot()
         ids={e.attrib.get('id') for e in tree.findall('.//control')}
         self.assertTrue({'401','402','101','102','103','104','107'}<=ids)
@@ -178,7 +178,7 @@ class WindowContracts(unittest.TestCase):
         self.assertIn('String.IsEmpty',content)
 
     def test_all_details_stay_in_one_window(self):
-        path=os.path.join(ROOT,'plugin.video.yawsp','cinema_screen_v2.py')
+        path=os.path.join(ROOT,'plugin.video.fckyo','cinema_screen_v2.py')
         with open(path,encoding='utf8') as f:
             s=f.read()
         for route in ("'movies'","'shows'","'search'","'seasons'",

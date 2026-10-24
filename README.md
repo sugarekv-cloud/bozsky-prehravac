@@ -1,62 +1,29 @@
-# Božský přehrávač pro Kodi
+# FCKYO – video katalog a přehrávač pro Kodi
 
-Komunitní video doplněk Kodi založený na YAWsP, licence AGPL-3.0.
-Technické ID doplňku zůstává `plugin.video.yawsp`.
-Filmografická metadata jsou pomocná; katalog zobrazuje pouze videa
-ověřená přes uživatelovo připojení k Webshare.
+FCKYO je neoficiální komunitní doplněk Kodi s vyhledáváním Webshare, metadaty filmů, plakáty a katalogem filmů i seriálů.
 
-## Instalace přes repozitář (doporučeno)
+**Nové technické ID:** `plugin.video.fckyo`. Předchozí instalace `plugin.video.yawsp` je jiný doplněk; Kodi ji na nové ID nedokáže přímo aktualizovat. Nemažte ji, dokud FCKYO nefunguje.
 
-**Stránka komunitního repozitáře:**
-https://sugarekv-cloud.github.io/bozsky-prehravac/
+## Instalace přes repozitář
 
-1. Stáhněte ZIP repozitáře:
-   https://sugarekv-cloud.github.io/bozsky-prehravac/repository.bozskyprehravac-1.0.0.zip
-   (archiv nerozbalujte).
-2. Otevřete Kodi → **Nastavení (ozubené kolečko) → Systém → Doplňky**.
-   Pro instalaci neoficiálního ZIPu povolte **Neznámé zdroje**.
-3. Kodi → **Doplňky → Instalovat ze souboru ZIP**. Vyberte právě
-   stažený `repository.bozskyprehravac-1.0.0.zip`.
-   Na televizoru lze ZIP zkopírovat přes USB nebo síťový disk.
-4. Kodi → **Doplňky → Instalovat z repozitáře → Božský repozitář →
-   Video doplňky → Božský přehrávač → Instalovat**.
-5. Otevřete Božský přehrávač. Ozubené kolečko v pravém horním rohu
-   nabízí přihlášení Webshare, filtry a ruční aktualizaci katalogu.
+GitHub Pages: https://sugarekv-cloud.github.io/bozsky-prehravac/
 
-Pokud je doplněk již instalován *ručně z jeho vlastního ZIPu*:
-neodinstalovávejte jej ani nemažte data. Otevřete **Moje doplňky →
-Video doplňky → Božský přehrávač → Verze / Aktualizovat** a pokud
-je v nabídce, vyberte verzi z **Božského repozitáře**.
-V nastavení Kodi je možné zvolit automatické aktualizace a
-v prohlížeči doplňků spustit **Zkontrolovat aktualizace**.
+1. Stáhněte [instalační ZIP repozitáře](https://sugarekv-cloud.github.io/bozsky-prehravac/repository.bozskyprehravac-1.0.0.zip). Nerozbalujte jej.
+2. V Kodi otevřete **Nastavení → Systém → Doplňky** a případně povolte **Neznámé zdroje**.
+3. Zvolte **Doplňky → Instalovat ze souboru ZIP** a otevřete instalační ZIP repozitáře.
+4. Otevřete **Doplňky → Instalovat z repozitáře → FCKYO repozitář → Video doplňky → FCKYO → Instalovat**.
+5. Spusťte **FCKYO** a v ozubeném kolečku nastavte účet Webshare.
 
-## Katalog a synchronizace
+ID repozitáře zůstává `repository.bozskyprehravac`, aby jeho dosavadní instalace fungovaly dál. Stejná je také URL GitHub Pages; mění se pouze ID video doplňku. Pokud Kodi ještě zobrazuje původní název repozitáře, jde o staré pojmenování stejného zdroje.
 
-Cinemeta (veřejná katalogová metadata, bez API klíče) poskytuje názvy,
-roky, plakáty a případně hodnocení IMDb. Volitelná CZDB/ČSFD metadata
-jsou preferována pro české názvy a hodnocení. Cinemeta je *seznam
-kandidátů*, nikoliv důkaz dostupnosti na Webshare. Kodi při otevření
-postupně prověřuje omezený počet titulů přes Webshare API a ukládá
-index na zařízení. Ozubené kolečko → **Načíst další tituly a
-aktualizovat Webshare** spustí další dávku. Režim není trvalá
-synchronizační služba spuštěná na pozadí.
+FCKYO je **nový doplněk**: účty, historie i staré nastavení se automaticky nepřevádějí. Původní doplněk lze po ověření funkce FCKYO odinstalovat.
 
-Použité zdroje:
-- https://cinemeta-catalogs.strem.io/top/catalog/movie/top.json
-- https://v3-cinemeta.strem.io/manifest.json
+## Katalog a aktualizace
 
-Přítomnost filmu v katalogu neznamená, že je soubor trvale dostupný.
-Jazykové označení v názvu souboru není záruka dabingu.
+Kodi na zařízení průběžně načítá katalogová metadata Cinemeta a vyhledává skutečné dostupné soubory na Webshare. Dostupnost musí být před zobrazením filmu ověřená; sama filmová databáze žádná videa neposkytuje. V rozhraní lze pod ozubeným kolečkem zvolit další synchronizační dávku. Veřejná data nemusejí obsahovat všechny existující filmy; není to nepřetržitý background indexer.
 
-## Údržba a automatické aktualizace
+Změna čísla verze v `plugin.video.fckyo/addon.xml` spustí pomocí GitHub Actions nové sestavení repozitáře. Testy: `python -m unittest discover -s tests -v`. Vygenerování balíčku: `python build_repo.py --owner sugarekv-cloud --output site`.
 
-GitHub Actions při změně větve `main` spouští testy, generují
-`addons.xml`, `addons.xml.md5` a instalační ZIP doplňku.
-GitHub Pages následně nabízí Kodi nové verze přes repozitář.
-Vydávání se řídí verzí z `plugin.video.yawsp/addon.xml`.
+## Licence a původ projektu
 
-Testy: `python -m unittest discover -s tests -v`.
-Sestavení: `python build_repo.py --owner sugarekv-cloud --output site`.
-
-Katalogový kód nedistribuuje filmy a nepoužívá heslo Webshare při
-stahování veřejných metadat. Používejte pouze obsah, k němuž máte oprávnění.
+Zdrojový kód tohoto Kodi doplňku zahrnuje úpravy staršího svobodného projektu. Autorská historie a povinné informace jsou v `plugin.video.fckyo/CREDITS.md`, původní licence AGPL-3.0 zůstává v `plugin.video.fckyo/LICENSE`. Změna názvu a technického ID neznamená změnu autorství, licence ani vznik nové nezávislé implementace. Nepoužívejte soubory, ke kterým nemáte oprávnění.

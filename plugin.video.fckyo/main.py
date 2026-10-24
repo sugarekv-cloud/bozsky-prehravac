@@ -5,7 +5,7 @@
 # License: AGPL v.3 https://www.gnu.org/licenses/agpl-3.0.html
 
 import sys
-import yawsp
+import fckyo
 
 if __name__ == '__main__':
-    yawsp.router(sys.argv[2][1:])
+    fckyo.router(sys.argv[2][1:])

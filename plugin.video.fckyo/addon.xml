@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.yawsp" name="Božský přehrávač" version="0.15.0" provider-name="cache-sk">
+<addon id="plugin.video.fckyo" name="FCKYO" version="0.16.0" provider-name="FCKYO Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -9,18 +9,26 @@
         <provides>video</provides>
     </extension>
     <extension point="xbmc.addon.metadata">
-        <summary>Božský přehrávač – filmy, seriály, kalendář premiér a Webshare</summary>
+        <summary>FCKYO – filmy, seriály, kalendář premiér a Webshare</summary>
         <disclaimer lang="en_GB">The plugin does not provide any content, it is only a simulation of the browser of a publicly available web site. I am not responsible for the content provided by this site.</disclaimer>
         <disclaimer lang="sk_SK">Plugin neposkytuje žiaden obsah, je to len simulácia prehliadača verejne dostupnej web stránky. Nie som zodpovedný za obsah, ktorý táto stránka poskytuje.</disclaimer>
         <disclaimer lang="cs_CZ">Plugin neposkytuje žádný obsah, je to jen simulace prohlížeče veřejně dostupné web stránky. Nejsem zodpovědný za obsah, který tato stránka poskytuje.</disclaimer>
         <platform>all</platform>
         <license>AGPL 3.0</license>
         <forum>https://www.xbmc-kodi.cz/prispevek-yet-another-webshare-plugin</forum>
-        <source>https://github.com/cache-sk/plugin.video.yawsp</source>
+        <source>https://github.com/sugarekv-cloud/bozsky-prehravac</source>
         <assets>
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.16.0 FCKYO – nový název a technické ID[/B]
+- Kodi doplněk má samostatné ID plugin.video.fckyo, hlavní modul fckyo.py
+- Odstraněny staré identifikátory ze zdrojového kódu a veřejných nabídek
+- Stávající repozitář rozpozná FCKYO jako nový video doplněk; předchozí instalace zůstává samostatně
+- Funkce Webshare, ČSFD, Cinemeta, české názvy, plakáty, filtry a seriály zachovány
+- Původní licenční podmínky AGPL-3.0 a autorské informace zůstávají v souboru CREDITS.md a LICENSE
+
+
 [B]0.15.0 Jeden film = jeden plakát[/B]
 - Opakované plakáty stejného filmu nebo seriálu se sloučí do jedné položky
 - Seskupování používá původní i české názvy, druh titulu a rok vydání, aby se nesloučily různé remaky
@@ -143,9 +151,9 @@
 - Mezipaměť výsledků 15 minut bez přihlašovacích údajů
 - Původní hledání jednotlivých souborů dostupné jako Pokročilé hledání
 
-[B]0.6.1 Božský přehrávač[/B]
+[B]0.6.1 FCKYO[/B]
 - Nový název, popisky a vlastní ikona bez původního loga
-- Zachováno původní ID plugin.video.yawsp kvůli kompatibilitě a nastavení
+- Zachováno původní ID plugin.video.fckyo kvůli kompatibilitě a nastavení
 - Příprava na distribuci aktualizací z vlastního repozitáře
 
 [B]0.6.0 Filmové premiéry ČR[/B]

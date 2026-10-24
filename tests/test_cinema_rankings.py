@@ -6,7 +6,7 @@ import unittest
 from xml.etree import ElementTree as ET
 
 ROOT=os.path.abspath(os.path.join(os.path.dirname(__file__),'..'))
-PLUGIN=os.path.join(ROOT,'plugin.video.yawsp')
+PLUGIN=os.path.join(ROOT,'plugin.video.fckyo')
 sys.path.insert(0,PLUGIN)
 from cinema_rankings import create_shelves,ranked_cards
 from cinema_service_v2 import CinemaService
@@ -66,7 +66,7 @@ class RankingTests(unittest.TestCase):
 class ScrollableSkinTests(unittest.TestCase):
     def test_seven_rows_in_scrollable_grouplist(self):
         path=os.path.join(PLUGIN,'resources','skins','Default','1080i',
-                          'bozsky-cinema-v2.xml')
+                          'fckyo-cinema-v2.xml')
         root=ET.parse(path).getroot()
         container=root.find(".//control[@id='610']")
         self.assertIsNotNone(container)
@@ -80,7 +80,7 @@ class ScrollableSkinTests(unittest.TestCase):
 
     def test_rankings_do_not_replace_main_tabs_or_gear(self):
         path=os.path.join(PLUGIN,'resources','skins','Default','1080i',
-                          'bozsky-cinema-v2.xml')
+                          'fckyo-cinema-v2.xml')
         root=ET.parse(path).getroot()
         ids={x.get('id') for x in root.findall('.//control')}
         self.assertTrue({'101','102','103','104','107'} <= ids)

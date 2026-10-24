@@ -1219,7 +1219,7 @@ def novinky_set(params):
 
 def novinky_menu(params):
     """Main Novinky catalogue now reflects *cinema premiere dates*, not Webshare uploads."""
-    xbmcplugin.setPluginCategory(_handle, 'Božský přehrávač / Premiéry ČR')
+    xbmcplugin.setPluginCategory(_handle, 'FCKYO / Premiéry ČR')
     novinky_item('PRÁVĚ UVEDENÉ FILMY [COLOR gray](posledních 30 dní)[/COLOR]',
                  'premiere_list', view='recent30')
     novinky_item('PREMIÉRY ZA POSLEDNÍ TÝDEN', 'premiere_list', view='recent7')
@@ -1427,7 +1427,7 @@ def premiere_info(params):
 
 
 def premiere_about(params):
-    xbmcgui.Dialog().textviewer('Božský přehrávač / zdroj premiér',
+    xbmcgui.Dialog().textviewer('FCKYO / zdroj premiér',
        'Novinky: skutečná data premiér filmů v českých kinech, nikoli Webshare uploady.\n'
        'Zdroj: https://www.fuxoft.cz/vyplody/premiery/premiery.ics\n'
        'Kalendář převádí data českých filmových distributorů a může obsahovat změny termínů.\n'
@@ -1508,7 +1508,7 @@ def catalog_info(params):
 
 
 def catalog_about(params):
-    xbmcgui.Dialog().textviewer('O Božském přehrávači',
+    xbmcgui.Dialog().textviewer('O FCKYO',
         'Nově přidané = soubory Webshare podle API sort=recent, nikoliv datum premiéry.\n'
         'Rok se nejprve odhaduje z názvu souboru.\n'
         'ČSFD metadata dodává nezávislá neoficiální služba CZDB; může být nedostupná.\n'
