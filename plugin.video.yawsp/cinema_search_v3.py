@@ -150,6 +150,24 @@ def matching_files(files, names, kind=None, year=None):
     return output
 
 
+
+def localized_title(raw, kind='movie', year=None):
+    """Return a known Czech title only for a precise release match."""
+    source=MOVIE_SEEDS if kind=='movie' else SHOW_SEEDS
+    name=normalize(raw)
+    for cz,original,release_year in source:
+        # An exact original name (or its optional English article) is required.
+        variants_of_name={normalize(cz),normalize(original)}
+        if normalize(original).startswith('the '):
+            variants_of_name.add(normalize(original)[4:])
+        if name not in variants_of_name:
+            continue
+        if year and kind=='movie' and str(year)!=str(release_year):
+            continue
+        return {'title':cz,'original':original,
+                'year':str(release_year)}
+    return None
+
 def seed_batch(catalogue, offset=0, count=8):
     """Finite progress through classics, with the first batch covering core titles."""
     if not catalogue:return []
