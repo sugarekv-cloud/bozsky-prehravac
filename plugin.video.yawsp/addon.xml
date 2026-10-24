@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.yawsp" name="Božský přehrávač" version="0.11.1" provider-name="cache-sk">
+<addon id="plugin.video.yawsp" name="Božský přehrávač" version="0.12.0" provider-name="cache-sk">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -21,6 +21,17 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.12.0 Čtyři žebříčky nejlépe hodnocených filmů a seriálů[/B]
+- Úvod obsahuje nejlepší filmy všech dob, nejlepší filmy aktuálního roku, nejlepší seriály všech dob a nejlepší seriály aktuálního roku
+- Aktuální rok se načítá automaticky z data Kodi; letos 2026
+- Pořadí dle dostupného hodnocení ČSFD (CZDB) ze širšího vzorku souborů Webshare
+- Žebříčky zahrnují jen skutečně nalezené a ověřené soubory na Webshare
+- Tituly bez spolehlivého hodnocení či roku se nezařadí do žebříčku omylem
+- Šest plakátových řad je svisle posuvných, stále v jediném filmovém rozhraní
+- Jde o žebříček z aktuálně indexovaných Webshare titulů, ne kompletní globální TOP filmografie
+- Zachováno nastavení pod ozubeným kolečkem vpravo nahoře
+
+
 [B]0.11.1 Přímé filmové rozhraní a ozubené kolečko[/B]
 - Po spuštění se vždy otevře pouze vlastní filmová obrazovka.
 - Klasické menu bylo odstraněno z horní navigace i úvodní obrazovky.
