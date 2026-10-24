@@ -158,8 +158,10 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             load=self._loading('Načítám dostupné filmy a česká metadata…')
             try:
                 home=self.service.home()
-                top=home['premieres'] or home['movies']
-                bottom=home['shows'] or home.get('classic_shows',[])
+                # Each card has already been allocated to one home category.
+                # Combine remaining new releases without repeating other rails.
+                top=home['premieres']+home['movies']
+                bottom=home['shows']+home.get('classic_shows',[])
                 if not top:
                     top=[tile('HLEDAT FILM','search'),tile('FILMY','movies')]
                 if not bottom:
@@ -172,15 +174,15 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                     return items or []
                 extra=[
                     ('FILMOVÉ HITY A KLASIKY · OVĚŘENO NA WEBSHARE',
-                     home.get('classics') or [tile('HLEDAT OBLÍBENÝ FILM','search')]),
+                     home.get('classics') or []),
                     ('NEJLEPŠÍ FILMY VŠECH DOB · ČSFD / IMDb',shelf(home.get('best_movies_all'))),
                     ('NEJLEPŠÍ FILMY ROKU %s · ČSFD / IMDb'%year,shelf(home.get('best_movies_year'))),
                     ('NEJLEPŠÍ SERIÁLY VŠECH DOB · ČSFD / IMDb',shelf(home.get('best_shows_all'))),
                     ('NEJLEPŠÍ SERIÁLY ROKU %s · ČSFD / IMDb'%year,shelf(home.get('best_shows_year'))),
                 ]
-                self._fill('ČESKÉ PREMIÉRY NA WEBSHARE' if home['premieres'] else
+                self._fill('PREMIÉRY A DALŠÍ FILMY NA WEBSHARE' if home['premieres'] else
                            'DOSTUPNÉ FILMY',top,
-                           'SERIÁLY' if home['shows'] else 'OBJEVIT DALŠÍ FILMY',
+                           'DOSTUPNÉ SERIÁLY',
                            bottom,self.service.last_diagnostics +
                            ' · Žebříčky pouze z hodnocených dostupných titulů',extra_rows=extra)
             finally:load.close()
