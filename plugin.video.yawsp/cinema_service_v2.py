@@ -248,7 +248,8 @@ class CinemaService:
                     cached=json.load(handle)
                 if (isinstance(cached,dict) and
                     time.time()-float(cached.get('saved',0)) < 480 and
-                    isinstance(cached.get('home'),dict)):
+                    isinstance(cached.get('home'),dict) and
+                    'classics' in cached['home']):
                     self.home_cache=cached['home']
                     self._add_ranked_shelves(self.home_cache)
                     self.last_diagnostics='Katalog načten z ověřené 8minutové mezipaměti'
