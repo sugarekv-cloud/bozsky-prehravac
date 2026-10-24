@@ -26,6 +26,14 @@ _SAFE_URL=re.compile(r'^https://[A-Za-z0-9][A-Za-z0-9.:-]+/',re.I)
 _YEAR=re.compile(r'(?:19|20)\d{2}')
 
 
+def _rating(value):
+    try:
+        number=float(value)
+        return round(number*10,1) if 0<number<=10 else None
+    except (ValueError,TypeError):
+        return None
+
+
 def parse_catalog(data, kind):
     """Strictly convert third-party JSON into a list of bounded film seeds."""
     if not isinstance(data,dict) or not isinstance(data.get('metas'),list):
@@ -58,6 +66,10 @@ def parse_catalog(data, kind):
             'original':str(raw.get('original') or title).strip()[:160],
             'poster':art(poster), 'background':art(background),
             'id':str(raw.get('imdb_id') or raw.get('id') or '')[:45],
+            'plot':str(raw.get('description') or '').strip()[:340],
+            'genres':[str(x)[:45] for x in (raw.get('genres') or raw.get('genre') or [])
+                      if isinstance(x,str)][:4],
+            'imdb_rating':_rating(raw.get('imdbRating')),
         })
     return result
 
