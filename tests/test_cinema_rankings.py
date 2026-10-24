@@ -64,7 +64,7 @@ class RankingTests(unittest.TestCase):
         self.assertIn('best_shows_year',home)
 
 class ScrollableSkinTests(unittest.TestCase):
-    def test_six_rows_in_scrollable_grouplist(self):
+    def test_seven_rows_in_scrollable_grouplist(self):
         path=os.path.join(PLUGIN,'resources','skins','Default','1080i',
                           'bozsky-cinema-v2.xml')
         root=ET.parse(path).getroot()
@@ -73,10 +73,10 @@ class ScrollableSkinTests(unittest.TestCase):
         self.assertEqual(container.get('type'),'grouplist')
         self.assertEqual(container.findtext('orientation'),'vertical')
         ids={x.get('id') for x in container.findall('.//control')}
-        self.assertTrue({str(x) for x in range(401,407)} <= ids)
+        self.assertTrue({str(x) for x in range(401,408)} <= ids)
         headings=[x.findtext('label') for x in container.findall(".//control[@type='label']")]
         self.assertTrue(all(any('row%d_heading'%i in (h or '') for h in headings)
-                            for i in range(1,7)))
+                            for i in range(1,8)))
 
     def test_rankings_do_not_replace_main_tabs_or_gear(self):
         path=os.path.join(PLUGIN,'resources','skins','Default','1080i',
