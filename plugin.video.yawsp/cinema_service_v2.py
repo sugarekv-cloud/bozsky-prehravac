@@ -186,7 +186,15 @@ class CinemaService:
                     continue
                 dynamic.append((title,item.get('original') or title,year))
                 metadata[(normalize(title),year)]=item
-            candidates=list(curated[:opening])+dynamic+list(curated[opening:])
+            candidates=list(curated[:opening])
+            remaining_static=list(curated[opening:])
+            # Interleave established classics with the large downloaded feed
+            # so new movies never starve perennial favourites.
+            for pos in range(0,max(len(dynamic),len(remaining_static)*3),8):
+                candidates.extend(dynamic[pos:pos+8])
+                candidates.extend(remaining_static[:3])
+                del remaining_static[:3]
+            candidates.extend(remaining_static)
             seen=set()
             result=[]
             for title,original,year in candidates:
@@ -293,10 +301,10 @@ class CinemaService:
         # unless Webshare's existence endpoint confirms one file.
         movies=verified_groups(raw['movie'],self.availability,maximum=48,checked=85)
         shows=verified_groups(raw['show'],self.availability,maximum=32,checked=55)
-        for listing in (movies,shows):
-            for g in listing:
+        for listing,budget in ((movies,15),(shows,8)):
+            for index,g in enumerate(listing):
                 data=None
-                if self.metadata:
+                if self.metadata and index<budget:
                     data=self.metadata.lookup(g['seed_title'],
                             str(g['year']) if g['kind']=='movie' else '')
                     if not data:
@@ -315,6 +323,10 @@ class CinemaService:
                               'rating_source':'IMDb'}
                     else:
                         data=localized_title(g['title'],g['kind'],g.get('year'))
+                        if not data:
+                            data={'title':g['seed_title'],
+                                  'original':g['seed_original'],
+                                  'year':str(g['year'])}
                 g['metadata']=data
         if self.metadata:
             self.metadata.save()
@@ -353,6 +365,13 @@ class CinemaService:
         premieres=self._premieres(9)
         recent,shows=self._from_webshare()
         classics,classic_shows=self._discover_hits()
+        if self.feed is not None:
+            try:
+                counts=self.feed.sizes()
+                self.last_diagnostics+=(' · Databáze kandidátů: %d filmů, %d seriálů' %
+                    (counts['movie'],counts['show']))
+            except (KeyError,TypeError,AttributeError):
+                pass
         seen={normalize(c['raw']) for c in premieres}
         additional=[c for c in recent if normalize(c['raw']) not in seen]
         self.home_cache=self._add_ranked_shelves({
