@@ -14,6 +14,8 @@ from cinema_catalog_v2 import (groups,verified_groups,add_metadata,card,
 from cinematic_discovery import discover
 from novinky_catalogue import normalize
 from catalog_engine import file_label
+from cinema_search_v3 import (MOVIE_SEEDS, SHOW_SEEDS, candidate_names,
+                              query_plan, matching_files, seed_batch)
 
 
 class CinemaService:
@@ -30,6 +32,7 @@ class CinemaService:
         self.search_cache={}
         self.series_cache={}
         self.last_diagnostics=''
+        self.hits_path=os.path.join(profile,'cinema-v3-hits.json') if profile else None
 
     def _decorate(self, group, metadata=None):
         if metadata:
@@ -133,12 +136,104 @@ class CinemaService:
         return ([self._decorate(g,g.get('metadata')) for g in movies],
                 [self._decorate(g,g.get('metadata')) for g in shows])
 
+    def _discover_hits(self, movie_batch=6, show_batch=2):
+        """Incrementally search classic titles, retaining confirmed Webshare hits."""
+        cache={'movies_next':0,'shows_next':0,'entries':{}}
+        if self.hits_path:
+            try:
+                with io.open(self.hits_path,'r',encoding='utf8') as handle:
+                    stored=json.load(handle)
+                if isinstance(stored,dict) and isinstance(stored.get('entries'),dict):
+                    cache=stored
+            except (OSError,ValueError,TypeError):
+                pass
+        now=time.time()
+        valid={}
+        for key,item in cache.get('entries',{}).items():
+            if not isinstance(item,dict):
+                continue
+            age=now-float(item.get('time',0))
+            ttl=86400 if item.get('files') else 7200
+            if 0<=age<ttl:
+                valid[key]=item
+        cache['entries']=valid
+        for kind,seeds,batch,offset_key in (
+                ('movie',MOVIE_SEEDS,movie_batch,'movies_next'),
+                ('show',SHOW_SEEDS,show_batch,'shows_next')):
+            offset=int(cache.get(offset_key,0) or 0)
+            sampled=seed_batch(seeds,offset,batch)
+            for title,original,year in sampled:
+                key=kind+':'+normalize(title)
+                if key in valid:
+                    continue
+                aliases=candidate_names(title,{'original':original})
+                hits=[]
+                error=False
+                for alias in aliases[:3]:
+                    page=collect_pages(self.fetch,self.token,alias,max_pages=1)
+                    if page is None:
+                        error=True
+                        continue
+                    hits.extend(matching_files(page,aliases,kind=kind,
+                            year=year if kind=='movie' else None))
+                    if hits:
+                        break
+                # No negative cache on Webshare errors.
+                if error and not hits:
+                    continue
+                valid[key]={'time':now,'kind':kind,'year':year,'title':title,
+                    'original':original,'files':list({
+                       f['ident']:f for f in hits if f.get('ident')}.values())[:30]}
+            cache[offset_key]=(offset+len(sampled))%len(seeds)
+        if self.hits_path:
+            try:
+                with io.open(self.hits_path+'.tmp','w',encoding='utf8') as handle:
+                    json.dump(cache,handle,ensure_ascii=False)
+                os.replace(self.hits_path+'.tmp',self.hits_path)
+            except (OSError,TypeError):
+                pass
+        raw={'movie':[],'show':[]}
+        for item in valid.values():
+            kind=item.get('kind')
+            if kind not in raw or not item.get('files'):
+                continue
+            aliases=candidate_names(item['title'],{'original':item['original']})
+            for g in groups(item['files'],kind):
+                matches=matching_files(g['files'],aliases,kind=kind,
+                              year=item['year'] if kind=='movie' else None)
+                if not matches:
+                    continue
+                g['files']=matches
+                g['best']=matches[0]
+                g['seed_title']=item['title']
+                g['seed_original']=item['original']
+                if kind=='show':
+                    g['year']=str(item['year'])
+                raw[kind].append(g)
+        movies=verified_groups(raw['movie'],self.availability,maximum=30,checked=45)
+        shows=verified_groups(raw['show'],self.availability,maximum=18,checked=30)
+        for listing in (movies,shows):
+            if self.metadata:
+                for g in listing[:22]:
+                    title=g['seed_title']
+                    data=self.metadata.lookup(title,
+                        str(g['year']) if g['group_kind']=='movie' else '')
+                    if not data:
+                        data=self.metadata.lookup(g['seed_original'])
+                    if data:
+                        g['metadata']=data
+        if self.metadata:
+            self.metadata.save()
+        return ([self._decorate(g,g.get('metadata')) for g in movies],
+                [self._decorate(g,g.get('metadata')) for g in shows])
+
     @staticmethod
     def _add_ranked_shelves(home):
         """Build the four lists from existing checked cards (no invented films)."""
         from cinema_rankings import create_shelves
-        movie_cards=(home.get('premieres') or [])+(home.get('movies') or [])
-        show_cards=home.get('shows') or []
+        movie_cards=((home.get('premieres') or [])+(home.get('movies') or [])
+                     +(home.get('classics') or []))
+        show_cards=(home.get('shows') or [])+(home.get('classic_shows') or [])
         home.update(create_shelves(movie_cards,show_cards))
         return home
 
@@ -162,14 +257,17 @@ class CinemaService:
                 pass
         premieres=self._premieres(9)
         recent,shows=self._from_webshare()
+        classics,classic_shows=self._discover_hits()
         seen={normalize(c['raw']) for c in premieres}
         additional=[c for c in recent if normalize(c['raw']) not in seen]
         self.home_cache=self._add_ranked_shelves({
             'premieres':premieres,
             'movies':additional or recent,
-            'shows':shows
+            'shows':shows,
+            'classics':classics,
+            'classic_shows':classic_shows
         })
-        if self.cache_path and (premieres or recent or shows):
+        if self.cache_path and (premieres or recent or shows or classics or classic_shows):
             try:
                 with io.open(self.cache_path+'.tmp','w',encoding='utf8') as handle:
                     json.dump({'saved':time.time(),'home':self.home_cache},handle,
