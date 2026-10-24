@@ -33,6 +33,8 @@ class CinemaService:
         self.series_cache={}
         self.last_diagnostics=''
         self.hits_path=os.path.join(profile,'cinema-v3-hits.json') if profile else None
+        self.feed=None
+        self._feed_force=False
 
     def _decorate(self, group, metadata=None):
         if metadata:
@@ -136,15 +138,72 @@ class CinemaService:
         return ([self._decorate(g,g.get('metadata')) for g in movies],
                 [self._decorate(g,g.get('metadata')) for g in shows])
 
-    def _discover_hits(self, movie_batch=6, show_batch=2):
-        """Incrementally search classic titles, retaining confirmed Webshare hits."""
+    def refresh_catalogue(self):
+        """Explicit user-triggered refresh; never runs in the background."""
+        self.home_cache=None
+        self.search_cache.clear()
+        self._feed_force=True
+        if self.cache_path:
+            try:
+                os.remove(self.cache_path)
+            except OSError:
+                pass
+
+    def _discover_hits(self, movie_batch=7, show_batch=3):
+        """Gradually reconcile public film metadata against real Webshare files.
+
+        Each launch refreshes only a small group of titles; the growing feed
+        index persists across sessions. Unverified metadata never makes a card.
+        """
+        from cinema_feed_v4 import CatalogFeed
+        if self.feed is None and self.hits_path:
+            self.feed=CatalogFeed(os.path.dirname(self.hits_path))
+        film_feed={'movie':[],'show':[]}
+        if self.feed is not None:
+            try:
+                # First import populates two pages/type; later imports are
+                # incremental and can be forced by a deliberate UI command.
+                sizes=self.feed.sizes()
+                first=not any(sizes.values())
+                film_feed=self.feed.refresh(force=self._feed_force,
+                                           pages_per_kind=2 if first else 1)
+            except Exception:
+                import traceback
+                traceback.print_exc()
+        self._feed_force=False
+        # Retain the evergreen reference seeds so Green Mile/Avengers continue
+        # working even when Cinemeta is temporarily offline.
+        def seeds_for(kind, curated, opening):
+            dynamic=[]
+            metadata={}
+            for item in film_feed.get(kind,[]):
+                if not isinstance(item,dict):
+                    continue
+                try:
+                    title=item['name']
+                    year=int(item['year'])
+                except (KeyError,ValueError,TypeError):
+                    continue
+                dynamic.append((title,item.get('original') or title,year))
+                metadata[(normalize(title),year)]=item
+            candidates=list(curated[:opening])+dynamic+list(curated[opening:])
+            seen=set()
+            result=[]
+            for title,original,year in candidates:
+                ident=(normalize(title),year)
+                if ident not in seen:
+                    seen.add(ident)
+                    result.append((title,original,year))
+            return result,metadata
+        movie_seeds,movie_meta=seeds_for('movie',MOVIE_SEEDS,6)
+        show_seeds,show_meta=seeds_for('show',SHOW_SEEDS,4)
         cache={'movies_next':0,'shows_next':0,'entries':{}}
         if self.hits_path:
             try:
                 with io.open(self.hits_path,'r',encoding='utf8') as handle:
-                    stored=json.load(handle)
-                if isinstance(stored,dict) and isinstance(stored.get('entries'),dict):
-                    cache=stored
+                    loaded=json.load(handle)
+                if isinstance(loaded,dict) and isinstance(loaded.get('entries'),dict):
+                    cache=loaded
             except (OSError,ValueError,TypeError):
                 pass
         now=time.time()
@@ -152,42 +211,47 @@ class CinemaService:
         for key,item in cache.get('entries',{}).items():
             if not isinstance(item,dict):
                 continue
-            age=now-float(item.get('time',0))
+            try:
+                age=now-float(item.get('time',0))
+            except (ValueError,TypeError):
+                continue
             ttl=86400 if item.get('files') else 7200
             if 0<=age<ttl:
                 valid[key]=item
         cache['entries']=valid
-        for kind,seeds,batch,offset_key in (
-                ('movie',MOVIE_SEEDS,movie_batch,'movies_next'),
-                ('show',SHOW_SEEDS,show_batch,'shows_next')):
-            offset=int(cache.get(offset_key,0) or 0)
-            sampled=seed_batch(seeds,offset,batch)
+        for kind,seeds,batch,index_key in (
+            ('movie',movie_seeds,movie_batch,'movies_next'),
+            ('show',show_seeds,show_batch,'shows_next')):
+            if not seeds:
+                continue
+            position=int(cache.get(index_key) or 0) % len(seeds)
+            sampled=seed_batch(seeds,position,batch)
             for title,original,year in sampled:
-                key=kind+':'+normalize(title)
+                key=kind+':'+normalize(title)+'@'+str(year)
                 if key in valid:
                     continue
-                aliases=candidate_names(title,{'original':original})
+                names=candidate_names(title,{'original':original})
                 hits=[]
                 error=False
-                for alias in aliases[:3]:
-                    page=collect_pages(self.fetch,self.token,alias,
-                                       max_pages=1,sort='rating')
+                for alias in names[:3]:
+                    page=collect_pages(self.fetch,self.token,alias,max_pages=1,sort='rating')
                     if page is None:
                         error=True
                         continue
-                    hits.extend(matching_files(page,aliases,kind=kind,
-                            year=year if kind=='movie' else None))
+                    hits.extend(matching_files(page,names,kind=kind,
+                                  year=year if kind=='movie' else None))
                     if hits:
                         break
-                # No negative cache on Webshare errors.
                 if error and not hits:
                     continue
+                fields=('ident','name','size','img','available',
+                        'removed','copyrighted','adult')
+                files=list({f['ident']:{k:f[k] for k in fields if k in f}
+                            for f in hits if f.get('ident')}.values())[:25]
                 valid[key]={'time':now,'kind':kind,'year':year,'title':title,
-                    'original':original,'files':list({
-                       f['ident']:{k:f[k] for k in ('ident','name','size','img',
-                              'available','removed','copyrighted','adult') if k in f}
-                       for f in hits if f.get('ident')}.values())[:30]}
-            cache[offset_key]=(offset+len(sampled))%len(seeds)
+                            'original':original,'files':files}
+            cache[index_key]=(position+len(sampled))%len(seeds)
+        cache['entries']=valid
         if self.hits_path:
             try:
                 with io.open(self.hits_path+'.tmp','w',encoding='utf8') as handle:
@@ -196,39 +260,62 @@ class CinemaService:
             except (OSError,TypeError):
                 pass
         raw={'movie':[],'show':[]}
+        seen_groups={'movie':set(),'show':set()}
         for item in valid.values():
             kind=item.get('kind')
             if kind not in raw or not item.get('files'):
                 continue
             aliases=candidate_names(item['title'],{'original':item['original']})
+            try:
+                entry_year=int(item['year'])
+            except (TypeError,ValueError):
+                continue
+            feed_meta=(movie_meta if kind=='movie' else show_meta).get(
+                       (normalize(item['title']),entry_year))
             for g in groups(item['files'],kind):
                 matches=matching_files(g['files'],aliases,kind=kind,
-                              year=item['year'] if kind=='movie' else None)
+                              year=entry_year if kind=='movie' else None)
                 if not matches:
                     continue
+                dedupe=(normalize(g['title']),g.get('year') if kind=='movie' else '')
+                if dedupe in seen_groups[kind]:
+                    continue
+                seen_groups[kind].add(dedupe)
                 g['files']=matches
                 g['best']=matches[0]
                 g['seed_title']=item['title']
                 g['seed_original']=item['original']
+                g['feed_meta']=feed_meta
                 if kind=='show':
-                    g['year']=str(item['year'])
+                    g['year']=str(entry_year)
                 raw[kind].append(g)
-        movies=verified_groups(raw['movie'],self.availability,maximum=30,checked=45)
-        shows=verified_groups(raw['show'],self.availability,maximum=18,checked=30)
+        # Availability checks are bounded, still never show stale positives
+        # unless Webshare's existence endpoint confirms one file.
+        movies=verified_groups(raw['movie'],self.availability,maximum=48,checked=85)
+        shows=verified_groups(raw['show'],self.availability,maximum=32,checked=55)
         for listing in (movies,shows):
-            if self.metadata:
-                for g in listing[:22]:
-                    title=g['seed_title']
-                    data=self.metadata.lookup(title,
-                        str(g['year']) if g['group_kind']=='movie' else '')
+            for g in listing:
+                data=None
+                if self.metadata:
+                    data=self.metadata.lookup(g['seed_title'],
+                            str(g['year']) if g['kind']=='movie' else '')
                     if not data:
                         data=self.metadata.lookup(g['seed_original'])
-                    if data:
-                        g['metadata']=data
-        for listing in (movies, shows):
-            for g in listing:
-                if not g.get('metadata'):
-                    g['metadata']=localized_title(g['title'],g['kind'],g.get('year'))
+                if not data:
+                    feed=g.get('feed_meta') or {}
+                    if feed:
+                        data={'title':feed.get('name') or g['seed_title'],
+                              'original':feed.get('original') or g['seed_original'],
+                              'year':str(feed.get('year') or g['year']),
+                              'poster':feed.get('poster') or '',
+                              'fanart':feed.get('background') or '',
+                              'plot':feed.get('plot') or '',
+                              'genres':feed.get('genres') or [],
+                              'rating':feed.get('imdb_rating'),
+                              'rating_source':'IMDb'}
+                    else:
+                        data=localized_title(g['title'],g['kind'],g.get('year'))
+                g['metadata']=data
         if self.metadata:
             self.metadata.save()
         return ([self._decorate(g,g.get('metadata')) for g in movies],
@@ -256,7 +343,7 @@ class CinemaService:
                 if (isinstance(cached,dict) and
                     time.time()-float(cached.get('saved',0)) < 480 and
                     isinstance(cached.get('home'),dict) and
-                    'classics' in cached['home']):
+                    'feed_v4' in cached['home']):
                     self.home_cache=cached['home']
                     self._add_ranked_shelves(self.home_cache)
                     self.last_diagnostics='Katalog načten z ověřené 8minutové mezipaměti'
@@ -273,7 +360,8 @@ class CinemaService:
             'movies':additional or recent,
             'shows':shows,
             'classics':classics,
-            'classic_shows':classic_shows
+            'classic_shows':classic_shows,
+            'feed_v4':True
         })
         if self.cache_path and (premieres or recent or shows or classics or classic_shows):
             try:
@@ -289,13 +377,22 @@ class CinemaService:
         if view=='premieres':
             source=self.home()['premieres']
         elif view=='shows':
-            source=self.home()['shows']
+            home=self.home()
+            source=home['shows']+home.get('classic_shows',[])
         else:
-            source=self.home()['movies']
+            home=self.home()
+            source=home['movies']+home.get('classics',[])
         filtered=[]
+        seen=set()
         for c in source:
-            if choose_files(c['files'],quality,language):
-                filtered.append(c)
+            if not choose_files(c.get('files',[]),quality,language):
+                continue
+            key=(normalize(c.get('raw') or c.get('title') or ''),
+                 str(c.get('file_year') or c.get('year') or ''))
+            if key in seen:
+                continue
+            seen.add(key)
+            filtered.append(c)
         return sort_cards(filtered,sort)
 
     def search(self, query, kind='all'):
