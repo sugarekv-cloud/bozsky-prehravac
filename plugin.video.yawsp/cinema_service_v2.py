@@ -122,10 +122,11 @@ class CinemaService:
         # passworded, or have missing metadata. Inspect more candidates.
         movies=groups(new+popular,'movie')
         shows=groups(new+popular,'show')
-        movies=verified_groups(movies,self.availability,maximum=16,checked=48)
-        shows=verified_groups(shows,self.availability,maximum=16,checked=48)
-        add_metadata(movies,self.metadata,maximum=14)
-        add_metadata(shows,self.metadata,maximum=14)
+        # Broader candidate pool improves rating shelves; still checked on Webshare.
+        movies=verified_groups(movies,self.availability,maximum=24,checked=65)
+        shows=verified_groups(shows,self.availability,maximum=24,checked=65)
+        add_metadata(movies,self.metadata,maximum=22)
+        add_metadata(shows,self.metadata,maximum=22)
         self.last_diagnostics=('Webshare dotazy: %d, videosoubory: %d, '
             'ověřené filmy: %d, seriály: %d' %
             (stats['queries'],stats['video_files'],len(movies),len(shows)))
