@@ -173,9 +173,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                     ('FILMOVÉ HITY A KLASIKY · OVĚŘENO NA WEBSHARE',
                      home.get('classics') or [tile('HLEDAT OBLÍBENÝ FILM','search')]),
                     ('NEJLEPŠÍ FILMY VŠECH DOB · ČSFD / IMDb',shelf(home.get('best_movies_all'))),
-                    ('NEJLEPŠÍ FILMY ROKU %s · ČSFD'%year,shelf(home.get('best_movies_year'))),
+                    ('NEJLEPŠÍ FILMY ROKU %s · ČSFD / IMDb'%year,shelf(home.get('best_movies_year'))),
                     ('NEJLEPŠÍ SERIÁLY VŠECH DOB · ČSFD / IMDb',shelf(home.get('best_shows_all'))),
-                    ('NEJLEPŠÍ SERIÁLY ROKU %s · ČSFD'%year,shelf(home.get('best_shows_year'))),
+                    ('NEJLEPŠÍ SERIÁLY ROKU %s · ČSFD / IMDb'%year,shelf(home.get('best_shows_year'))),
                 ]
                 self._fill('ČESKÉ PREMIÉRY NA WEBSHARE' if home['premieres'] else
                            'DOSTUPNÉ FILMY',top,
