@@ -166,7 +166,11 @@ class WindowContracts(unittest.TestCase):
                           'Default','1080i','bozsky-cinema-v2.xml')
         tree=ET.parse(path).getroot()
         ids={e.attrib.get('id') for e in tree.findall('.//control')}
-        self.assertTrue({'401','402','101','102','103','104','105','106','107'}<=ids)
+        self.assertTrue({'401','402','101','102','103','104','107'}<=ids)
+        self.assertFalse({'105','106'} & ids)
+        gear=tree.find(".//control[@id='107']")
+        self.assertGreaterEqual(int(gear.findtext('left')),1700)
+        self.assertEqual(gear.findtext('onleft'),'104')
         with open(path,encoding='utf8') as xml:
             content=xml.read()
         self.assertIn('app_version',content)
@@ -182,6 +186,9 @@ class WindowContracts(unittest.TestCase):
             self.assertIn(route,s)
         self.assertIn('self._go_back()',s)
         self.assertIn("action='play'",s)
+        self.assertIn('self._gear_menu()',s)
+        self.assertIn('self.addon.openSettings()',s)
+        self.assertNotIn("command=='classic'",s)
 
 if __name__=='__main__':
     unittest.main()
