@@ -76,34 +76,30 @@
             <textcolor>FFE7EAF0</textcolor><focusedcolor>FF142032</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
-            <ondown>401</ondown><onleft>103</onleft><onright>105</onright>
+            <ondown>401</ondown><onleft>103</onleft><onright>107</onright>
         </control>
-        <control type="button" id="105">
-            <left>1261</left><top>27</top><width>153</width><height>61</height>
-            <label>FILTRY</label><font>font13</font>
-            <align>center</align><aligny>center</aligny>
-            <textcolor>FFE7EAF0</textcolor><focusedcolor>FF142032</focusedcolor>
-            <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
-            <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
-            <ondown>401</ondown><onleft>104</onleft><onright>106</onright>
-        </control>
-        <control type="button" id="106">
-            <left>1420</left><top>27</top><width>200</width><height>61</height>
-            <label>MENU</label><font>font13</font>
-            <align>center</align><aligny>center</aligny>
-            <textcolor>FFE7EAF0</textcolor><focusedcolor>FF142032</focusedcolor>
-            <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
-            <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
-            <ondown>401</ondown><onleft>105</onleft><onright>107</onright>
-        </control>
+        <!-- A single top-right settings control, reachable by remote control. -->
         <control type="button" id="107">
-            <left>1626</left><top>27</top><width>160</width><height>61</height>
-            <label>NAST.</label><font>font13</font>
+            <left>1764</left><top>27</top><width>82</width><height>61</height>
+            <description>Ozubené kolečko – nastavení a filtry</description>
+            <label> </label><font>font13</font>
             <align>center</align><aligny>center</aligny>
             <textcolor>FFE7EAF0</textcolor><focusedcolor>FF142032</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
-            <ondown>401</ondown><onleft>106</onleft><onright>101</onright>
+            <ondown>401</ondown><onleft>104</onleft><onright>101</onright>
+        </control>
+        <control type="image">
+            <left>1785</left><top>37</top><width>42</width><height>42</height>
+            <texture>$INFO[Window.Property(cinema_gear)]</texture>
+            <aspectratio>keep</aspectratio>
+            <visible>!Control.HasFocus(107)</visible>
+        </control>
+        <control type="image">
+            <left>1785</left><top>37</top><width>42</width><height>42</height>
+            <texture>$INFO[Window.Property(cinema_gear_dark)]</texture>
+            <aspectratio>keep</aspectratio>
+            <visible>Control.HasFocus(107)</visible>
         </control>
 
         <!-- Featured title changes as the user moves over posters. -->
