@@ -13,8 +13,8 @@ TOP_ACTIONS={
     107:'settings'
 }
 BACK_ACTIONS=(9,10,92,216)
-ROW_IDS=(401,402)
-VERSION='0.11.1'
+ROW_IDS=(401,402,403,404,405,406)
+VERSION='0.12.0'
 
 
 def tile(name,kind,**extra):
@@ -29,7 +29,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.stack=[]
         self.mode='home'
         self.context=None
-        self.rail_items=[[],[]]
+        self.rail_items=[[] for _ in ROW_IDS]
         for name,path in self.textures.items():
             self.setProperty('cinema_'+name,path)
         self.setProperty('app_version','v'+VERSION)
@@ -53,10 +53,13 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         d.create('Božský přehrávač',text)
         return d
 
-    def _fill(self,title1,cards1,title2,cards2,status=''):
-        self.rail_items=[cards1 or [],cards2 or []]
-        self.setProperty('row1_heading',title1)
-        self.setProperty('row2_heading',title2)
+    def _fill(self,title1,cards1,title2,cards2,status='',extra_rows=()):
+        rows=[(title1,cards1),(title2,cards2)]+list(extra_rows)
+        while len(rows)<len(ROW_IDS):
+            rows.append(('',[]))
+        self.rail_items=[cards or [] for heading,cards in rows[:len(ROW_IDS)]]
+        for index,(heading,cards) in enumerate(rows[:len(ROW_IDS)]):
+            self.setProperty('row%d_heading'%(index+1),heading if cards else '')
         self.setProperty('ui_status',status or
             ('Božský přehrávač '+VERSION+' · pouze tituly dostupné na Webshare'))
         for i,control_id in enumerate(ROW_IDS):
@@ -80,7 +83,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             if li:
                 lst.addItems(li)
         try:
-            self.setFocusId(401 if cards1 else 402 if cards2 else 107)
+            self.setFocusId(next((rid for rid,cards in zip(ROW_IDS,self.rail_items) if cards),107))
         except RuntimeError:
             pass
         self._update_hero()
@@ -90,7 +93,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             ident=control_id or self.getFocusId()
             if ident not in ROW_IDS:
                 return None
-            row=0 if ident==401 else 1
+            row=ROW_IDS.index(ident)
             position=self.getControl(ident).getSelectedPosition()
             if position<0:
                 return None
@@ -162,10 +165,21 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 if not bottom:
                     bottom=[tile('HLEDAT SERIÁL','search'),
                             tile('SERIÁLY','shows')]
+                year=home.get('ranking_year') or __import__('datetime').date.today().year
+                def shelf(items):
+                    return items or [tile('ŽÁDNÉ OVĚŘENÉ TITULY S HODNOCENÍM','none',
+                        plot='Hodnocení ČSFD nebo dostupné soubory zatím chybí.')]
+                extra=[
+                    ('NEJLEPŠÍ FILMY VŠECH DOB · ČSFD',shelf(home.get('best_movies_all'))),
+                    ('NEJLEPŠÍ FILMY ROKU %s · ČSFD'%year,shelf(home.get('best_movies_year'))),
+                    ('NEJLEPŠÍ SERIÁLY VŠECH DOB · ČSFD',shelf(home.get('best_shows_all'))),
+                    ('NEJLEPŠÍ SERIÁLY ROKU %s · ČSFD'%year,shelf(home.get('best_shows_year'))),
+                ]
                 self._fill('ČESKÉ PREMIÉRY NA WEBSHARE' if home['premieres'] else
                            'DOSTUPNÉ FILMY',top,
                            'SERIÁLY' if home['shows'] else 'OBJEVIT DALŠÍ FILMY',
-                           bottom,self.service.last_diagnostics)
+                           bottom,self.service.last_diagnostics +
+                           ' · Žebříčky pouze z hodnocených dostupných titulů',extra_rows=extra)
             finally:load.close()
         elif view in ('movies','shows','premieres'):
             load=self._loading('Řadím dostupné tituly…')
