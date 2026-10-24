@@ -170,7 +170,8 @@ class CinemaService:
                 hits=[]
                 error=False
                 for alias in aliases[:3]:
-                    page=collect_pages(self.fetch,self.token,alias,max_pages=1)
+                    page=collect_pages(self.fetch,self.token,alias,
+                                       max_pages=1,sort='rating')
                     if page is None:
                         error=True
                         continue
@@ -314,7 +315,8 @@ class CinemaService:
         # original title and dot-separated release filenames when necessary.
         for index,attempt in enumerate(query_plan(term,md,limit=10)):
             page=collect_pages(self.fetch,self.token,attempt,
-                               max_pages=3 if index==0 else 1)
+                               max_pages=3 if index==0 else (2 if index<4 else 1),
+                               sort='rating' if index<4 else 'recent')
             if page is None:
                 continue
             valid=matching_files(page,names)
