@@ -31,6 +31,14 @@ for _kind,_seeds in (('movie',MOVIE_SEEDS),('show',SHOW_SEEDS)):
             _SEED_NAMES[(_kind,normalize(_name),str(_release_year) if
                          _kind=='movie' else '')]=canonical
 
+# A missing release year is common in filename variants. Map an alias only
+# if it corresponds to a single reference title; otherwise keep it ambiguous.
+_ALIASES={}
+for (_kind,_alias,_year),_canonical in _SEED_NAMES.items():
+    _ALIASES.setdefault((_kind,_alias),set()).add(_canonical)
+_UNAMBIGUOUS={key:next(iter(values)) for key,values in _ALIASES.items()
+              if len(values)==1}
+
 
 def _canonical_name(card):
     kind=card.get('kind') or 'movie'
@@ -41,6 +49,10 @@ def _canonical_name(card):
         key=(kind,n,year)
         if key in _SEED_NAMES:
             return _SEED_NAMES[key]
+    if not year:
+        for n in sorted(names):
+            if (kind,n) in _UNAMBIGUOUS:
+                return _UNAMBIGUOUS[(kind,n)]
     original=normalize(card.get('original') or '')
     raw=normalize(card.get('raw') or '')
     return original or raw or normalize(card.get('title') or '')
