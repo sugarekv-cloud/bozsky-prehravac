@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.yawsp" name="Božský přehrávač" version="0.12.0" provider-name="cache-sk">
+<addon id="plugin.video.yawsp" name="Božský přehrávač" version="0.13.0" provider-name="cache-sk">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -21,6 +21,18 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.13.0 Přesnější vyhledávání filmů na Webshare[/B]
+- Hledání českých i originálních názvů včetně Zelená míle / The Green Mile a Avengers / The Avengers
+- Pro dotazy se zkoušejí i varianty bez diakritiky, názvy oddělené tečkami a alternativní anglické názvy
+- Výsledky jsou ověřeny proti skutečným videosouborům Webshare; série, roky a samostatné filmy se nesměšují
+- Preferované hledání podle hodnocení souborů Webshare, další stránkování u původních názvů
+- Nová úvodní řada FILMOVÉ HITY A KLASIKY, pouze dostupné tituly
+- Postupně se indexuje širší seznam známých filmů a seriálů, ukládá se bezpečná lokální cache bez tokenu a hesla
+- České názvy mohou zůstat zachovány i při nedostupnosti neoficiální filmové databáze
+- Sedm posuvných plakátových řad, samostatné žebříčky filmů a seriálů zachovány
+- Katalog nezaručuje úplný přehled všech titulů na Webshare, položka musí být ověřena jako dostupná
+
+
 [B]0.12.0 Čtyři žebříčky nejlépe hodnocených filmů a seriálů[/B]
 - Úvod obsahuje nejlepší filmy všech dob, nejlepší filmy aktuálního roku, nejlepší seriály všech dob a nejlepší seriály aktuálního roku
 - Aktuální rok se načítá automaticky z data Kodi; letos 2026
