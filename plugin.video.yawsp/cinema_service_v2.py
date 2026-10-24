@@ -132,6 +132,15 @@ class CinemaService:
         return ([self._decorate(g,g.get('metadata')) for g in movies],
                 [self._decorate(g,g.get('metadata')) for g in shows])
 
+    @staticmethod
+    def _add_ranked_shelves(home):
+        """Build the four lists from existing checked cards (no invented films)."""
+        from cinema_rankings import create_shelves
+        movie_cards=(home.get('premieres') or [])+(home.get('movies') or [])
+        show_cards=home.get('shows') or []
+        home.update(create_shelves(movie_cards,show_cards))
+        return home
+
     def home(self):
         if self.home_cache is not None:
             return self.home_cache
@@ -145,6 +154,7 @@ class CinemaService:
                     time.time()-float(cached.get('saved',0)) < 480 and
                     isinstance(cached.get('home'),dict)):
                     self.home_cache=cached['home']
+                    self._add_ranked_shelves(self.home_cache)
                     self.last_diagnostics='Katalog načten z ověřené 8minutové mezipaměti'
                     return self.home_cache
             except (OSError,ValueError,TypeError):
@@ -153,11 +163,11 @@ class CinemaService:
         recent,shows=self._from_webshare()
         seen={normalize(c['raw']) for c in premieres}
         additional=[c for c in recent if normalize(c['raw']) not in seen]
-        self.home_cache={
+        self.home_cache=self._add_ranked_shelves({
             'premieres':premieres,
             'movies':additional or recent,
             'shows':shows
-        }
+        })
         if self.cache_path and (premieres or recent or shows):
             try:
                 with io.open(self.cache_path+'.tmp','w',encoding='utf8') as handle:
