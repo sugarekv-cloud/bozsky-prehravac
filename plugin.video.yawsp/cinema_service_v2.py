@@ -14,6 +14,8 @@ from cinema_catalog_v2 import (groups,verified_groups,add_metadata,card,
 from cinematic_discovery import discover
 from novinky_catalogue import normalize
 from catalog_engine import file_label
+from cinema_dedupe import (consolidate, unify_sections, unique_home_rails,
+                           identity)
 from cinema_search_v3 import (MOVIE_SEEDS, SHOW_SEEDS, candidate_names,
                               query_plan, matching_files, seed_batch, localized_title)
 
@@ -335,12 +337,21 @@ class CinemaService:
 
     @staticmethod
     def _add_ranked_shelves(home):
-        """Build the four lists from existing checked cards (no invented films)."""
+        """One verified card per title, with all its available file variants."""
         from cinema_rankings import create_shelves
-        movie_cards=((home.get('premieres') or [])+(home.get('movies') or [])
-                     +(home.get('classics') or []))
-        show_cards=(home.get('shows') or [])+(home.get('classic_shows') or [])
-        home.update(create_shelves(movie_cards,show_cards))
+        unify_sections(home)
+        movies=consolidate((home.get('premieres') or [])+
+                           (home.get('movies') or [])+
+                           (home.get('classics') or []))
+        shows=consolidate((home.get('shows') or [])+
+                          (home.get('classic_shows') or []))
+        # These unallocated lists power full Filmy / Seriály browsing.
+        home['_all_movies']=movies
+        home['_all_shows']=shows
+        home['_all_premieres']=list(home.get('premieres') or [])
+        home.update(create_shelves(movies,shows))
+        unique_home_rails(home)
+        home['_dedupe_v1']=True
         return home
 
     def home(self):
@@ -355,9 +366,8 @@ class CinemaService:
                 if (isinstance(cached,dict) and
                     time.time()-float(cached.get('saved',0)) < 480 and
                     isinstance(cached.get('home'),dict) and
-                    'feed_v4' in cached['home']):
+                    cached['home'].get('_dedupe_v1') is True):
                     self.home_cache=cached['home']
-                    self._add_ranked_shelves(self.home_cache)
                     self.last_diagnostics='Katalog načten z ověřené 8minutové mezipaměti'
                     return self.home_cache
             except (OSError,ValueError,TypeError):
@@ -393,26 +403,13 @@ class CinemaService:
         return self.home_cache
 
     def browse(self, view, sort='date', quality='all', language='all'):
-        if view=='premieres':
-            source=self.home()['premieres']
-        elif view=='shows':
-            home=self.home()
-            source=home['shows']+home.get('classic_shows',[])
-        else:
-            home=self.home()
-            source=home['movies']+home.get('classics',[])
-        filtered=[]
-        seen=set()
-        for c in source:
-            if not choose_files(c.get('files',[]),quality,language):
-                continue
-            key=(normalize(c.get('raw') or c.get('title') or ''),
-                 str(c.get('file_year') or c.get('year') or ''))
-            if key in seen:
-                continue
-            seen.add(key)
-            filtered.append(c)
-        return sort_cards(filtered,sort)
+        home=self.home()
+        source=(home.get('_all_premieres',[]) if view=='premieres'
+                else home.get('_all_shows',[]) if view=='shows'
+                else home.get('_all_movies',[]))
+        filtered=[c for c in source if choose_files(c.get('files',[]),
+                                                    quality,language)]
+        return sort_cards(consolidate(filtered),sort)
 
     def search(self, query, kind='all'):
         """Search Czech/original titles and release variants, validate files."""
@@ -456,6 +453,7 @@ class CinemaService:
                 if not g.get('metadata'):
                     g['metadata']=localized_title(g['title'],mode,g.get('year'))
                 combined.append(self._decorate(g,g.get('metadata')))
+        combined=consolidate(combined)
         combined.sort(key=lambda c:(0 if normalize(c['raw'])==key else 1,
                       normalize(c['title']),str(c.get('year') or '')))
         self.search_cache[key]=combined
@@ -465,12 +463,14 @@ class CinemaService:
         # On title selection, find ALL variants of the movie; broad discovery
         # typically discovers only one copy of each quality.
         candidates=list(card.get('files') or [])
-        aliases=[card.get('raw') or '',card.get('original') or '']
-        for name in aliases:
+        aliases=list(dict.fromkeys([card.get('raw') or '',
+                    card.get('original') or '']+list(card.get('aliases') or [])))
+        for name in aliases[:5]:
             if name:
                 fetched=collect_pages(self.fetch,self.token,name,max_pages=4)
-                candidates.extend(matching_release(fetched,aliases,'movie',
-                                                    card.get('file_year') or ''))
+                if fetched:
+                    candidates.extend(matching_release(fetched,aliases,'movie',
+                                        card.get('file_year') or ''))
         unique={f['ident']:f for f in candidates if f.get('ident')}
         return self.availability.check_files(
             choose_files(list(unique.values()),quality,language),limit=60)
@@ -490,8 +490,11 @@ class CinemaService:
                 if other:
                     entries.extend(other)
             existing=card.get('files') or []
+            aliases=list(card.get('aliases') or [])
+            if original:
+                aliases.append(original)
             self.series_cache[key]=grouped_episodes(entries+existing,raw,
-                aliases=(original,) if original else ())
+                aliases=tuple(aliases))
         return self.series_cache[key]
 
     def episode_variants(self, card, season, episode, quality='all', language='all'):
