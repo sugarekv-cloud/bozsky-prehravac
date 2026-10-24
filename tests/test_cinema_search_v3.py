@@ -116,6 +116,10 @@ class TestIntegration(unittest.TestCase):
             class NoArtwork:
                 def lookup(self,*args,**kwargs):return None
             service.artwork=NoArtwork()
+            class EmptyFeed:
+                def sizes(self):return {'movie':0,'show':0}
+                def refresh(self,force=False,pages_per_kind=1):return {'movie':[],'show':[]}
+            service.feed=EmptyFeed()
             movies,series=service._discover_hits(movie_batch=3,show_batch=0)
             self.assertIn('Zelená míle',{c['title'] for c in movies})
             self.assertIn('Avengers',{c['raw'] for c in movies} if any(
@@ -135,6 +139,10 @@ class TestIntegration(unittest.TestCase):
             class NoArtwork:
                 def lookup(self,*args,**kwargs):return None
             service.artwork=NoArtwork()
+            class EmptyFeed:
+                def sizes(self):return {'movie':0,'show':0}
+                def refresh(self,force=False,pages_per_kind=1):return {'movie':[],'show':[]}
+            service.feed=EmptyFeed()
             movies,series=service._discover_hits(movie_batch=2,show_batch=0)
             self.assertEqual(movies,[])
             self.assertEqual(series,[])
