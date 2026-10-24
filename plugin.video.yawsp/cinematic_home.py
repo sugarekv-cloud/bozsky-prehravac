@@ -8,6 +8,7 @@ import os
 import struct
 import traceback
 import zlib
+import math
 
 import xbmcgui
 
@@ -44,6 +45,17 @@ def _rgba_png(path, width, height, kind):
             elif kind == 'fade':
                 a = int(245-220*x/float(max(1,width-1)))
                 color = (9,18,31,a)
+            elif kind in ('gear','gear_dark'):
+                # Crisp 8-tooth settings icon with a transparent center.
+                cx=(x-(width-1)/2.0)/(min(width,height))
+                cy=(y-(height-1)/2.0)/(min(width,height))
+                radial=math.hypot(cx,cy)
+                theta=math.atan2(cy,cx)
+                outer=0.39 if math.cos(8*theta)>0.28 else 0.305
+                if 0.132 < radial <= outer:
+                    color = (18,32,51,255) if kind=='gear_dark' else (246,203,130,255)
+                else:
+                    color = (0,0,0,0)
             elif kind == 'focus':
                 color = (220,171,82,255)
             else:
@@ -66,7 +78,8 @@ def ensure_textures(profile):
     if not os.path.isdir(folder):
         os.makedirs(folder)
     specs = {'background':(128,72), 'fade':(256,72),
-             'focus':(2,2), 'button':(2,2)}
+             'focus':(2,2), 'button':(2,2),
+             'gear':(96,96), 'gear_dark':(96,96)}
     result = {}
     for kind,(w,h) in specs.items():
         result[kind] = _rgba_png(os.path.join(folder,kind+'.png'),w,h,kind)
