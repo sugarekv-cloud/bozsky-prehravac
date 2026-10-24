@@ -148,7 +148,7 @@ class GeneratedTextureTests(unittest.TestCase):
         from cinematic_home import ensure_textures
         with tempfile.TemporaryDirectory() as td:
             files=ensure_textures(td)
-            self.assertEqual(set(files),{'background','fade','focus','button'})
+            self.assertEqual(set(files),{'background','fade','focus','button','gear','gear_dark'})
             for path in files.values():
                 with open(path,'rb') as handle:
                     self.assertEqual(handle.read(8),b'\x89PNG\r\n\x1a\n')
