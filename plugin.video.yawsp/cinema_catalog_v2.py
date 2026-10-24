@@ -72,7 +72,8 @@ def card(group, tag=''):
         'fanart':meta.get('fanart') or '',
         'plot':meta.get('plot') or 'Soubor nalezen na Webshare. Vyber kvalitu a jazyk.',
         'genre':', '.join(meta.get('genres') or []),
-        'rating':meta.get('rating'), 'quality':file_label(best),
+        'rating':meta.get('rating'), 'rating_source':meta.get('rating_source') or 'ČSFD',
+        'quality':file_label(best),
         'kind':group['kind'], 'tag':tag,'ident':best['ident'],
         'files':group['files'], 'original':meta.get('original') or '',
         'count':len(group['files'])
