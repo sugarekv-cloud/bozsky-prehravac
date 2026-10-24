@@ -53,6 +53,15 @@ class MergeTests(unittest.TestCase):
         self.assertEqual(result[0]['year'],'1999')
         self.assertEqual(len(result[0]['files']),2)
 
+    def test_czech_alias_without_year_merges_with_original_1999(self):
+        dated=card('The Green Mile',1999,'a',
+                   'The.Green.Mile.1999.1080p.mkv')
+        undated=card('Zelená míle',None,'b',
+                     'Zelena.Mile.1080p.CZ.mkv')
+        merged=consolidate([dated,undated])
+        self.assertEqual(len(merged),1)
+        self.assertEqual({f['ident'] for f in merged[0]['files']},{'a','b'})
+
     def test_same_named_remake_is_not_merged(self):
         original=card('Dune',1984,'a','Dune.1984.1080p.mkv')
         remake=card('Dune',2021,'b','Dune.2021.2160p.mkv')
