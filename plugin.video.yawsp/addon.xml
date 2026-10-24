@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.yawsp" name="Božský přehrávač" version="0.14.0" provider-name="cache-sk">
+<addon id="plugin.video.yawsp" name="Božský přehrávač" version="0.15.0" provider-name="cache-sk">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -21,6 +21,18 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.15.0 Jeden film = jeden plakát[/B]
+- Opakované plakáty stejného filmu nebo seriálu se sloučí do jedné položky
+- Seskupování používá původní i české názvy, druh titulu a rok vydání, aby se nesloučily různé remaky
+- Všechny různé soubory Webshare a kvality zůstanou pod jednou položkou při výběru přehrávání
+- Každý titul se na úvodní obrazovce objeví jen jednou, i když patří mezi novinky, klasiky a žebříčky
+- Upraveno také vyhledávání a procházení kategorií Filmy a Seriály
+- Seriály zachovávají jednotlivé série a epizody, i když mají soubory různé názvy
+- Chybějící rok se slučuje pouze tehdy, pokud je přiřazení ke konkrétnímu filmu jednoznačné
+- Prázdné žebříčky již nezobrazují opakované zástupné karty
+- Staré mezipaměti se při prvním otevření bezpečně přeorganizují
+
+
 [B]0.14.0 Rozšiřovaný filmový katalog z veřejné Cinemety a Webshare[/B]
 - Veřejné stránky filmové databáze Cinemeta se průběžně importují do indexu až 650 filmů a 650 seriálů (kandidátů)
 - První import zkouší dvě stránky na kategorii, další synchronizace pokračují po stránkách
