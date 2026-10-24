@@ -183,7 +183,9 @@ class CinemaService:
                     continue
                 valid[key]={'time':now,'kind':kind,'year':year,'title':title,
                     'original':original,'files':list({
-                       f['ident']:f for f in hits if f.get('ident')}.values())[:30]}
+                       f['ident']:{k:f[k] for k in ('ident','name','size','img',
+                              'available','removed','copyrighted','adult') if k in f}
+                       for f in hits if f.get('ident')}.values())[:30]}
             cache[offset_key]=(offset+len(sampled))%len(seeds)
         if self.hits_path:
             try:
