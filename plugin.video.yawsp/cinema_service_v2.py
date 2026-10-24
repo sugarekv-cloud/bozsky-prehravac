@@ -270,7 +270,9 @@ class CinemaService:
             except (OSError,TypeError):
                 pass
         raw={'movie':[],'show':[]}
-        seen_groups={'movie':set(),'show':set()}
+        # Keep a single group per canonical film, but accumulate ALL quality
+        # alternatives from different seeds and search-result pages.
+        seen_groups={'movie':{},'show':{}}
         for item in valid.values():
             kind=item.get('kind')
             if kind not in raw or not item.get('files'):
@@ -287,10 +289,6 @@ class CinemaService:
                               year=entry_year if kind=='movie' else None)
                 if not matches:
                     continue
-                dedupe=(normalize(g['title']),g.get('year') if kind=='movie' else '')
-                if dedupe in seen_groups[kind]:
-                    continue
-                seen_groups[kind].add(dedupe)
                 g['files']=matches
                 g['best']=matches[0]
                 g['seed_title']=item['title']
@@ -298,7 +296,22 @@ class CinemaService:
                 g['feed_meta']=feed_meta
                 if kind=='show':
                     g['year']=str(entry_year)
-                raw[kind].append(g)
+                dedupe=identity({'kind':kind,'raw':g['title'],
+                    'title':item['title'],'original':item['original'],
+                    'year':g.get('year') or str(entry_year)})
+                previous=seen_groups[kind].get(dedupe)
+                if previous is not None:
+                    for f in matches:
+                        if f.get('ident') not in {v.get('ident') for v in previous['files']}:
+                            previous['files'].append(f)
+                            from catalog_engine import file_score
+                            if file_score(f)>file_score(previous['best']):
+                                previous['best']=f
+                    if not previous.get('feed_meta') and feed_meta:
+                        previous['feed_meta']=feed_meta
+                else:
+                    seen_groups[kind][dedupe]=g
+                    raw[kind].append(g)
         # Availability checks are bounded, still never show stale positives
         # unless Webshare's existence endpoint confirms one file.
         movies=verified_groups(raw['movie'],self.availability,maximum=48,checked=85)
