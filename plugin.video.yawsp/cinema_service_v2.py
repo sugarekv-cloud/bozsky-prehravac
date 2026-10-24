@@ -15,7 +15,7 @@ from cinematic_discovery import discover
 from novinky_catalogue import normalize
 from catalog_engine import file_label
 from cinema_search_v3 import (MOVIE_SEEDS, SHOW_SEEDS, candidate_names,
-                              query_plan, matching_files, seed_batch)
+                              query_plan, matching_files, seed_batch, localized_title)
 
 
 class CinemaService:
@@ -222,6 +222,10 @@ class CinemaService:
                         data=self.metadata.lookup(g['seed_original'])
                     if data:
                         g['metadata']=data
+        for listing in (movies, shows):
+            for g in listing:
+                if not g.get('metadata'):
+                    g['metadata']=localized_title(g['title'],g['kind'],g.get('year'))
         if self.metadata:
             self.metadata.save()
         return ([self._decorate(g,g.get('metadata')) for g in movies],
@@ -329,6 +333,8 @@ class CinemaService:
                 if md and normalize(g['title']) in {normalize(n) for n in names}:
                     if not g['year'] or not md.get('year') or str(g['year'])==str(md['year']):
                         g['metadata']=md
+                if not g.get('metadata'):
+                    g['metadata']=localized_title(g['title'],mode,g.get('year'))
                 combined.append(self._decorate(g,g.get('metadata')))
         combined.sort(key=lambda c:(0 if normalize(c['raw'])==key else 1,
                       normalize(c['title']),str(c.get('year') or '')))
