@@ -14,7 +14,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=(401,402,403,404,405,406,407)
-VERSION='0.14.0'
+VERSION='0.15.0'
 
 
 def tile(name,kind,**extra):
@@ -159,7 +159,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             try:
                 home=self.service.home()
                 top=home['premieres'] or home['movies']
-                bottom=home['shows'] or home['movies']
+                bottom=home['shows'] or home.get('classic_shows',[])
                 if not top:
                     top=[tile('HLEDAT FILM','search'),tile('FILMY','movies')]
                 if not bottom:
@@ -167,8 +167,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                             tile('SERIÁLY','shows')]
                 year=home.get('ranking_year') or __import__('datetime').date.today().year
                 def shelf(items):
-                    return items or [tile('ŽÁDNÉ OVĚŘENÉ TITULY S HODNOCENÍM','none',
-                        plot='Hodnocení ČSFD nebo dostupné soubory zatím chybí.')]
+                    # An empty ranking is hidden instead of repeating
+                    # identical placeholder cards in several home rows.
+                    return items or []
                 extra=[
                     ('FILMOVÉ HITY A KLASIKY · OVĚŘENO NA WEBSHARE',
                      home.get('classics') or [tile('HLEDAT OBLÍBENÝ FILM','search')]),
