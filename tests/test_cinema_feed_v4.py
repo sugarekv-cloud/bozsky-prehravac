@@ -31,8 +31,8 @@ class Verified:
 
 class FeedTests(unittest.TestCase):
     def test_title_and_rating_parser(self):
-        rows=parse_catalog({'metas':[m('A',2000,'tt01'),
-              m('A',2000,'tt01'),m('B',2026,'tt02',''),{'name':'No year'}]},'movie')
+        rows=parse_catalog({'metas':[m('Alpha',2000,'tt01'),
+              m('A',2000,'tt01'),m('Beta',2026,'tt02',''),{'name':'No year'}]},'movie')
         self.assertEqual(len(rows),2)
         self.assertEqual(rows[0]['imdb_rating'],81.0)
         self.assertIsNone(rows[1]['imdb_rating'])
@@ -92,8 +92,8 @@ class DiscoveryTests(unittest.TestCase):
         class Feed:
             def sizes(self):return {'movie':100,'show':0}
             def refresh(self,force=False,pages_per_kind=1):
-                return {'movie':[dict(m('Big Great Movie',2020,'tt01'),
-                        kind='movie',original='Big Great Movie')],'show':[]}
+                return {'movie':parse_catalog({'metas':[m('Big Great Movie',2020,'tt01')]},'movie'),
+                        'show':[]}
         def fetch(token,offset,what,sort='rating'):
             if normalize(what)=='big great movie':
                 return [ws('yes','Big.Great.Movie.2020.1080p.mkv')],1
