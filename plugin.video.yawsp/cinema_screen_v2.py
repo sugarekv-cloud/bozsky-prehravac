@@ -14,7 +14,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=(401,402,403,404,405,406,407)
-VERSION='0.13.0'
+VERSION='0.14.0'
 
 
 def tile(name,kind,**extra):
@@ -113,7 +113,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         text=[str(c.get('year') or ''),str(c.get('genre') or ''),
               str(c.get('quality') or '')]
         if c.get('rating') is not None:
-            text.append('ČSFD %s %%'%c['rating'])
+            text.append('%s %s %%'%(c.get('rating_source') or 'ČSFD',c['rating']))
         self.setProperty('hero_info','  ·  '.join(x for x in text if x)[:155])
         self.setProperty('hero_plot',str(c.get('plot') or '')[:480])
         self.setProperty('hero_art',str(c.get('fanart') or c.get('poster') or ''))
@@ -172,9 +172,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 extra=[
                     ('FILMOVÉ HITY A KLASIKY · OVĚŘENO NA WEBSHARE',
                      home.get('classics') or [tile('HLEDAT OBLÍBENÝ FILM','search')]),
-                    ('NEJLEPŠÍ FILMY VŠECH DOB · ČSFD',shelf(home.get('best_movies_all'))),
+                    ('NEJLEPŠÍ FILMY VŠECH DOB · ČSFD / IMDb',shelf(home.get('best_movies_all'))),
                     ('NEJLEPŠÍ FILMY ROKU %s · ČSFD'%year,shelf(home.get('best_movies_year'))),
-                    ('NEJLEPŠÍ SERIÁLY VŠECH DOB · ČSFD',shelf(home.get('best_shows_all'))),
+                    ('NEJLEPŠÍ SERIÁLY VŠECH DOB · ČSFD / IMDb',shelf(home.get('best_shows_all'))),
                     ('NEJLEPŠÍ SERIÁLY ROKU %s · ČSFD'%year,shelf(home.get('best_shows_year'))),
                 ]
                 self._fill('ČESKÉ PREMIÉRY NA WEBSHARE' if home['premieres'] else
@@ -292,12 +292,17 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
     def _gear_menu(self):
         selected=xbmcgui.Dialog().select('⚙  Nastavení Božského přehrávače',[
             'Nastavení doplňku a přihlášení Webshare',
-            'Filtry a řazení katalogu'
+            'Filtry a řazení katalogu',
+            'Načíst další tituly a aktualizovat Webshare'
         ])
         if selected==0:
             self._open_settings()
         elif selected==1:
             self._filters()
+        elif selected==2:
+            self.service.refresh_catalogue()
+            self.stack=[]
+            self._screen('home')
 
     def _filters(self):
         choice=xbmcgui.Dialog().select('Katalog · filtrování a řazení',[
