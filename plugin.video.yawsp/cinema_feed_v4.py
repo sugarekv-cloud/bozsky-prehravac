@@ -144,8 +144,9 @@ class CatalogFeed:
                     break
                 changed=True
             self.data['checked'][kind]=now if any_success else now-(REFRESH_SECONDS-RETRY_SECONDS)
-        if changed:
-            self.save()
+        # Also persist failed-fetch timestamps, so an outage cannot trigger
+        # repeated third-party requests on every Kodi launch.
+        self.save()
         return {kind:list(self.data[kind]) for kind in KIND_MAP}
 
     def save(self):
