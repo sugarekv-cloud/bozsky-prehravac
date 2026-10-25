@@ -16,7 +16,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.33.0'
+VERSION='0.34.0'
 
 
 def tile(name,kind,**extra):
@@ -112,6 +112,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                     label='ČSFD %d %%'%round(float(c.get('rating'))) if source in ('čsfd','csfd','czdb') else ''
                 except (ValueError,TypeError):
                     label=''
+                # Zero means unknown; never advertise a fabricated ČSFD 0%.
+                if label and label.startswith('ČSFD 0 %'):
+                    label=''
                 item.setProperty('rating_label',str(c.get('_tip') or label))
                 li.append(item)
             if li:
@@ -179,11 +182,16 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         source=str(c.get('rating_source') or '').casefold()
         if source in ('čsfd','csfd','czdb') and c.get('rating') is not None:
             try:
-                text.append('ČSFD %d %%'%round(float(c['rating'])))
+                rating=round(float(c['rating']))
+                if rating>0:
+                    text.append('ČSFD %d %%'%rating)
             except (ValueError,TypeError):
                 pass
         self.setProperty('hero_info','  ·  '.join(x for x in text if x)[:115])
-        self.setProperty('hero_plot',str(c.get('plot') or '')[:330])
+        plot=str(c.get('plot') or '').strip()
+        if (not plot or plot.casefold().startswith('soubor nalezen na webshare')):
+            plot='Film nebo seriál je dostupný · zvol si jazyk a kvalitu.'
+        self.setProperty('hero_plot',plot[:255])
         # Never stretch a vertical, low-res Webshare poster across the TV hero.
         self.setProperty('hero_art',str(c.get('fanart') or ''))
         self.setProperty('hero_poster',str(c.get('poster') or ''))
