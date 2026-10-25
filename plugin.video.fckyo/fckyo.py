@@ -542,6 +542,62 @@ def play(params):
         popinfo(_addon.getLocalizedString(30107), icon=xbmcgui.NOTIFICATION_WARNING)
         xbmcplugin.setResolvedUrl(_handle, False, xbmcgui.ListItem())
 
+def autoplay_episode(params):
+    """After a *natural* Kodi end, resolve just the immediately following episode.
+
+    Webshare search and file-availability checks happen here, never in the
+    background player callback. Unavailable/missing next episodes return
+    safely to the FCKYO home instead of playing an unverified file.
+    """
+    def fallback():
+        xbmcplugin.setResolvedUrl(_handle,False,xbmcgui.ListItem())
+        xbmc.executebuiltin(
+            'ActivateWindow(Videos,plugin://plugin.video.fckyo/?action=cinematic_home,return)')
+
+    try:
+        from cinema_autoplay import next_episode_key,select_release
+        from cinema_service_v2 import CinemaService
+        from ws_availability import Availability
+        season=int(params.get('season') or 0)
+        episode=int(params.get('episode') or 0)
+        raw=(params.get('raw_title') or params.get('title') or '').strip()
+        if not raw or season<1 or episode<1:
+            fallback()
+            return
+        token=revalidate()
+        if not token:
+            fallback()
+            return
+        client=CinemaService(token,novinky_search_page,Availability(_profile),
+                             profile=_profile)
+        show={'raw':raw,'title':params.get('title') or raw,
+              'original':params.get('original') or '',
+              'files':[]}
+        seasons=client.seasons(show)
+        next_key=next_episode_key(seasons,season,episode)
+        if not next_key:
+            fallback()
+            return
+        new_season,new_episode=next_key
+        verified=client.episode_variants(show,new_season,new_episode)
+        selection=select_release(verified,params.get('previous_name') or '')
+        if not selection:
+            fallback()
+            return
+        playback=dict(params)
+        playback.update({'action':'play','from_cinema':'1','kind':'show',
+                         'ident':selection['ident'],'name':selection['name'],
+                         'title':params.get('title') or raw,
+                         'raw_title':raw,
+                         'season':str(new_season),'episode':str(new_episode),
+                         'resume':'0'})
+        playback.pop('previous_name',None)
+        play(playback)
+    except Exception:
+        traceback.print_exc()
+        fallback()
+
+
 def join(path, file):
     if path.endswith('/') or path.endswith('\\'):
         return path + file
@@ -1822,6 +1878,8 @@ def router(paramstring):
             settings(params)
         elif params['action'] == 'info':
             info(params)
+        elif params['action'] == 'autoplay_episode':
+            autoplay_episode(params)
         elif params['action'] == 'play':
             play(params)
         elif params['action'] == 'download':
