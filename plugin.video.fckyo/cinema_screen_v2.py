@@ -10,13 +10,13 @@ import xbmc
 
 TOP_ACTIONS={
     106:'home',101:'movies',102:'shows',103:'search',104:'premieres',
-    105:'genres',107:'settings',
+    105:'genres',109:'bluey',107:'settings',
     201:'home',202:'continue',203:'favorites',204:'genres',
     205:'csfd_ranked',206:'premieres',207:'settings',208:'recommendations'
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.32.0'
+VERSION='0.33.0'
 
 
 def tile(name,kind,**extra):
@@ -364,7 +364,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self.featured_card=None
         self.mode=view
         self.context=context
-        nav=view if view in ('home','movies','shows','premieres','search','genres') else (
+        nav=view if view in ('home','movies','shows','premieres','search','genres','bluey') else (
             'shows' if view in ('seasons','episodes') else
             'movies' if view in ('files','catalog_all','csfd_ranked','most_watched') else
             'home')
@@ -372,6 +372,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.setProperty('is_home','yes' if view=='home' else '')
         self.setProperty('section_label',{
             'home':'DOMŮ','movies':'FILMY','shows':'SERIÁLY','premieres':'PREMIÉRY',
+            'bluey':'BLUEY',
             'search':'VYHLEDÁVÁNÍ','seasons':'SÉRIE','episodes':'EPIZODY',
             'files':'VÝBĚR KVALITY',
              'most_watched':'NEJSLEDOVANĚJŠÍ',
@@ -442,6 +443,37 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                        'DOMŮ  ·  tipy a ověřené filmy z Webshare',
                        extra_rows=rows[2:])
             self._schedule_home_discovery()
+        elif view=='bluey':
+            # Dedicated children's-series page. Only verified Bluey series
+            # are playable; never invent episode links or claim availability.
+            home=self._home_catalogue()
+            lookup=getattr(self.service,'bluey_cards',None)
+            known=lookup(home) if callable(lookup) else [
+                c for c in (home.get('_all_shows') or [])
+                if c.get('kind')=='show'
+                and 'bluey' in str(c.get('title') or '').casefold()]
+            if known:
+                self._fill('BLUEY · SERIÁL',known[:24],
+                           'SÉRIE A EPIZODY',[
+                               tile('VYBER BLUEY A OTEVŘI JEDNOTLIVÉ SÉRIE',
+                                    'none'),
+                               tile('AKTUALIZOVAT BLUEY','bluey_retry')],
+                           'Ověřené dostupné epizody · výběr série po otevření titulu')
+            else:
+                from cinema_genres import genre_icon_path
+                path=(self.addon.getAddonInfo('path') if getattr(
+                    self,'addon',None) else os.path.dirname(__file__))
+                waiting=tile('BLUEY · HLEDÁM DOSTUPNÉ EPIZODY',
+                             'bluey_retry',poster=genre_icon_path(path,'Dětský'),
+                             plot='Najít seriál Bluey a dostupné série na Webshare.')
+                self._fill('BLUEY · DĚTSKÝ SERIÁL',[waiting],
+                           'DALŠÍ MOŽNOSTI',[
+                               tile('PROHLEDAT WEBSHARE: BLUEY','bluey_search'),
+                               tile('OBNOVIT VÝSLEDKY','bluey_retry')],
+                           'Výsledky se ověřují na pozadí; Bluey bude po nalezení uveden v první řadě')
+            starter=getattr(self.service,'start_bluey_refresh',None)
+            if callable(starter):
+                starter()
         elif view=='recommendations':
             home=self._home_catalogue()
             chosen,weekly=self._home_tips(
@@ -731,15 +763,22 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
 
     def _apply_background_home(self):
         current_mode=getattr(self,'mode',None)
-        if (current_mode not in ('home','recommendations','movies','shows','premieres')
+        if (current_mode not in ('home','recommendations','movies','shows','premieres','bluey')
                 or getattr(self,'_updating_home',False)
                 or getattr(self,'_switching_section',False)):
             return
-        updated=self.service.take_home_refresh()
-        take_tips=getattr(self.service,'take_tips_refresh',None)
-        tips_updated=take_tips() if callable(take_tips) else None
-        if not updated and not tips_updated:
-            return
+        if current_mode=='bluey':
+            take_bluey=getattr(self.service,'take_bluey_refresh',None)
+            if not callable(take_bluey) or take_bluey() is None:
+                return
+            updated=True
+            tips_updated=None
+        else:
+            updated=self.service.take_home_refresh()
+            take_tips=getattr(self.service,'take_tips_refresh',None)
+            tips_updated=take_tips() if callable(take_tips) else None
+            if not updated and not tips_updated:
+                return
         focused=self.getFocusId()
         position=0
         try:
@@ -886,6 +925,13 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 self._refresh(kind,c.get('catalog_kind') or 'movie')
             else:
                 self._refresh(kind)
+        elif kind=='bluey_search':
+            self._refresh('search','Bluey')
+        elif kind=='bluey_retry':
+            start=getattr(self.service,'start_bluey_refresh',None)
+            if callable(start):
+                start(force=True)
+            self._screen('bluey',stack=False)
         elif kind=='search_retry':
             self._refresh('search',c.get('search_text') or '')
         elif kind=='tips_retry':
