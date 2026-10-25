@@ -79,16 +79,16 @@ class ModernSkinTests(unittest.TestCase):
         with open(os.path.join(PLUGIN,'cinema_screen_v2.py'),encoding='utf8') as file:
             cls.code=file.read()
 
-    def test_landscape_artwork_rail_and_hero(self):
+    def test_full_portrait_artwork_rail_and_hero(self):
         for cid in range(401,414):
             row=self.skin.find(".//control[@id='%d']"%cid)
             layout=row.find('itemlayout')
-            self.assertGreater(int(layout.get('width')),int(layout.get('height')))
+            self.assertGreater(int(layout.get('height')),int(layout.get('width')))
             art=[i for i in layout.findall("control[@type='image']")
-                 if i.findtext('texture')=='$INFO[ListItem.Art(thumb)]']
+                 if i.findtext('texture')=='$INFO[ListItem.Art(poster)]']
             self.assertEqual(len(art),1)
-            self.assertGreater(int(art[0].findtext('width')),
-                               int(art[0].findtext('height')))
+            self.assertGreater(int(art[0].findtext('height')),
+                               int(art[0].findtext('width')))
             self.assertEqual(row.findtext('onleft'),'201')
         hero=next(i for i in self.skin.findall(".//control[@type='image']")
                   if i.findtext('texture')=='$INFO[Window.Property(hero_art)]')
