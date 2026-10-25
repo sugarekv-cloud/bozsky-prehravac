@@ -135,6 +135,36 @@ def candidate_names(query, metadata=None):
     return names
 
 
+def cached_title_aliases(query, home, limit=14):
+    """Find Czech/original title spellings from already verified local cards.
+
+    Never introduce unmatched catalogue titles: aliases only generate actual
+    Webshare queries and matched files still pass availability verification.
+    """
+    target=normalize(title_and_year(query)[0])
+    if len(target)<3 or not isinstance(home,dict):
+        return []
+    results=[]
+    seen=set()
+    for card in (home.get('_all_movies') or [])+(home.get('_all_shows') or [])+(
+                home.get('movies') or [])+(home.get('shows') or []):
+        if not isinstance(card,dict):
+            continue
+        titles=[str(card.get(k) or '') for k in ('title','raw','original')]
+        normalized=[normalize(name) for name in titles]
+        if not any(n==target or n.startswith(target+' ') or
+                   target.startswith(n+' ') for n in normalized if n):
+            continue
+        for name in titles:
+            key=normalize(name)
+            if key and key not in seen:
+                seen.add(key)
+                results.append(name)
+                if len(results)>=limit:
+                    return results
+    return results
+
+
 def query_plan(query, metadata=None, limit=18):
     """Interleave aliases BEFORE generating dotted/ASCII spelling variants.
 
