@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="KIVORA" version="0.32.0" provider-name="KIVORA Community">
+<addon id="plugin.video.fckyo" name="KIVORA" version="0.33.0" provider-name="KIVORA Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -22,6 +22,16 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.33.0 Netflix-inspirované rozhraní a samostatná záložka Bluey[/B]
+- Nové filmové rozvržení: velký celoplošný banner s tmavým přechodem, klidnější navigace, jasné aktivní záložky
+- Netflix-style širokoúhlé řady pro Tipy, Pokračovat ve sledování a další výběry filmů a seriálů
+- Plakátové řady pro žebříčky ČSFD a oblíbené tituly; titulům bez fanartu nebo plakátu se nezdeformuje obrázek
+- Jemný fialový focus a zvýraznění při ovládání myší a dálkovým ovladačem
+- Nová horní záložka BLUEY se speciálním katalogem stejnojmenného seriálu
+- Bluey vyhledává skutečné dostupné série na Webshare na pozadí, ukládá jejich výsledky a umožňuje otevřít epizody
+- Chybějící výsledek u Bluey nabídne opakování vyhledávání, nepřehrává falešné soubory
+- Ponechány funkční Domů, Tipy, Přepínání Filmů/Seriálů, automatické pokračování epizod a návrat po přehrávání
+
 [B]0.32.0 Nové obrázkové ikony všech filmových žánrů[/B]
 - Místo textových karet s emoji se v žánrech zobrazuje 24 vlastních obrázků
 - Komedie, Horor, Akční, Sci-Fi, Drama, Romantický, Krimi, Dokumentární a všechny ostatní kategorie mají odpovídající grafickou ikonu
