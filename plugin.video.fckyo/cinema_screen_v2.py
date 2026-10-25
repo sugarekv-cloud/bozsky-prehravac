@@ -55,6 +55,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.setProperty('hero_info','Katalog ověřených souborů Webshare')
         self.setProperty('hero_plot','Nové filmy podle českých kinopremiér a jejich dostupnosti.')
         self.setProperty('hero_art','')
+        self.setProperty('hero_poster','')
         self.setProperty('hero_action','')
         try:
             self._screen('home',stack=False)
@@ -92,9 +93,13 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                     art['fanart']=c['fanart']
                 if c.get('fanart') or c.get('poster'):
                     art['thumb']=c.get('fanart') or c.get('poster')
+                # Preserve art provenance: display portrait covers contained,
+                # while only proper wide backdrops are cropped to landscape.
+                item_fanart=c.get('fanart') or ''
                 if art:
                     item.setArt(art)
                 item.setProperty('has_poster','yes' if c.get('poster') else '')
+                item.setProperty('has_fanart','yes' if item_fanart else '')
                 item.setProperty('is_more','yes' if c.get('kind') in ('most_watched','load_more','catalog_open','catalog_more','csfd_ranked','tips_retry') else '')
                 item.setProperty('quality',str(c.get('quality') or ''))
                 item.setProperty('year',str(c.get('year') or ''))
@@ -145,6 +150,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self.setProperty('hero_info','TVŮJ FILMOVÝ SVĚT · FILMY · SERIÁLY')
             self.setProperty('hero_plot','Objev film nebo seriál, vyber žánr nebo otevři Tipy.')
             self.setProperty('hero_art','')
+            self.setProperty('hero_poster','')
             self.setProperty('hero_action','')
             return
         if c.get('kind') in ('movie','show'):
@@ -154,13 +160,19 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self.featured_card=None
             self.setProperty('hero_action','')
         self.setProperty('hero_title',str(c.get('title') or ''))
-        text=[str(c.get('year') or ''),str(c.get('genre') or ''),
-              str(c.get('quality') or '')]
-        if c.get('rating') is not None:
-            text.append('%s %s %%'%(c.get('rating_source') or 'ČSFD',c['rating']))
-        self.setProperty('hero_info','  ·  '.join(x for x in text if x)[:155])
-        self.setProperty('hero_plot',str(c.get('plot') or '')[:480])
-        self.setProperty('hero_art',str(c.get('fanart') or c.get('poster') or ''))
+        genre=str(c.get('genre') or '').split(',')[:2]
+        text=[str(c.get('year') or ''),', '.join(x.strip() for x in genre if x.strip())]
+        source=str(c.get('rating_source') or '').casefold()
+        if source in ('čsfd','csfd','czdb') and c.get('rating') is not None:
+            try:
+                text.append('ČSFD %d %%'%round(float(c['rating'])))
+            except (ValueError,TypeError):
+                pass
+        self.setProperty('hero_info','  ·  '.join(x for x in text if x)[:115])
+        self.setProperty('hero_plot',str(c.get('plot') or '')[:330])
+        # Never stretch a vertical, low-res Webshare poster across the TV hero.
+        self.setProperty('hero_art',str(c.get('fanart') or ''))
+        self.setProperty('hero_poster',str(c.get('poster') or ''))
 
     def _refresh(self,view,context=None,stack=True):
         if stack:
@@ -337,6 +349,20 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                     heading='PROCHÁZET FILMY' if kind=='movie' else 'PROCHÁZET SERIÁLY'
                     first_heading=('NEJLÉPE HODNOCENÉ FILMY · ČSFD' if kind=='movie'
                                    else 'NEJLÉPE HODNOCENÉ SERIÁLY · ČSFD')
+                    # Tips contain verified, playable files, not placeholder posters.
+                    from cinema_recommendations import recommendations
+                    selected_home=self.service.tips_snapshot(cache) if hasattr(
+                        self.service,'tips_snapshot') else cache
+                    personalized,weekly=recommendations(selected_home,
+                        getattr(self,'watch_store',None),limit=35)
+                    suggestions=[dict(c,_tip='TIP PRO TEBE') for c in
+                                 personalized+weekly if c.get('kind')==kind]
+                    if suggestions:
+                        from cinema_dedupe import consolidate
+                        suggestions=consolidate(suggestions)[:30]
+                        other_rows=[('DOPORUČUJEME KE SLEDOVÁNÍ',suggestions)]
+                    elif hasattr(self.service,'start_tips_refresh'):
+                        self.service.start_tips_refresh()
                 else:
                     row_one=ordered[:24]
                     row_two=ordered[24:48]
