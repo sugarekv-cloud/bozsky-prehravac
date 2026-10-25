@@ -42,17 +42,19 @@ def recommendations(home, watch_store=None, limit=18, week=None):
     for card in candidates:
         if identity(card) in already:
             continue
-        if str(card.get('rating_source') or '').casefold() not in ('čsfd','csfd','czdb'):
-            continue
+        source=str(card.get('rating_source') or '').casefold()
+        is_csfd=source in ('čsfd','csfd','czdb')
         try:
             rating=float(card['rating'])
-        except (ValueError,TypeError):
-            continue
+        except (ValueError,TypeError,KeyError):
+            rating=0
         if not 0<rating<=100:
-            continue
+            rating=0
         overlap=sum(tastes.get(g,0) for g in _genres(card))
-        # Strong ČSFD titles first; a genre match becomes a modest tie-breaker.
-        score=rating+min(15,overlap*4)
+        # Actual ČSFD scores take priority; verified but unscored titles are
+        # fallback tips, never falsely labeled ČSFD or Webshare view counts.
+        score=(rating if is_csfd else rating*.68 if rating else 48)
+        score+=min(18,overlap*6)
         scored.append((score,rating,normalize(card.get('title') or ''),card))
     scored.sort(key=lambda item:(-item[0],-item[1],item[2]))
     personalized=[c for _,_,_,c in scored[:limit]]
@@ -61,6 +63,9 @@ def recommendations(home, watch_store=None, limit=18, week=None):
         week=today.isocalendar().year*100+today.isocalendar().week
     # Rotate weekly suggestions from top verified ČSFD films and series.
     rated=csfd_only(candidates,'movie',limit=75)+csfd_only(candidates,'show',limit=45)
+    # Fill out short ČSFD subsets from other *verified* discovered titles.
+    used={identity(c) for c in rated}
+    rated+= [c for c in candidates if identity(c) not in used]
     rated=[c for c in consolidate(rated) if identity(c) not in already]
     if not rated:
         return personalized,[]
