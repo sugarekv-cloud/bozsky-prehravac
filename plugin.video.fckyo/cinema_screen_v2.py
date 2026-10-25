@@ -485,7 +485,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             'Filtry a řazení katalogu',
             'Načíst další tituly a aktualizovat Webshare',
             'Moje oblíbené',
-            'Nejlépe hodnocené podle ČSFD'
+            'Nejlépe hodnocené podle ČSFD',
+            'Vyhledat podle žánru'
         ])
         if selected==0:
             self._open_settings()
@@ -499,6 +500,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self._refresh('favorites')
         elif selected==4:
             self._refresh('csfd_ranked')
+        elif selected==5:
+            self._refresh('genres')
 
     def _filters(self):
         choice=xbmcgui.Dialog().select('Katalog · filtrování a řazení',[
@@ -537,7 +540,31 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         # Rerender without leaving the cinematic window.
         self._screen(self.mode,self.context)
 
+    def _apply_background_home(self):
+        if self.mode!='home':
+            return
+        updated=self.service.take_home_refresh()
+        if not updated:
+            return
+        focused=self.getFocusId()
+        position=0
+        try:
+            if focused in ROW_IDS:
+                position=max(0,self.getControl(focused).getSelectedPosition())
+        except (RuntimeError,AttributeError):
+            pass
+        self._screen('home')
+        if focused in ROW_IDS and self.rail_items[ROW_IDS.index(focused)]:
+            try:
+                self.setFocusId(focused)
+                self.getControl(focused).selectItem(min(position,len(
+                    self.rail_items[ROW_IDS.index(focused)])-1))
+            except (RuntimeError,AttributeError):
+                pass
+        self._update_hero()
+
     def onFocus(self,control_id):
+        self._apply_background_home()
         self._update_hero()
 
     def _last_filled_rail(self):
@@ -589,6 +616,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.close()
 
     def onAction(self,action):
+        self._apply_background_home()
         if action.getId()==117:
             self._poster_menu()
         elif action.getId() in BACK_ACTIONS:
@@ -624,10 +652,26 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             return
         if c.get('_continue'):
             self._play_saved(c)
-        elif kind in ('movies','shows','premieres','search','most_watched','csfd_ranked','favorites'):
-            if kind=='most_watched':
-                self.popular_limit=24
-            self._refresh(kind)
+        elif kind in ('movies','shows','premieres','search','most_watched','csfd_ranked','favorites','genres'):
+            if kind in ('most_watched','csfd_ranked'):
+                if kind=='most_watched':
+                    self.popular_limit=24
+                self._refresh(kind,c.get('catalog_kind') or 'movie')
+            else:
+                self._refresh(kind)
+        elif kind=='genre_open':
+            self.genre_limits={'movie':24,'show':24}
+            self._refresh('genre_titles',c.get('genre_name'))
+        elif kind=='genre_more':
+            what=c.get('catalog_kind') or 'movie'
+            self.genre_limits[what]+=24
+            load=self._loading('Prověřuji další tituly Webshare…')
+            try:
+                self.service.full_catalog(what,self.genre_limits[what],
+                                          self.sort,self.quality,self.language)
+            finally:
+                load.close()
+            self._screen('genre_titles',self.context)
         elif kind=='catalog_open':
             self.catalog_limit=24
             self._refresh('catalog_all',c.get('catalog_kind') or 'movie')
@@ -653,7 +697,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         elif kind=='load_more':
             previous=len(self.rail_items[0])-1
             self.popular_limit+=24
-            self._screen('most_watched')
+            self._screen('most_watched',self.context)
             try:
                 self.getControl(401).selectItem(min(previous,
                     len(self.rail_items[0])-1))
