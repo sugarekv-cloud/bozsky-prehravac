@@ -113,7 +113,7 @@ class InstantHomeTests(unittest.TestCase):
             self.assertTrue(ready.wait(5))
             self.assertTrue(svc._background_done.wait(5))
         result=svc.take_home_refresh()
-        self.assertEqual(result['_webshare_shows'][0]['title'],'Popular')
+        self.assertNotIn('_webshare_shows',result)
         self.assertEqual(svc.home_cache['shows'][0]['title'],'Series')
         self.assertIsNone(svc.take_home_refresh())
 
@@ -174,8 +174,8 @@ class TvNavigationTests(unittest.TestCase):
         self.assertIn('start_home_refresh()',method)
         self.assertNotIn('most_watched_movies(',method)
         self.assertNotIn('self._loading(',method)
-        self.assertIn("POPULÁRNÍ NA WEBSHARE · SERIÁLY",method)
-        self.assertIn("ČSFD · SERIÁLY",method)
+        self.assertIn("NEJLÉPE HODNOCENÉ SERIÁLY · ČSFD",method)
+        self.assertIn("TIPY PRO TEBE",method)
 
 
 if __name__=='__main__':
