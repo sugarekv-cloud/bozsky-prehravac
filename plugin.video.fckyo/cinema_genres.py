@@ -15,6 +15,23 @@ GENRES=(
     'Psychologický','Dětský','Krátkometrážní'
 )
 
+# Filenames are ASCII for Kodi/Android/Linux portability.
+GENRE_ICON_SLUGS=dict(zip(GENRES,(
+    'action','animation','adventure','drama','fantasy','horror',
+    'comedy','crime','family','romance','scifi','thriller','war',
+    'documentary','mystery','history','music','western','sport',
+    'biography','disaster','psychological','kids','short'
+)))
+
+
+def genre_icon_path(addon_root, genre):
+    """Return an on-device artwork path; never fetch images during navigation."""
+    import os
+    slug=GENRE_ICON_SLUGS.get(genre)
+    if not slug:
+        return ''
+    return os.path.join(addon_root,'resources','genre_icons',slug+'.png')
+
 ALIASES={
     'Akční':('akční','action'),
     'Animovaný':('animovaný','animation','anime'),
