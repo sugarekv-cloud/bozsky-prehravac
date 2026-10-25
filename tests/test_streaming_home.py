@@ -67,8 +67,8 @@ class StreamingHomeTests(unittest.TestCase):
         self.assertGreaterEqual(int(container.findtext('height')),500)
         with open(os.path.join(PLUG,'cinematic_home.py'),encoding='utf8') as f:
             code=f.read()
-        self.assertIn("stream_v2_",code)
-        self.assertIn("color = (225,27,55,255)",code)
+        self.assertIn("stream_v3_",code)
+        self.assertIn("color = (154,108,255,255)",code)
 
     def test_last_visible_rail_stays_focused_on_down(self):
         window=cinema_screen().__new__(cinema_screen())
