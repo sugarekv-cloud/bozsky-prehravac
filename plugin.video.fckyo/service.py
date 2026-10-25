@@ -34,7 +34,7 @@ class WatchTracker:
             if self.active:
                 try:
                     self.total=max(0,self.player.getTotalTime())
-                    if not self.seeked:
+                    if not self.seeked and self.total>0:
                         position=float(self.active.get('resume') or 0)
                         if position>15 and self.total>position+15:
                             self.player.seekTime(position)
