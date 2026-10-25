@@ -50,6 +50,22 @@ class CinemaService:
         self._background_started=False
         self._background_result=None
         self._snapshot_age=None
+        self.tips_path=os.path.join(profile,'cinema-v2-verified-tips.json') if profile else None
+        self._tips_cards=[]
+        self._tips_saved=0
+        self._tips_loading=False
+        self._tips_done=threading.Event()
+        self._tips_result=None
+        self._tips_last_try=0
+        if self.tips_path:
+            try:
+                with io.open(self.tips_path,'r',encoding='utf8') as file:
+                    saved=json.load(file)
+                if isinstance(saved,dict) and isinstance(saved.get('cards'),list):
+                    self._tips_cards=consolidate(saved['cards'])[:150]
+                    self._tips_saved=float(saved.get('saved') or 0)
+            except (OSError,TypeError,ValueError):
+                pass
 
     def _decorate(self, group, metadata=None):
         if metadata:
@@ -509,6 +525,78 @@ class CinemaService:
         else:
             self.last_diagnostics='Katalog se nepodařilo obnovit – opakuj pokus v nabídce Tipy'
         return result
+
+    def tips_snapshot(self, home=None):
+        """Merge real verified film cards from home + persisted independent tips.
+
+        No requests, no unverified metadata-only suggestions on Kodi GUI thread.
+        """
+        base=home if isinstance(home,dict) else self.home_fast()
+        result=dict(base)
+        cards=consolidate(self._tips_cards)
+        if cards:
+            result['_all_movies']=consolidate(
+                (base.get('_all_movies') or [])+
+                (base.get('movies') or [])+
+                [c for c in cards if c.get('kind')=='movie'])
+            result['_all_shows']=consolidate(
+                (base.get('_all_shows') or [])+
+                (base.get('shows') or [])+
+                [c for c in cards if c.get('kind')=='show'])
+        return result
+
+    def start_tips_refresh(self,force=False):
+        """Expand discoverable recommendations in a single worker, not GUI thread."""
+        if not self.token or self._tips_loading:
+            return False
+        now=time.time()
+        if not force and self._tips_cards and now-self._tips_saved<12*3600:
+            return False
+        if not force and now-self._tips_last_try<120:
+            return False
+        self._tips_last_try=now
+        self._tips_loading=True
+        self._tips_done.clear()
+        self._tips_result=None
+
+        def worker():
+            try:
+                profile=os.path.dirname(self.cache_path) if self.cache_path else None
+                clone=CinemaService(self.token,self.fetch,self.availability,
+                                    self.metadata,self.calendar,profile)
+                # These are real, availability-verified Webshare groups. The
+                # full_catalog method is bounded to four new search pages.
+                movies,_=clone.full_catalog('movie',80)
+                shows,_=clone.full_catalog('show',45)
+                result=consolidate((movies or [])+(shows or []))
+                if result:
+                    if self.tips_path:
+                        tmp=self.tips_path+'.tmp'
+                        with io.open(tmp,'w',encoding='utf8') as file:
+                            json.dump({'saved':time.time(),'cards':result[:150]},
+                                      file,ensure_ascii=False)
+                        os.replace(tmp,self.tips_path)
+                    self._tips_result=result[:150]
+            except Exception:
+                import traceback
+                traceback.print_exc()
+            finally:
+                self._tips_loading=False
+                self._tips_done.set()
+        threading.Thread(target=worker,name='kivora-verified-tips',daemon=True).start()
+        return True
+
+    def take_tips_refresh(self):
+        if not self._tips_done.is_set():
+            return None
+        self._tips_done.clear()
+        cards=self._tips_result
+        self._tips_result=None
+        if cards:
+            self._tips_cards=consolidate(cards)
+            self._tips_saved=time.time()
+            self.last_diagnostics='Nové tipy z ověřeného katalogu jsou připraveny'
+        return cards
 
     def most_watched_shows(self, count=24, quality='all', language='all'):
         """Popular Webshare series by file-rating search, not ČSFD ranking."""
