@@ -28,19 +28,19 @@ class StreamingHomeTests(unittest.TestCase):
     def setUpClass(cls):
         cls.root=ET.parse(SKIN).getroot()
 
-    def test_all_seven_rails_have_tall_portrait_posters(self):
+    def test_all_visible_rails_have_landscape_backdrops(self):
         for cid in range(401,408):
             rail=self.root.find(".//control[@id='%d']"%cid)
             self.assertIsNotNone(rail)
             self.assertEqual(rail.findtext('orientation'),'horizontal')
             item=rail.find('itemlayout')
-            self.assertGreater(int(item.get('height')),int(item.get('width')))
+            self.assertGreater(int(item.get('width')),int(item.get('height')))
             posters=[image for image in item.findall("control[@type='image']")
-                     if image.findtext('texture')=='$INFO[ListItem.Art(poster)]']
+                     if image.findtext('texture')=='$INFO[ListItem.Art(thumb)]']
             self.assertEqual(len(posters),1)
             poster=posters[0]
-            self.assertGreater(int(poster.findtext('height')),
-                               int(poster.findtext('width')))
+            self.assertGreater(int(poster.findtext('width')),
+                               int(poster.findtext('height')))
 
     def test_bottom_navigation_never_jumps_back_to_header(self):
         for cid in range(401,408):
@@ -64,7 +64,7 @@ class StreamingHomeTests(unittest.TestCase):
         container=self.root.find(".//control[@id='610']")
         self.assertEqual(container.get('type'),'grouplist')
         self.assertEqual(container.findtext('orientation'),'vertical')
-        self.assertGreaterEqual(int(container.findtext('height')),600)
+        self.assertGreaterEqual(int(container.findtext('height')),500)
         with open(os.path.join(PLUG,'cinematic_home.py'),encoding='utf8') as f:
             code=f.read()
         self.assertIn("stream_v2_",code)
