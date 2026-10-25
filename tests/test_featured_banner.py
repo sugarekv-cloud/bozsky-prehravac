@@ -64,7 +64,7 @@ class FeaturedMovieTests(unittest.TestCase):
         self.assertEqual(props['hero_title'],'Cinema')
         screen.getFocusId=lambda:101
         screen._update_hero()
-        self.assertEqual(props['hero_action'],'')
+        self.assertEqual(props['hero_action'],'yes')
 
     def test_banner_xml_is_large_and_remote_focusable(self):
         banner=self.window.find(".//control[@id='108']")
