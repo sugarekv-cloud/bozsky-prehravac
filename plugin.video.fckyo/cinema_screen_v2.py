@@ -134,11 +134,16 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             # Keep the cinematic banner while focus moves to the top bar or
             # sidebar, instead of flashing an empty hero background.
             c=self.featured_card
+        if (not c or c.get('kind') not in ('movie','show')) and getattr(
+                self,'mode',None) in ('home','recommendations'):
+            c=next((card for row in getattr(self,'rail_items',[])
+                    for card in row if card.get('kind') in ('movie','show')
+                    and (card.get('fanart') or card.get('poster'))),None)
         if not c:
             self.featured_card=None
             self.setProperty('hero_title','KIVORA')
-            self.setProperty('hero_info','FILMY · SERIÁLY · HLEDÁNÍ')
-            self.setProperty('hero_plot','Vyber kategorii nebo titul.')
+            self.setProperty('hero_info','TVŮJ FILMOVÝ SVĚT · FILMY · SERIÁLY')
+            self.setProperty('hero_plot','Objev film nebo seriál, vyber žánr nebo otevři Tipy.')
             self.setProperty('hero_art','')
             self.setProperty('hero_action','')
             return
@@ -250,7 +255,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 personal=list(weekly)
             if not personal:
                 personal=[tile('TIPY SE PŘIPRAVUJÍ · AKTUALIZOVAT',
-                               'tips_retry',plot='Ověřený katalog se načítá na pozadí.')]
+                               'tips_retry',plot='Ověřený katalog se načítá na pozadí.'),
+                          tile('PŘEJÍT DO FILMOVÉ KNIHOVNY','movies'),
+                          tile('VYHLEDAT FILM NEBO SERIÁL','search')]
             if not weekly:
                 weekly=[tile('TIPY TÝDNE SE PŘIPRAVUJÍ','tips_retry',
                              plot='Nové doporučené tituly se objeví po aktualizaci.')]
