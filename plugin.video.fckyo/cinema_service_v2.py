@@ -577,9 +577,15 @@ class CinemaService:
             checked=verified_groups(candidates,self.availability,
                                     maximum=48,checked=100)
             add_metadata(checked,self.metadata,maximum=12)
-            additions=[self._decorate(g,g.get('metadata')) for g in checked]
+            # Limit slow external poster/ČSFD lookups to the first 12 per page;
+            # all remaining verified files still appear immediately.
+            additions=[self._decorate(g,g.get('metadata'))
+                       if index<12 else card(g)
+                       for index,g in enumerate(checked)]
             if additions:
                 stream['cards']=consolidate(stream['cards']+additions)
+            if len(stream['cards'])>=1500:
+                stream['done']=True
         return (sort_cards(filtered(),sort)[:wanted],
                 not stream['done'])
 
