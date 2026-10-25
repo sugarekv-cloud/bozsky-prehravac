@@ -143,8 +143,8 @@ class CinemaService:
         movies=groups(new+popular,'movie')
         shows=groups(new+popular,'show')
         # Broader candidate pool improves rating shelves; still checked on Webshare.
-        movies=verified_groups(movies,self.availability,maximum=24,checked=65)
-        shows=verified_groups(shows,self.availability,maximum=24,checked=65)
+        movies=verified_groups(movies,self.availability,maximum=45,checked=95)
+        shows=verified_groups(shows,self.availability,maximum=38,checked=95)
         add_metadata(movies,self.metadata,maximum=22)
         add_metadata(shows,self.metadata,maximum=22)
         self.last_diagnostics=('Webshare dotazy: %d, videosoubory: %d, '
@@ -174,7 +174,7 @@ class CinemaService:
             except OSError:
                 pass
 
-    def _discover_hits(self, movie_batch=7, show_batch=3):
+    def _discover_hits(self, movie_batch=18, show_batch=10):
         """Gradually reconcile public film metadata against real Webshare files.
 
         Each launch refreshes only a small group of titles; the growing feed
@@ -337,8 +337,8 @@ class CinemaService:
                     raw[kind].append(g)
         # Availability checks are bounded, still never show stale positives
         # unless Webshare's existence endpoint confirms one file.
-        movies=verified_groups(raw['movie'],self.availability,maximum=48,checked=85)
-        shows=verified_groups(raw['show'],self.availability,maximum=32,checked=55)
+        movies=verified_groups(raw['movie'],self.availability,maximum=110,checked=180)
+        shows=verified_groups(raw['show'],self.availability,maximum=90,checked=150)
         for listing,budget in ((movies,15),(shows,8)):
             for index,g in enumerate(listing):
                 data=None
