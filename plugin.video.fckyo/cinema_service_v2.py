@@ -832,7 +832,13 @@ class CinemaService:
                 not stream['done'])
 
     def browse(self, view, sort='date', quality='all', language='all'):
-        home=self.home()
+        """Never block Kodi navigation on Webshare discovery.
+
+        A verified snapshot is used immediately; a worker refreshes the index
+        and the screen gets repainted when the new snapshot is available.
+        """
+        home=self.home_fast()
+        self.start_home_refresh()
         source=(home.get('_all_premieres',[]) if view=='premieres'
                 else home.get('_all_shows',[]) if view=='shows'
                 else home.get('_all_movies',[]))
