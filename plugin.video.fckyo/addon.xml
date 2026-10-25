@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="FCKYO" version="0.22.0" provider-name="FCKYO Community">
+<addon id="plugin.video.fckyo" name="FCKYO" version="0.23.0" provider-name="FCKYO Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -22,6 +22,14 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.23.0 Automatické pokračování seriálů[/B]
+- Po přirozeném dokončení epizody FCKYO automaticky najde a spustí další číslovaný dostupný díl
+- Rozlišuje Kodi onPlayBackEnded od ručního zastavení, po Stop se vrací zpět do FCKYO
+- Navazuje i do další sezóny pouze na E01 a nepřeskakuje chybějící číslované epizody
+- Na Webshare ověří dostupnost následující epizody a preferuje kvalitu a jazykové označení předchozího dílu
+- Pokud další díl neexistuje nebo nelze načíst, vrátí se do filmového rozhraní
+- Automatické pokračování lze zapnout a vypnout v nastavení nebo v nabídce ozubeného kolečka; ve výchozím stavu zapnuto
+
 [B]0.22.0 Opravené Domů a viditelné Tipy; filmové rozhraní 2.0[/B]
 - Funkční horní tlačítko DOMŮ a plnohodnotná boční nabídka s přístupem k rozkoukaným, oblíbeným, žánrům a ČSFD
 - Tipy na sledování nyní hned v první řadě; během aktualizace zobrazují stav načítání, nikoli prázdnou obrazovku
