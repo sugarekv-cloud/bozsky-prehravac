@@ -5,6 +5,7 @@ Runs only while Kodi is open. A short-lived local intent is created AFTER the
 Webshare video link resolves; playback is not counted unless the player starts.
 """
 import time
+from urllib.parse import urlencode
 import xbmc
 import xbmcaddon
 import xbmcvfs
@@ -12,9 +13,25 @@ from cinema_user_state import WatchStore
 
 
 class WatchTracker:
-    def __init__(self,profile,player=None,store=None,return_to_addon=None):
-        self.player=player or xbmc.Player()
+    def __init__(self,profile,player=None,store=None,return_to_addon=None,
+                 play_next=None,autoplay_enabled=None):
+        self._ended=False
+        self._stopped=False
+        if player is None:
+            tracker=self
+            class CallbackPlayer(xbmc.Player):
+                def onPlayBackEnded(self):
+                    tracker._ended=True
+                def onPlayBackStopped(self):
+                    tracker._stopped=True
+            self.player=CallbackPlayer()
+        else:
+            self.player=player
         self.store=store or WatchStore(profile)
+        self.play_next=(play_next if play_next is not None
+                        else self._play_next_episode)
+        self.autoplay_enabled=(autoplay_enabled if autoplay_enabled is not None
+                               else self._autoplay_enabled)
         self.active=None
         self.was_playing=False
         self.last_position=0
@@ -30,6 +47,28 @@ class WatchTracker:
         if builtin:
             builtin('ActivateWindow(Videos,plugin://plugin.video.fckyo/?action=cinematic_home,return)')
 
+    @staticmethod
+    def _autoplay_enabled():
+        return xbmcaddon.Addon().getSetting('autoplay_next_episode')!='false'
+
+    @staticmethod
+    def _play_next_episode(item):
+        """Ask the plugin to locate/check the next episode with current credentials."""
+        params={'action':'autoplay_episode',
+                'title':item.get('title') or '',
+                'raw_title':item.get('raw_title') or item.get('title') or '',
+                'original':item.get('original') or '',
+                'year':item.get('year') or '',
+                'poster':item.get('poster') or '',
+                'fanart':item.get('fanart') or '',
+                'plot':item.get('plot') or '',
+                'genre':item.get('genre') or '',
+                'season':item.get('season') or '',
+                'episode':item.get('episode') or '',
+                'previous_name':item.get('name') or ''}
+        url='plugin://plugin.video.fckyo/?'+urlencode(params)
+        xbmc.executebuiltin('PlayMedia(%s)'%url)
+
     def tick(self):
         playing=self.player.isPlayingVideo()
         if playing:
@@ -40,6 +79,8 @@ class WatchTracker:
                     self.last_position=0
                     self.total=0
                     self.seeked=False
+                    self._ended=False
+                    self._stopped=False
             if self.active:
                 try:
                     self.total=max(0,self.player.getTotalTime())
@@ -53,17 +94,28 @@ class WatchTracker:
                 except (RuntimeError,ValueError,AttributeError):
                     pass
         elif self.active:
-            self.store.update_progress(self.active,self.last_position,self.total,
-                                       completed=(self.total>0 and
+            current=self.active
+            # Kodi calls onPlayBackEnded only for natural playback completion,
+            # whereas an early Stop triggers onPlayBackStopped.
+            ended=self._ended and not self._stopped
+            self.store.update_progress(current,self.last_position,self.total,
+                                       completed=ended or (self.total>0 and
                                                   self.last_position/self.total>=0.94))
             self.active=None
             self.seeked=False
-            # Only videos launched from FCKYO create an active session.
-            # Clear it before navigation: never reopen the add-on repeatedly.
+            self._ended=False
+            self._stopped=False
+            # Never autoplay movies, an unidentified episode, or a manual Stop.
+            should_advance=(ended and current.get('kind')=='show' and
+                            current.get('season') and current.get('episode')
+                            and self.autoplay_enabled())
             try:
+                if should_advance:
+                    self.play_next(current)
+                else:
+                    self.return_to_addon()
+            except Exception:
                 self.return_to_addon()
-            except (RuntimeError,AttributeError):
-                pass
         self.was_playing=playing
 
     def run(self,monitor=None):
