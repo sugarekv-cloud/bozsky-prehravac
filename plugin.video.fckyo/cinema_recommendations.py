@@ -23,7 +23,10 @@ def recommendations(home, watch_store=None, limit=18, week=None):
     """Return (personalized, weekly), both validated Webshare media cards."""
     all_cards=consolidate(
         (home.get('_all_movies') or [])+(home.get('_all_shows') or [])+
-        (home.get('premieres') or [])+(home.get('classics') or []))
+        (home.get('premieres') or [])+(home.get('classics') or [])+
+        # Older/partially populated caches may not contain _all_* fields.
+        (home.get('movies') or [])+(home.get('shows') or [])+
+        (home.get('classic_shows') or []))
     candidates=[c for c in all_cards if
                 c.get('kind') in ('movie','show') and
                 c.get('ident') and c.get('files')]
