@@ -175,7 +175,7 @@ class TvNavigationTests(unittest.TestCase):
         self.assertNotIn('most_watched_movies(',method)
         self.assertNotIn('self._loading(',method)
         self.assertIn("NEJLÉPE HODNOCENÉ SERIÁLY · ČSFD",method)
-        self.assertIn("TIPY PRO TEBE",method)
+        self.assertIn("TIPY NA SLEDOVÁNÍ",method)
 
 
 if __name__=='__main__':
