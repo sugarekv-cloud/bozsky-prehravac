@@ -142,12 +142,12 @@ class CinemaSkinTests(unittest.TestCase):
             row=self.skin.find(".//control[@id='%d']"%id)
             for layout_type in ('itemlayout','focusedlayout'):
                 layout=row.find(layout_type)
-                self.assertEqual(layout.get('width'),'330')
+                self.assertEqual(layout.get('width'),'264')
                 posters=[image for image in layout.findall("control[@type='image']")
                          if image.findtext('texture')=='$INFO[ListItem.Art(poster)]']
                 self.assertEqual(len(posters),1)
                 self.assertEqual(posters[0].findtext('aspectratio'),'keep')
-                self.assertIn('String.IsEmpty(ListItem.Art(fanart))',
+                self.assertIn('!String.IsEmpty(ListItem.Art(poster))',
                               posters[0].findtext('visible'))
 
     def test_large_banner_does_not_stretch_movie_poster(self):
