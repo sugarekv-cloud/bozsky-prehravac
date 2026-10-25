@@ -266,7 +266,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                            plot='Otevře knihovnu ověřených souborů Webshare.')
         discovered=[browse_button]+items[:35]
         # One guaranteed paint, no expensive recommendations lookup before it.
-        self._fill(headline,primary,'PROCHÁZET '+prefix,discovered,
+        browse_heading='PROCHÁZET SERIÁLY' if kind=='show' else 'PROCHÁZET FILMY'
+        self._fill(headline,primary,browse_heading,discovered,
                    'Vyber titul nebo otevři úplnou knihovnu')
 
     def _filtered(self,cards,keep_order=False):
