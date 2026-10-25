@@ -142,7 +142,7 @@ class CinemaSkinTests(unittest.TestCase):
             row=self.skin.find(".//control[@id='%d']"%id)
             for layout_type in ('itemlayout','focusedlayout'):
                 layout=row.find(layout_type)
-                self.assertEqual(layout.get('width'),'264')
+                self.assertEqual(layout.get('width'),'239' if id in (403,404,408,411,412,413) else '359')
                 posters=[image for image in layout.findall("control[@type='image']")
                          if image.findtext('texture')=='$INFO[ListItem.Art(poster)]']
                 self.assertEqual(len(posters),1)
@@ -155,7 +155,7 @@ class CinemaSkinTests(unittest.TestCase):
         fallback=[i for i in hero if i.findtext('texture')==
                    '$INFO[Window.Property(hero_poster)]']
         self.assertEqual(len(fallback),1)
-        self.assertEqual(fallback[0].findtext('aspectratio'),'keep')
+        self.assertEqual(fallback[0].findtext('aspectratio'),'scale')
         photo=[i for i in hero if i.findtext('texture')==
                '$INFO[Window.Property(hero_art)]']
         self.assertEqual(len(photo),1)
