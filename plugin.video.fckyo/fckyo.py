@@ -541,6 +541,9 @@ def play(params):
     else:
         popinfo(_addon.getLocalizedString(30107), icon=xbmcgui.NOTIFICATION_WARNING)
         xbmcplugin.setResolvedUrl(_handle, False, xbmcgui.ListItem())
+        if params.get('_autoplay')=='1':
+            xbmc.executebuiltin(
+                'ActivateWindow(Videos,plugin://plugin.video.fckyo/?action=cinematic_home,return)')
 
 def autoplay_episode(params):
     """After a *natural* Kodi end, resolve just the immediately following episode.
@@ -585,7 +588,7 @@ def autoplay_episode(params):
             fallback()
             return
         playback=dict(params)
-        playback.update({'action':'play','from_cinema':'1','kind':'show',
+        playback.update({'action':'play','from_cinema':'1','_autoplay':'1','kind':'show',
                          'ident':selection['ident'],'name':selection['name'],
                          'title':params.get('title') or raw,
                          'raw_title':raw,
