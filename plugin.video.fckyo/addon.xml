@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="FCKYO" version="0.18.0" provider-name="FCKYO Community">
+<addon id="plugin.video.fckyo" name="FCKYO" version="0.19.0" provider-name="FCKYO Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -8,6 +8,7 @@
     <extension point="xbmc.python.pluginsource" library="main.py">
         <provides>video</provides>
     </extension>
+    <extension point="xbmc.service" library="service.py" start="startup" />
     <extension point="xbmc.addon.metadata">
         <summary>FCKYO – filmy, seriály, kalendář premiér a Webshare</summary>
         <disclaimer lang="en_GB">The plugin does not provide any content, it is only a simulation of the browser of a publicly available web site. I am not responsible for the content provided by this site.</disclaimer>
@@ -21,6 +22,15 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.19.0 Netflix-styl, oddělené žebříčky a historie přehrávání[/B]
+- Jeden výrazný rámeček pouze u aktivního plakátu; plakáty zvětšené
+- Nejsledovanější na Webshare podle popularity souborů, nikoliv neověřených počtů zhlédnutí
+- Samostatný žebříček ČSFD pouze z ověřených hodnocení ČSFD
+- Rozkoukané filmy a seriály s procentem přehrání a návratem na uložený čas
+- Lokální služba Kodi sleduje jen skutečné spuštěné filmy FCKYO; nepřenáší historii ani hesla ven
+- Kontextová nabídka filmu: oblíbené, dokoukáno, odebrat z rozkoukaných
+- Řada oblíbených a přístup přes nastavení, zachované ostatní filmové žebříčky
+
 [B]0.18.0 Postupně načítaný katalog filmů a seriálů[/B]
 - Nové položky VŠECHNY FILMY a VŠECHNY SERIÁLY ve filmové nabídce
 - Postupné načítání ověřených titulů z Webshare po 24, další stránky jen po stisknutí +
