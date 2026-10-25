@@ -125,7 +125,7 @@
         <control type="image">
             <left>563</left><top>86</top><width>96</width><height>5</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
-            <colordiffuse>FFFF3757</colordiffuse>
+            <colordiffuse>FFAA7BFF</colordiffuse>
             <visible>Control.HasFocus(106) | String.IsEqual(Window.Property(nav_active),home)</visible>
         </control>
         <control type="image">
@@ -137,7 +137,7 @@
         <control type="image">
             <left>682</left><top>86</top><width>114</width><height>5</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
-            <colordiffuse>FFFF3757</colordiffuse>
+            <colordiffuse>FFAA7BFF</colordiffuse>
             <visible>Control.HasFocus(101) | String.IsEqual(Window.Property(nav_active),movies)</visible>
         </control>
         <control type="image">
@@ -149,7 +149,7 @@
         <control type="image">
             <left>816</left><top>86</top><width>121</width><height>5</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
-            <colordiffuse>FFFF3757</colordiffuse>
+            <colordiffuse>FFAA7BFF</colordiffuse>
             <visible>Control.HasFocus(102) | String.IsEqual(Window.Property(nav_active),shows)</visible>
         </control>
         <control type="image">
@@ -161,7 +161,7 @@
         <control type="image">
             <left>957</left><top>86</top><width>125</width><height>5</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
-            <colordiffuse>FFFF3757</colordiffuse>
+            <colordiffuse>FFAA7BFF</colordiffuse>
             <visible>Control.HasFocus(103) | String.IsEqual(Window.Property(nav_active),search)</visible>
         </control>
         <control type="image">
@@ -173,7 +173,7 @@
         <control type="image">
             <left>1102</left><top>86</top><width>146</width><height>5</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
-            <colordiffuse>FFFF3757</colordiffuse>
+            <colordiffuse>FFAA7BFF</colordiffuse>
             <visible>Control.HasFocus(104) | String.IsEqual(Window.Property(nav_active),premieres)</visible>
         </control>
         <control type="image">
@@ -185,7 +185,7 @@
         <control type="image">
             <left>1272</left><top>86</top><width>132</width><height>5</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
-            <colordiffuse>FFFF3757</colordiffuse>
+            <colordiffuse>FFAA7BFF</colordiffuse>
             <visible>Control.HasFocus(105) | String.IsEqual(Window.Property(nav_active),genres)</visible>
         </control>
         <control type="image">
@@ -236,75 +236,136 @@
         <control type="image"><left>0</left><top>101</top><width>235</width><height>979</height><texture>$INFO[Window.Property(cinema_button)]</texture><colordiffuse>EB090B12</colordiffuse></control>
         <control type="image"><left>233</left><top>101</top><width>2</width><height>979</height><texture>$INFO[Window.Property(cinema_focus)]</texture><colordiffuse>66F4274B</colordiffuse></control>
         <control type="button" id="201">
-            <left>17</left><top>146</top><width>205</width><height>58</height>
-            <font>font13</font><label>⌂  DOMŮ</label><align>center</align><aligny>center</aligny>
+            <left>71</left><top>146</top><width>151</width><height>58</height>
+            <font>font13</font><label>DOMŮ</label><align>left</align><aligny>center</aligny>
             <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <onup>106</onup><ondown>202</ondown><onright>401</onright>
         </control>
+        <control type="image">
+            <left>29</left><top>161</top><width>33</width><height>33</height>
+            <texture>$INFO[Window.Property(side_icon_201)]</texture>
+            <aspectratio>keep</aspectratio>
+        </control>
+
         <control type="image"><left>20</left><top>197</top><width>175</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture><visible>Control.HasFocus(201)</visible></control>
         <control type="button" id="202">
-            <left>17</left><top>220</top><width>205</width><height>58</height>
-            <font>font13</font><label>▶  POKRAČOVAT</label><align>center</align><aligny>center</aligny>
+            <left>71</left><top>220</top><width>151</width><height>58</height>
+            <font>font13</font><label>POKRAČOVAT</label><align>left</align><aligny>center</aligny>
             <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <onup>201</onup><ondown>203</ondown><onright>401</onright>
         </control>
+        <control type="image">
+            <left>29</left><top>235</top><width>33</width><height>33</height>
+            <texture>$INFO[Window.Property(side_icon_202)]</texture>
+            <aspectratio>keep</aspectratio>
+        </control>
+
         <control type="image"><left>20</left><top>271</top><width>175</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture><visible>Control.HasFocus(202)</visible></control>
         <control type="button" id="203">
-            <left>17</left><top>294</top><width>205</width><height>58</height>
-            <font>font13</font><label>♡  OBLÍBENÉ</label><align>center</align><aligny>center</aligny>
+            <left>71</left><top>294</top><width>151</width><height>58</height>
+            <font>font13</font><label>OBLÍBENÉ</label><align>left</align><aligny>center</aligny>
             <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <onup>202</onup><ondown>204</ondown><onright>401</onright>
         </control>
+        <control type="image">
+            <left>29</left><top>309</top><width>33</width><height>33</height>
+            <texture>$INFO[Window.Property(side_icon_203)]</texture>
+            <aspectratio>keep</aspectratio>
+        </control>
+
         <control type="image"><left>20</left><top>345</top><width>175</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture><visible>Control.HasFocus(203)</visible></control>
         <control type="button" id="204">
-            <left>17</left><top>368</top><width>205</width><height>58</height>
-            <font>font13</font><label>▦  ŽÁNRY</label><align>center</align><aligny>center</aligny>
+            <left>71</left><top>368</top><width>151</width><height>58</height>
+            <font>font13</font><label>ŽÁNRY</label><align>left</align><aligny>center</aligny>
             <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <onup>203</onup><ondown>205</ondown><onright>401</onright>
         </control>
+        <control type="image">
+            <left>29</left><top>383</top><width>33</width><height>33</height>
+            <texture>$INFO[Window.Property(side_icon_204)]</texture>
+            <aspectratio>keep</aspectratio>
+        </control>
+
         <control type="image"><left>20</left><top>419</top><width>175</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture><visible>Control.HasFocus(204)</visible></control>
         <control type="button" id="205">
-            <left>17</left><top>442</top><width>205</width><height>58</height>
-            <font>font13</font><label>★  ČSFD</label><align>center</align><aligny>center</aligny>
+            <left>71</left><top>442</top><width>151</width><height>58</height>
+            <font>font13</font><label>ČSFD</label><align>left</align><aligny>center</aligny>
             <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <onup>204</onup><ondown>206</ondown><onright>401</onright>
         </control>
+        <control type="image">
+            <left>29</left><top>457</top><width>33</width><height>33</height>
+            <texture>$INFO[Window.Property(side_icon_205)]</texture>
+            <aspectratio>keep</aspectratio>
+        </control>
+
         <control type="image"><left>20</left><top>493</top><width>175</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture><visible>Control.HasFocus(205)</visible></control>
         <control type="button" id="206">
-            <left>17</left><top>516</top><width>205</width><height>58</height>
-            <font>font13</font><label>▣  PREMIÉRY</label><align>center</align><aligny>center</aligny>
+            <left>71</left><top>516</top><width>151</width><height>58</height>
+            <font>font13</font><label>PREMIÉRY</label><align>left</align><aligny>center</aligny>
             <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <onup>205</onup><ondown>207</ondown><onright>401</onright>
         </control>
+        <control type="image">
+            <left>29</left><top>531</top><width>33</width><height>33</height>
+            <texture>$INFO[Window.Property(side_icon_206)]</texture>
+            <aspectratio>keep</aspectratio>
+        </control>
+
         <control type="image"><left>20</left><top>567</top><width>175</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture><visible>Control.HasFocus(206)</visible></control>
         <control type="button" id="207">
-            <left>17</left><top>590</top><width>205</width><height>58</height>
-            <font>font13</font><label>⚙  NASTAVENÍ</label><align>center</align><aligny>center</aligny>
+            <left>71</left><top>590</top><width>151</width><height>58</height>
+            <font>font13</font><label>NASTAVENÍ</label><align>left</align><aligny>center</aligny>
             <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
-            <onup>206</onup><ondown>207</ondown><onright>401</onright>
+            <onup>206</onup><ondown>208</ondown><onright>401</onright>
         </control>
+        <control type="image">
+            <left>29</left><top>605</top><width>33</width><height>33</height>
+            <texture>$INFO[Window.Property(side_icon_207)]</texture>
+            <aspectratio>keep</aspectratio>
+        </control>
+
         <control type="image"><left>20</left><top>641</top><width>175</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture><visible>Control.HasFocus(207)</visible></control>
+        <control type="button" id="208">
+            <left>71</left><top>664</top><width>151</width><height>58</height>
+            <font>font13</font><label>TIPY</label>
+            <align>left</align><aligny>center</aligny>
+            <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
+            <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
+            <onup>207</onup><ondown>208</ondown><onright>401</onright>
+        </control>
+        <control type="image">
+            <left>29</left><top>679</top><width>33</width><height>33</height>
+            <texture>$INFO[Window.Property(side_icon_208)]</texture>
+            <aspectratio>keep</aspectratio>
+        </control>
+        <control type="image">
+            <left>20</left><top>716</top><width>175</width><height>3</height>
+            <texture>$INFO[Window.Property(cinema_focus)]</texture>
+            <visible>Control.HasFocus(208)</visible>
+        </control>
         <!-- Landscape recommendations, TV-friendly rails. -->
         <control type="grouplist" id="610">
             <left>263</left><top>506</top><width>1615</width><height>520</height>
@@ -366,7 +427,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -420,7 +481,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -488,7 +549,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -542,7 +603,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -610,7 +671,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -664,7 +725,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -732,7 +793,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -786,7 +847,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -854,7 +915,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -908,7 +969,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -976,7 +1037,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -1030,7 +1091,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -1098,7 +1159,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -1152,7 +1213,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -1220,7 +1281,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -1274,7 +1335,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -1342,7 +1403,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -1396,7 +1457,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -1464,7 +1525,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -1518,7 +1579,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -1586,7 +1647,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -1640,7 +1701,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -1708,7 +1769,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -1762,7 +1823,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -1830,7 +1891,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
@@ -1884,7 +1945,7 @@
                 </control>
                 <control type="label">
                     <left>15</left><top>14</top><width>156</width><height>29</height>
-                    <font>font12</font><textcolor>FFFF5A72</textcolor>
+                    <font>font12</font><textcolor>FFD4B9FF</textcolor>
                     <label>$INFO[ListItem.Property(rating_label)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
                 </control>
