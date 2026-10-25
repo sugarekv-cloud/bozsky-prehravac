@@ -9,12 +9,14 @@ import xbmcgui
 import xbmc
 
 TOP_ACTIONS={
-    100:'home',101:'movies', 102:'shows', 103:'search', 104:'premieres',
-    105:'genres', 107:'settings'
+    106:'home',101:'movies',102:'shows',103:'search',104:'premieres',
+    105:'genres',107:'settings',
+    201:'home',202:'continue',203:'favorites',204:'genres',
+    205:'csfd_ranked',206:'premieres',207:'settings'
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.21.0'
+VERSION='0.22.0'
 
 
 def tile(name,kind,**extra):
@@ -175,6 +177,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             'movies' if view in ('files','catalog_all','csfd_ranked','most_watched') else
             'home')
         self.setProperty('nav_active',nav)
+        self.setProperty('is_home','yes' if view=='home' else '')
         self.setProperty('section_label',{
             'home':'DOMŮ','movies':'FILMY','shows':'SERIÁLY','premieres':'PREMIÉRY',
             'search':'VYHLEDÁVÁNÍ','seasons':'SÉRIE','episodes':'EPIZODY',
@@ -219,12 +222,24 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 latest=[tile('FILMY · OTEVŘÍT KATALOG','movies')]
             if not shows:
                 shows=[tile('SERIÁLY · OTEVŘÍT KATALOG','shows')]
+            # Keep recommendations visible even during the first asynchronous
+            # catalogue refresh, when no verified titles are cached yet.
+            if not personal:
+                personal=list(weekly)
+            if not personal:
+                personal=[tile('TIPY SE PŘIPRAVUJÍ · AKTUALIZOVAT',
+                               'tips_retry',plot='Ověřený katalog se načítá na pozadí.')]
+            if not weekly:
+                weekly=[tile('TIPY TÝDNE SE PŘIPRAVUJÍ','tips_retry',
+                             plot='Nové doporučené tituly se objeví po aktualizaci.')]
             rows=[
-                ('NEJLÉPE HODNOCENÉ FILMY · ČSFD',csfd_movies),
-                ('NEJLÉPE HODNOCENÉ SERIÁLY · ČSFD',csfd_shows),
+                ('TIPY NA SLEDOVÁNÍ',personal),
+                ('NEJLÉPE HODNOCENÉ FILMY · ČSFD',csfd_movies or [
+                    tile('ZATÍM BEZ ČSFD HODNOCENÍ · AKTUALIZOVAT','tips_retry')]),
+                ('NEJLÉPE HODNOCENÉ SERIÁLY · ČSFD',csfd_shows or [
+                    tile('SERIÁLY ČSFD SE NAČÍTAJÍ','tips_retry')]),
                 ('POKRAČOVAT VE SLEDOVÁNÍ · FILMY',films),
                 ('POKRAČOVAT VE SLEDOVÁNÍ · SERIÁLY',series),
-                ('TIPY PRO TEBE · PODLE TVÉHO VKUSU',personal),
                 ('TIPY NA TENTO TÝDEN',weekly),
                 ('PREMIÉRY A NOVINKY',latest),
                 ('FILMY PRO VEČER',home.get('movies') or []),
@@ -319,6 +334,13 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                        'FILMY' if kind=='movie' else 'SERIÁLY'),
                        ranked or [tile('ZATÍM BEZ OVĚŘENÉHO HODNOCENÍ ČSFD','none')],
                        '',[],'Jen skutečné hodnocení ČSFD a ověřené Webshare soubory')
+        elif view=='continue':
+            store=getattr(self,'watch_store',None)
+            movies=store.continue_cards('movie') if store else []
+            shows=store.continue_cards('show') if store else []
+            self._fill('ROZKOUKANÉ FILMY',movies or [tile('ZATÍM ŽÁDNÝ ROZKOUKANÝ FILM','none')],
+                       'ROZKOUKANÉ SERIÁLY',shows or [tile('ZATÍM ŽÁDNÝ ROZKOUKANÝ SERIÁL','none')],
+                       'Pokračovat od uložené pozice přehrávání')
         elif view=='favorites':
             store=getattr(self,'watch_store',None)
             favorites=store.favorite_cards() if store else []
@@ -632,6 +654,12 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             command=TOP_ACTIONS[control_id]
             if command=='settings':
                 self._gear_menu()
+            elif command=='home':
+                # Reset to a fresh home screen, never another stacked copy.
+                self.stack=[]
+                self._screen('home',stack=False)
+            elif command=='csfd_ranked':
+                self._refresh(command,'movie')
             else:
                 self._refresh(command)
             return
@@ -649,6 +677,12 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 self._refresh(kind,c.get('catalog_kind') or 'movie')
             else:
                 self._refresh(kind)
+        elif kind=='tips_retry':
+            self._apply_background_home()
+            if self.mode=='home':
+                self.service.start_home_refresh()
+                xbmcgui.Dialog().notification('FCKYO',
+                    'Doporučení se aktualizují na pozadí')
         elif kind=='genre_open':
             self.genre_limits={'movie':24,'show':24}
             self._refresh('genre_titles',c.get('genre_name'))
