@@ -5,6 +5,7 @@ Titles are only search seeds. A movie or episode is never displayed unless
 the search response contains a matching Webshare video file that passes the
 existing availability checker.
 """
+import re
 from novinky_catalogue import normalize, parse_video_name
 from smartsearch import variants
 
@@ -85,36 +86,80 @@ for n,o,y in MOVIE_SEEDS+SHOW_SEEDS:
     ALIASES[normalize(o)]=tuple(dict.fromkeys(x for x in (n,o) if x))
 
 
+SEARCH_YEAR = re.compile(r'^(.*?)\\s*(?:\\(|\\[)?((?:19|20)\\d{2})(?:\\)|\\])?\\s*$')
+
+
+def title_and_year(query):
+    """Accept 'The Matrix (1999)', 'Matrix.1999' and bare title searches."""
+    query=str(query or '').strip()
+    match=SEARCH_YEAR.match(query.replace('.', ' '))
+    if match and normalize(match.group(1)):
+        return match.group(1).strip(' ._-'),match.group(2)
+    return query,''
+
+
 def candidate_names(query, metadata=None):
-    """Canonical/localized aliases plus third-party film-metadata translation."""
+    """Localized/original names, known sequels and safe franchise expansions.
+
+    Metadata never creates a playable result: names only generate search terms.
+    """
+    title,_=title_and_year(query)
     names=[]
-    def add(x):
-        x=str(x or '').strip()
-        if x and normalize(x) not in {normalize(a) for a in names}:
-            names.append(x)
-    add(query)
-    for x in ALIASES.get(normalize(query),()):
-        add(x)
-    if metadata:
-        for key in ('title','original','original_title'):
+    seen=set()
+    def add(value):
+        value=str(value or '').strip()
+        key=normalize(value)
+        if key and key not in seen:
+            seen.add(key)
+            names.append(value)
+    add(title)
+    for value in ALIASES.get(normalize(title),()):
+        add(value)
+    if metadata and isinstance(metadata,dict):
+        for key in ('title','original','original_title','name'):
             add(metadata.get(key))
-    # Some releases omit a leading article; exact filename matching guards noise.
-    for x in tuple(names):
-        if normalize(x).startswith('the '):
-            add(x.split(' ',1)[1])
+    # "Pán prstenů" or "Duna" should also discover individual film parts,
+    # even if their English original filenames lack any Czech words.
+    prefix=normalize(title)
+    if len(prefix)>=4:
+        for cz,original,_year in MOVIE_SEEDS+SHOW_SEEDS:
+            if any(normalize(n).startswith(prefix+' ') for n in (cz,original)):
+                add(cz)
+                add(original)
+                if len(names)>=28:
+                    break
+    for value in tuple(names):
+        norm=normalize(value)
+        if norm.startswith('the '):
+            add(value.split(' ',1)[1])
     return names
 
 
-def query_plan(query, metadata=None, limit=10):
-    """Try raw/spaced and dot-separated terms, accents and common aliases."""
+def query_plan(query, metadata=None, limit=18):
+    """Interleave aliases BEFORE generating dotted/ASCII spelling variants.
+
+    Old ordering exhausted the first 10 requests with spellings of one title,
+    so an English filename could be missed even when its alias was known.
+    """
+    titles=candidate_names(query,metadata)
     result=[]
-    for title in candidate_names(query,metadata):
-        for v in variants(title):
-            if v and v.casefold() not in {x.casefold() for x in result}:
-                result.append(v)
+    seen=set()
+    def add(value):
+        value=str(value or '').strip()
+        if value and value.casefold() not in seen:
+            seen.add(value.casefold())
+            result.append(value)
+    # Search each language/title first, not every spelling of just one title.
+    for title in titles:
+        add(title)
+        if len(result)>=limit:
+            return result[:limit]
+    for title in titles:
+        for value in variants(title)[1:]:
+            add(value)
             if len(result)>=limit:
-                return result
-    return result
+                return result[:limit]
+    return result[:limit]
 
 
 def is_title_match(parsed, names, kind=None, year=None):
