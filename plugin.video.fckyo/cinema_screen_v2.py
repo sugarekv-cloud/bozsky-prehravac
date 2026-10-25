@@ -16,7 +16,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.28.0'
+VERSION='0.29.0'
 
 
 def tile(name,kind,**extra):
@@ -37,6 +37,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.genre_limits={'movie':24,'show':24}
         self.featured_card=None
         self._updating_home=False
+        self._switching_section=False
         self._nav_focus_target=None
         try:
             # Tracked by the playback service: retain the original screen
@@ -195,6 +196,78 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self.stack.append((self.mode,self.context,focus,index))
         self._screen(view,context,stack=False)
 
+    @staticmethod
+    def _catalog_problem(stage,exc):
+        """Errors remain visible in the Kodi log, not silently stale on TV."""
+        try:
+            xbmc.log('KIVORA catalogue %s: %s: %s'%(stage,
+                     type(exc).__name__,str(exc)),xbmc.LOGERROR)
+        except (AttributeError,RuntimeError):
+            pass
+
+    def _render_primary_section(self,view):
+        """Atomic, kind-strict TV shelf renderer for top menu tabs.
+
+        Fetching, metadata enrichment and recommendations must not prevent a
+        new tab from displaying. Only previously verified files are shown.
+        """
+        kind='show' if view=='shows' else 'movie'
+        empty={'_all_movies':[],'_all_shows':[],'_all_premieres':[]}
+        try:
+            home=self.service.home_fast() or empty
+            if not isinstance(home,dict):
+                home=empty
+        except Exception as exc:
+            self._catalog_problem('home_fast',exc)
+            home=empty
+        try:
+            available=self.service.browse(view,self.sort,
+                                          self.quality,self.language)
+        except Exception as exc:
+            self._catalog_problem('browse '+view,exc)
+            key=('_all_shows' if view=='shows' else
+                 '_all_premieres' if view=='premieres' else '_all_movies')
+            available=home.get(key) or []
+        # The cache is not an authoritative source of classification; ensure
+        # a movies shelf can never appear under the SERIÁLY tab.
+        items=[c for c in (available or []) if isinstance(c,dict)
+               and c.get('kind')==kind and c.get('ident') and c.get('files')]
+        try:
+            items=self._filtered(items)
+        except Exception as exc:
+            self._catalog_problem('filters '+view,exc)
+            # Prefer at least verified results to an empty/stale screen.
+        if view=='premieres':
+            self._fill('FILMOVÉ PREMIÉRY',items[:24] or [
+                       tile('PREMIÉRY SE AKTUALIZUJÍ','none')],
+                       'DALŠÍ PREMIÉRY',items[24:48],
+                       'Premiéry z ověřeného katalogu Webshare')
+            return
+        from cinema_rankings import csfd_only
+        key='_all_shows' if view=='shows' else '_all_movies'
+        try:
+            ranked=csfd_only(home.get(key) or [],kind,limit=40)
+        except Exception as exc:
+            self._catalog_problem('csfd '+view,exc)
+            ranked=[]
+        prefix='SERIÁLY' if kind=='show' else 'FILMY'
+        headline='NEJLÉPE HODNOCENÉ '+prefix+' · ČSFD'
+        ranked=[c for c in ranked if isinstance(c,dict)
+                and c.get('kind')==kind and c.get('ident') and c.get('files')]
+        primary=ranked[:24]
+        if primary:
+            primary.append(tile('+ CELÝ ŽEBŘÍČEK ČSFD','csfd_ranked',
+                                catalog_kind=kind))
+        else:
+            primary=[tile('ŽEBŘÍČEK ČSFD SE PŘIPRAVUJE','none')]
+        browse_button=tile('+ OBJEVIT DALŠÍ '+prefix,'catalog_open',
+                           catalog_kind=kind,
+                           plot='Otevře knihovnu ověřených souborů Webshare.')
+        discovered=[browse_button]+items[:35]
+        # One guaranteed paint, no expensive recommendations lookup before it.
+        self._fill(headline,primary,'PROCHÁZET '+prefix,discovered,
+                   'Vyber titul nebo otevři úplnou knihovnu')
+
     def _filtered(self,cards,keep_order=False):
         from cinema_catalog_v2 import sort_cards,choose_files
         from cinema_genres import genre_matches
@@ -332,56 +405,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                        'TIPY NA TENTO TÝDEN',weekly,
                        'Tipy podle dostupných titulů, hodnocení a historie sledování.')
         elif view in ('movies','shows','premieres'):
-            # Cached-first; no blocking modal when changing primary tabs.
-            # A completed refresh is repainted by _apply_background_home().
-            try:
-                ordered=self._filtered(self.service.browse(view,self.sort,
-                    self.quality,self.language))
-                if not ordered:
-                    ordered=[tile('VYHLEDAT NÁZEV','search')]
-                other_rows=[]
-                if view in ('movies','shows'):
-                    kind='movie' if view=='movies' else 'show'
-                    from cinema_rankings import csfd_only
-                    cache=self.service.home_fast()
-                    source=cache.get('_all_movies') if kind=='movie' else cache.get('_all_shows')
-                    top=csfd_only(source or [],kind,limit=40)
-                    row_one=list(top[:24]) if top else [
-                        tile('ČSFD · ZATÍM BEZ OVĚŘENÉHO HODNOCENÍ','none')]
-                    if top:
-                        row_one.append(tile('+  CELÝ ŽEBŘÍČEK ČSFD',
-                                            'csfd_ranked',catalog_kind=kind))
-                    row_two=[tile('+  OBJEVIT DALŠÍ FILMY' if kind=='movie'
-                                  else '+  OBJEVIT DALŠÍ SERIÁLY','catalog_open',
-                                  catalog_kind=kind,
-                                  plot='Rozšiřovat katalog dostupných titulů.')]+list(ordered[:35])
-                    heading='PROCHÁZET FILMY' if kind=='movie' else 'PROCHÁZET SERIÁLY'
-                    first_heading=('NEJLÉPE HODNOCENÉ FILMY · ČSFD' if kind=='movie'
-                                   else 'NEJLÉPE HODNOCENÉ SERIÁLY · ČSFD')
-                    # Tips contain verified, playable files, not placeholder posters.
-                    from cinema_recommendations import recommendations
-                    selected_home=self.service.tips_snapshot(cache) if hasattr(
-                        self.service,'tips_snapshot') else cache
-                    personalized,weekly=recommendations(selected_home,
-                        getattr(self,'watch_store',None),limit=35)
-                    suggestions=[dict(c,_tip='TIP PRO TEBE') for c in
-                                 personalized+weekly if c.get('kind')==kind]
-                    if suggestions:
-                        from cinema_dedupe import consolidate
-                        suggestions=consolidate(suggestions)[:30]
-                        other_rows=[('DOPORUČUJEME KE SLEDOVÁNÍ',suggestions)]
-                    elif hasattr(self.service,'start_tips_refresh'):
-                        self.service.start_tips_refresh()
-                else:
-                    row_one=ordered[:24]
-                    row_two=ordered[24:48]
-                    first_heading='PREMIÉRY PODLE ČSFD'
-                    heading='DALŠÍ PREMIÉRY'
-                self._fill(first_heading,row_one,heading,row_two,
-                           'ŘAZENÍ: '+self.sort+' · KVALITA: '+self.quality+
-                           ' · JAZYK: '+self.language,extra_rows=other_rows)
-            finally:
-                pass
+            # Always repaint the selected section, even when its catalogue is
+            # unavailable. Never leave the previous tab's rows on screen.
+            self._render_primary_section(view)
         elif view=='genres':
             from cinema_genres import GENRES
             cards=[tile('🎭  '+name,'genre_open',genre_name=name,
@@ -648,7 +674,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
 
     def _apply_background_home(self):
         current_mode=getattr(self,'mode',None)
-        if current_mode not in ('home','recommendations','movies','shows','premieres') or getattr(self,'_updating_home',False):
+        if (current_mode not in ('home','recommendations','movies','shows','premieres')
+                or getattr(self,'_updating_home',False)
+                or getattr(self,'_switching_section',False)):
             return
         updated=self.service.take_home_refresh()
         take_tips=getattr(self.service,'take_tips_refresh',None)
@@ -769,22 +797,23 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             return
         if control_id in TOP_ACTIONS:
             command=TOP_ACTIONS[control_id]
-            # Preserve the clicked tab, including for remote OK presses.
-            # _fill() otherwise steals focus for the first poster.
             self._nav_focus_target=control_id
-            if command=='settings':
-                self._gear_menu()
-            elif command=='home':
-                # Reset to a fresh home screen, never another stacked copy.
-                self.stack=[]
-                service=getattr(self,'service',None)
-                if service:
-                    service.take_home_refresh()
-                self._screen('home',stack=False)
-            elif command=='csfd_ranked':
-                self._refresh(command,'movie')
-            else:
-                self._refresh(command)
+            self._switching_section=True
+            try:
+                if command=='settings':
+                    self._gear_menu()
+                elif command=='home':
+                    self.stack=[]
+                    service=getattr(self,'service',None)
+                    if service:
+                        service.take_home_refresh()
+                    self._screen('home',stack=False)
+                elif command=='csfd_ranked':
+                    self._refresh(command,'movie')
+                else:
+                    self._refresh(command)
+            finally:
+                self._switching_section=False
             return
         c=self._selected(control_id)
         if not c:return
