@@ -10,11 +10,11 @@ import xbmc
 
 TOP_ACTIONS={
     101:'movies', 102:'shows', 103:'search', 104:'premieres',
-    107:'settings'
+    105:'genres', 107:'settings'
 }
 BACK_ACTIONS=(9,10,92,216)
-ROW_IDS=tuple(range(401,412))
-VERSION='0.19.0'
+ROW_IDS=tuple(range(401,414))
+VERSION='0.20.0'
 
 
 def tile(name,kind,**extra):
@@ -32,6 +32,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.rail_items=[[] for _ in ROW_IDS]
         self.popular_limit=24
         self.catalog_limit=24
+        self.genre_limits={'movie':24,'show':24}
         self.featured_card=None
         for name,path in self.textures.items():
             self.setProperty('cinema_'+name,path)
@@ -150,6 +151,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
 
     def _filtered(self,cards,keep_order=False):
         from cinema_catalog_v2 import sort_cards,choose_files
+        from cinema_genres import genre_matches
         selected=[]
         for c in cards:
             if c.get('kind') not in ('movie','show'):
@@ -157,8 +159,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 continue
             if self.year!='all' and str(c.get('year') or '')!=self.year:
                 continue
-            if self.genre!='all' and self.genre.casefold() not in (
-                    c.get('genre') or '').casefold():
+            if self.genre!='all' and not genre_matches(c,self.genre):
                 continue
             if not choose_files(c.get('files') or [],self.quality,self.language):
                 continue
@@ -173,6 +174,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             'search':'VYHLEDÁVÁNÍ','seasons':'SÉRIE','episodes':'EPIZODY',
             'files':'VÝBĚR KVALITY',
              'most_watched':'NEJSLEDOVANĚJŠÍ',
+              'genres':'ŽÁNRY','genre_titles':'ŽÁNROVÝ KATALOG',
               'catalog_all':'ÚPLNÝ KATALOG',
               'csfd_ranked':'NEJLEPŠÍ DLE ČSFD',
               'favorites':'OBLÍBENÉ'}.get(view,'KATALOG'))
@@ -184,52 +186,58 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 'Otevři ⚙ Nastavení pro přihlášení k Webshare.')
             return
         if view=='home':
-            load=self._loading('Načítám dostupné filmy a česká metadata…')
-            try:
-                home=self.service.home()
-                # Playback progress and favourites are local to this Kodi device.
-                store=getattr(self,'watch_store',None)
-                films=store.continue_cards('movie') if store else []
-                series=store.continue_cards('show') if store else []
-                favorites=store.favorite_cards() if store else []
-                year=home.get('ranking_year') or __import__('datetime').date.today().year
-                from cinema_rankings import csfd_only
-                all_movies=home.get('_all_movies') or []
-                csfd=csfd_only(all_movies,'movie',limit=30)
-                # Webshare's 'rating' file ordering is a popularity proxy,
-                # NOT verifiable totals of film views.
-                webshare=self._filtered(self.service.most_watched_movies(
-                    18,self.quality,self.language),keep_order=True)
-                if webshare:
-                    webshare=list(webshare)+[tile('+  CELÝ ŽEBŘÍČEK',
-                        'most_watched',plot='Procházet další populární soubory Webshare.')]
-                if csfd:
-                    csfd=list(csfd)+[tile('+  CELÝ ŽEBŘÍČEK ČSFD',
-                        'csfd_ranked',plot='Nejlépe hodnocené dostupné filmy podle ČSFD.')]
-                top=home['premieres']+home['movies']
-                if not top:
-                    top=[tile('HLEDAT FILM','search'),tile('FILMY','movies')]
-                shows=home['shows']+home.get('classic_shows',[])
-                if not shows:
-                    shows=[tile('HLEDAT SERIÁL','search'),tile('SERIÁLY','shows')]
-                rows=[
-                    ('POKRAČOVAT VE SLEDOVÁNÍ · FILMY',films),
-                    ('POKRAČOVAT VE SLEDOVÁNÍ · SERIÁLY',series),
-                    ('NEJSLEDOVANĚJŠÍ NA WEBSHARE · DLE POPULARITY SOUBORŮ',webshare),
-                    ('NEJLÉPE HODNOCENÉ NA ČSFD',csfd),
-                    ('PREMIÉRY A NOVÉ FILMY',top),
-                    ('SERIÁLY NA WEBSHARE',shows),
-                    ('MOJE OBLÍBENÉ',favorites),
-                    ('FILMOVÉ HITY A KLASIKY',home.get('classics') or []),
-                    ('NEJLEPŠÍ FILMY ROKU %s'%year,home.get('best_movies_year') or []),
-                    ('NEJLEPŠÍ SERIÁLY VŠECH DOB',home.get('best_shows_all') or []),
-                    ('NEJLEPŠÍ SERIÁLY ROKU %s'%year,home.get('best_shows_year') or []),
-                ]
-                self._fill(rows[0][0],rows[0][1],rows[1][0],rows[1][1],
-                           self.service.last_diagnostics+
-                           ' · Webshare: popularita souborů · ČSFD: hodnocení',
-                           extra_rows=rows[2:])
-            finally:load.close()
+            # Draw cached, previously verified titles immediately.
+            home=self.service.home_fast()
+            self.service.start_home_refresh()
+            store=getattr(self,'watch_store',None)
+            films=store.continue_cards('movie') if store else []
+            series=store.continue_cards('show') if store else []
+            favorites=store.favorite_cards() if store else []
+            year=home.get('ranking_year') or __import__('datetime').date.today().year
+            from cinema_rankings import csfd_only
+            csfd_movies=csfd_only(home.get('_all_movies') or [],'movie',limit=30)
+            csfd_shows=csfd_only(home.get('_all_shows') or [],'show',limit=30)
+            web_movies=self._filtered(home.get('_webshare_movies') or [],
+                                      keep_order=True)[:18]
+            web_shows=self._filtered(home.get('_webshare_shows') or [],
+                                     keep_order=True)[:18]
+            if web_movies:
+                web_movies.append(tile('+  CELÝ ŽEBŘÍČEK','most_watched',
+                    catalog_kind='movie',plot='Popularita souborů, nikoli počet zhlédnutí'))
+            if web_shows:
+                web_shows.append(tile('+  CELÝ ŽEBŘÍČEK SERIÁLŮ','most_watched',
+                    catalog_kind='show',plot='Popularita seriálových souborů Webshare'))
+            if csfd_movies:
+                csfd_movies.append(tile('+  ŽEBŘÍČEK ČSFD','csfd_ranked',
+                    catalog_kind='movie'))
+            if csfd_shows:
+                csfd_shows.append(tile('+  SERIÁLY ČSFD','csfd_ranked',
+                    catalog_kind='show'))
+            top=(home.get('premieres') or [])+(home.get('movies') or [])
+            shows=(home.get('shows') or [])+(home.get('classic_shows') or [])
+            if not top:
+                top=[tile('FILMY · OTEVŘÍT KATALOG','movies')]
+            if not shows:
+                shows=[tile('SERIÁLY · OTEVŘÍT KATALOG','shows')]
+            rows=[
+                ('POKRAČOVAT · FILMY',films),
+                ('POKRAČOVAT · SERIÁLY',series),
+                ('POPULÁRNÍ NA WEBSHARE · FILMY',web_movies),
+                ('NEJLÉPE HODNOCENÉ NA ČSFD · FILMY',csfd_movies),
+                ('POPULÁRNÍ NA WEBSHARE · SERIÁLY',web_shows),
+                ('NEJLÉPE HODNOCENÉ NA ČSFD · SERIÁLY',csfd_shows),
+                ('PREMIÉRY A NOVÉ FILMY',top),
+                ('SERIÁLY NA WEBSHARE',shows),
+                ('MOJE OBLÍBENÉ',favorites),
+                ('FILMOVÉ HITY A KLASIKY',home.get('classics') or []),
+                ('NEJLEPŠÍ FILMY ROKU %s'%year,home.get('best_movies_year') or []),
+                ('NEJLEPŠÍ SERIÁLY VŠECH DOB',home.get('best_shows_all') or []),
+                ('NEJLEPŠÍ SERIÁLY ROKU %s'%year,home.get('best_shows_year') or []),
+            ]
+            self._fill(rows[0][0],rows[0][1],rows[1][0],rows[1][1],
+                       self.service.last_diagnostics+
+                       ' · Webshare: popularita · ČSFD: hodnocení',
+                       extra_rows=rows[2:])
         elif view in ('movies','shows','premieres'):
             load=self._loading('Řadím dostupné tituly…')
             try:
