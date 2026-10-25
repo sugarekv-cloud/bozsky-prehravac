@@ -738,8 +738,13 @@ class CinemaService:
             cards=self.search_cache[key]
             return [c for c in cards if kind=='all' or c['kind']==kind]
         md=self.metadata.lookup(title,requested_year) if self.metadata else None
+        from cinema_search_v3 import cached_title_aliases
         names=candidate_names(title,md)
-        plan=query_plan(title,md,limit=18)
+        cached_aliases=cached_title_aliases(title,self.home_fast())
+        names=list(dict.fromkeys(names+cached_aliases))
+        plan=query_plan(title,md,limit=22)
+        # Verified catalogue aliases enter early, ahead of punctuation variants.
+        plan=list(dict.fromkeys(plan[:1]+cached_aliases+plan[1:]))[:24]
         matches={}
         # Ensure the English alias and individual franchise installments are
         # considered before giving attention to punctuation/spelling variants.
@@ -748,7 +753,7 @@ class CinemaService:
         for index,attempt in enumerate(plan):
             # Scan beyond the first 100 broad Webshare hits to avoid a search
             # dominated by unrelated filenames or different resolutions.
-            max_pages=3 if index==0 else 2 if index<core_count else 1
+            max_pages=4 if index==0 else 3 if index<core_count else 1
             page=collect_pages(self.fetch,self.token,attempt,
                                max_pages=max_pages,
                                sort='rating' if index<core_count else 'recent')
@@ -769,7 +774,7 @@ class CinemaService:
             # query, cap expensive round trips once plenty of releases exist.
             if len(matches)>=180:
                 break
-            if index>=min(core_count-1,9) and successful>=3 and len(matches)>=45:
+            if index>=min(core_count-1,12) and successful>=4 and len(matches)>=80:
                 break
         combined=[]
         for mode in ('movie','show'):
