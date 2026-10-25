@@ -57,8 +57,8 @@ class StreamingHomeTests(unittest.TestCase):
             rail=self.root.find(".//control[@id='%d']"%cid)
             links=rail.findall('ondown')
             self.assertTrue(all(link.get('condition') for link in links[:-1]))
-            self.assertTrue(any(int(link.text)>cid+1 for link in links[:-1]
-                                if cid<406))
+            if cid<406:
+                self.assertTrue(any(int(link.text)>cid+1 for link in links[:-1]))
 
     def test_dark_theme_and_more_space_for_scroll(self):
         container=self.root.find(".//control[@id='610']")
