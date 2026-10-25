@@ -396,25 +396,10 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                            'další stránky na požádání'%len(cards))
             finally:load.close()
         elif view=='most_watched':
-            kind=context if context in ('movie','show') else 'movie'
-            load=self._loading('Načítám popularitu z Webshare…')
-            try:
-                fetch=(self.service.most_watched_movies if kind=='movie' else
-                       self.service.most_watched_shows)
-                ranked=self._filtered(fetch(self.popular_limit,self.quality,self.language),
-                                      keep_order=True)[:self.popular_limit]
-                done=(self.service._most_watched_done if kind=='movie'
-                      else getattr(self.service,'_show_popularity',{}).get('done',False))
-                items=list(ranked)
-                if not done:
-                    items.append(tile('+  NAČÍST DALŠÍ','load_more',catalog_kind=kind))
-                if not items:
-                    items=[tile('ŽÁDNÉ OVĚŘENÉ TITULY','none')]
-                self._fill('WEBSHARE · POPULÁRNÍ '+(
-                           'FILMY' if kind=='movie' else 'SERIÁLY'),items,'',[],
-                           '%d titulů · popularita souborů, ne počty zhlédnutí'%len(ranked))
-            finally:
-                load.close()
+            # Old bookmark/cache compatibility. KIVORA no longer displays
+            # Webshare rating as a film-viewing popularity chart.
+            self._screen('catalog_all',context if context in ('movie','show')
+                         else 'movie')
         elif view=='search':
             query=(context or '').strip()
             if not query:
