@@ -882,6 +882,17 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self._update_hero()
 
     def onClick(self,control_id):
+        if control_id==110:
+            selected=self.featured_card
+            if selected:
+                summary='\\n'.join(x for x in (
+                    str(selected.get('year') or ''),
+                    str(selected.get('genre') or ''),
+                    str(selected.get('plot') or 'Popis není dostupný.')
+                ) if x)
+                xbmcgui.Dialog().textviewer(str(selected.get('title') or 'Detail'),
+                                            summary)
+            return
         if control_id==108:
             chosen=self.featured_card
             if chosen and chosen.get('_continue'):
