@@ -86,7 +86,7 @@ for n,o,y in MOVIE_SEEDS+SHOW_SEEDS:
     ALIASES[normalize(o)]=tuple(dict.fromkeys(x for x in (n,o) if x))
 
 
-SEARCH_YEAR = re.compile(r'^(.*?)\s*(?:\\(|\\[)?((?:19|20)\\d{2})(?:\\)|\\])?\s*$')
+SEARCH_YEAR = re.compile(r'^(.*?)\s*(?:\(|\[)?((?:19|20)\d{2})(?:\)|\])?\s*$')
 
 
 def title_and_year(query):
