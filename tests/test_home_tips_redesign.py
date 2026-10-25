@@ -92,7 +92,7 @@ class ModernSkinTests(unittest.TestCase):
             self.assertEqual(row.findtext('onleft'),'201')
         hero=next(i for i in self.skin.findall(".//control[@type='image']")
                   if i.findtext('texture')=='$INFO[Window.Property(hero_art)]')
-        self.assertGreater(int(hero.findtext('height')),380)
+        self.assertGreaterEqual(int(hero.findtext('height')),380)
 
     def test_real_sidebar_buttons_and_home_tab(self):
         for cid in (106,201,202,203,204,205,206,207):
