@@ -16,7 +16,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.30.0'
+VERSION='0.32.0'
 
 
 def tile(name,kind,**extra):
@@ -461,13 +461,18 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             # unavailable. Never leave the previous tab's rows on screen.
             self._render_primary_section(view)
         elif view=='genres':
-            from cinema_genres import GENRES
-            cards=[tile('🎭  '+name,'genre_open',genre_name=name,
-                        plot='Vyhledat ověřené filmy a seriály: '+name)
+            from cinema_genres import GENRES, genre_icon_path
+            # Every genre has a bundled image, not a Unicode glyph or an
+            # external HTTP poster. Safe even when Webshare is unavailable.
+            root=(self.addon.getAddonInfo('path')
+                  if getattr(self,'addon',None) else os.path.dirname(__file__))
+            cards=[tile(name,'genre_open',genre_name=name,
+                        poster=genre_icon_path(root,name),
+                        plot='Filmy a seriály žánru '+name)
                    for name in GENRES]
-            self._fill('VYBER ŽÁNR · FILMY',cards[:12],
-                       'VYBER ŽÁNR · SERIÁLY',cards[12:],
-                       'Žánry podle filmových metadat, jen ověřené soubory Webshare')
+            self._fill('VYBER SI ŽÁNR',cards[:12],
+                       'DALŠÍ FILMOVÉ ŽÁNRY',cards[12:],
+                       '24 kategorií · vyber obrázek a otevři dostupné tituly')
         elif view=='genre_titles':
             from cinema_genres import genre_cards
             from cinema_dedupe import consolidate
