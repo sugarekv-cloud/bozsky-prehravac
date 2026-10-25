@@ -12,12 +12,13 @@ import time
 from cinema_catalog_v2 import (groups,verified_groups,add_metadata,card,
     sort_cards,grouped_episodes,choose_files,collect_pages,matching_release)
 from cinematic_discovery import discover
-from novinky_catalogue import normalize
+from novinky_catalogue import normalize, parse_video_name
 from catalog_engine import file_label
 from cinema_dedupe import (consolidate, unify_sections, unique_home_rails,
                            identity)
 from cinema_search_v3 import (MOVIE_SEEDS, SHOW_SEEDS, candidate_names,
-                              query_plan, matching_files, seed_batch, localized_title)
+                              query_plan, matching_files, seed_batch, localized_title,
+                               title_and_year)
 
 
 class CinemaService:
@@ -499,50 +500,88 @@ class CinemaService:
         return sort_cards(consolidate(filtered),sort)
 
     def search(self, query, kind='all'):
-        """Search Czech/original titles and release variants, validate files."""
+        """Search both localized and original filenames, including older pages.
+
+        A film can only appear after Webshare returned a matching file and the
+        availability checker validated it. No metadata-only 'ghost' posters.
+        """
         term=(query or '').strip()
         if not term:
             return []
+        title,requested_year=title_and_year(term)
         key=normalize(term)
         if key in self.search_cache:
             cards=self.search_cache[key]
             return [c for c in cards if kind=='all' or c['kind']==kind]
-        md=self.metadata.lookup(term) if self.metadata else None
-        names=candidate_names(term,md)
+        md=self.metadata.lookup(title,requested_year) if self.metadata else None
+        names=candidate_names(title,md)
+        plan=query_plan(title,md,limit=18)
         matches={}
+        # Ensure the English alias and individual franchise installments are
+        # considered before giving attention to punctuation/spelling variants.
+        core_count=min(len(names),len(plan))
         successful=0
-        # Short, bounded calls; searching Czech titles is followed by the
-        # original title and dot-separated release filenames when necessary.
-        for index,attempt in enumerate(query_plan(term,md,limit=10)):
+        for index,attempt in enumerate(plan):
+            # Scan beyond the first 100 broad Webshare hits to avoid a search
+            # dominated by unrelated filenames or different resolutions.
+            max_pages=3 if index==0 else 2 if index<core_count else 1
             page=collect_pages(self.fetch,self.token,attempt,
-                               max_pages=3 if index==0 else (2 if index<4 else 1),
-                               sort='rating' if index<4 else 'recent')
+                               max_pages=max_pages,
+                               sort='rating' if index<core_count else 'recent')
             if page is None:
                 continue
-            valid=matching_files(page,names)
-            for f in valid:
-                matches[str(f['ident'])]=f
+            valid=matching_files(page,names,kind=None,year=requested_year)
+            if requested_year:
+                # Explicitly selecting a release year must not silently
+                # attach an undated remake to another movie.
+                valid=[f for f in valid if
+                       (parse_video_name(f.get('name') or '') or {}).get('year')
+                       ==requested_year]
+            for entry in valid:
+                matches[str(entry['ident'])]=entry
             if valid:
                 successful+=1
-            if successful>=2 or (successful and len(matches)>=80):
+            # Always attempt every core alias when feasible. For a generic
+            # query, cap expensive round trips once plenty of releases exist.
+            if len(matches)>=180:
+                break
+            if index>=min(core_count-1,9) and successful>=3 and len(matches)>=45:
                 break
         combined=[]
         for mode in ('movie','show'):
+            if kind in ('movie','show') and kind!=mode:
+                continue
             candidates=groups(list(matches.values()),mode)
             candidates=verified_groups(candidates,self.availability,
-                                       maximum=50,checked=90)
+                                       maximum=60,checked=120)
             add_metadata(candidates,self.metadata,maximum=25)
-            for g in candidates:
-                # The Avengers (2012) metadata must not overwrite Endgame.
-                if md and normalize(g['title']) in {normalize(n) for n in names}:
-                    if not g['year'] or not md.get('year') or str(g['year'])==str(md['year']):
-                        g['metadata']=md
-                if not g.get('metadata'):
-                    g['metadata']=localized_title(g['title'],mode,g.get('year'))
-                combined.append(self._decorate(g,g.get('metadata')))
+            for group in candidates:
+                # A metadata match for Avengers (2012) must never relabel
+                # Avengers: Endgame (2019) as the earlier release.
+                if md and normalize(group['title']) in {normalize(n) for n in names}:
+                    if (not group['year'] or not md.get('year') or
+                            str(group['year'])==str(md['year'])):
+                        group['metadata']=md
+                if not group.get('metadata'):
+                    group['metadata']=localized_title(
+                        group['title'],mode,group.get('year'))
+                combined.append(self._decorate(group,group.get('metadata')))
         combined=consolidate(combined)
-        combined.sort(key=lambda c:(0 if normalize(c['raw'])==key else 1,
-                      normalize(c['title']),str(c.get('year') or '')))
+        targets={normalize(x) for x in names}
+        def rank(card):
+            raw=normalize(card.get('raw') or '')
+            original=normalize(card.get('original') or '')
+            displayed=normalize(card.get('title') or '')
+            exact=raw in targets or original in targets or displayed in targets
+            specific=raw==normalize(title) or displayed==normalize(title)
+            year_match=bool(requested_year and
+                            str(card.get('file_year') or card.get('year') or '')
+                            ==requested_year)
+            return (0 if specific else 1,0 if exact else 1,
+                    0 if year_match else 1,
+                    -(card.get('rating') or 0),
+                    displayed,str(card.get('year') or ''))
+        combined.sort(key=rank)
         self.search_cache[key]=combined
         return [c for c in combined if kind=='all' or c['kind']==kind]
 
