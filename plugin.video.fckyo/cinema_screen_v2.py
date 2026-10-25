@@ -16,7 +16,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.29.1'
+VERSION='0.30.0'
 
 
 def tile(name,kind,**extra):
@@ -210,6 +210,72 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         except (AttributeError,RuntimeError):
             pass
 
+    def _home_catalogue(self):
+        """Always deliver a typed, local, verified shelf map without network IO."""
+        default={'_all_movies':[],'_all_shows':[],
+                 'movies':[],'shows':[],'premieres':[],'classics':[],
+                 'classic_shows':[]}
+        try:
+            source=self.service.home_fast()
+            if not isinstance(source,dict):
+                source={}
+            home=dict(default,**source)
+        except Exception as exc:
+            self._catalog_problem('home snapshot',exc)
+            home=dict(default)
+        try:
+            supplement=getattr(self.service,'tips_snapshot',None)
+            if callable(supplement):
+                merged=supplement(home)
+                if isinstance(merged,dict):
+                    home=merged
+        except Exception as exc:
+            self._catalog_problem('tips snapshot',exc)
+        # Old caches sometimes only had "movies"/"shows", not _all_*.
+        from cinema_dedupe import consolidate
+        for kind,keys in (('movie',('_all_movies','movies','premieres','classics')),
+                          ('show',('_all_shows','shows','classic_shows'))):
+            found=[]
+            for key in keys:
+                found.extend([c for c in (home.get(key) or [])
+                              if isinstance(c,dict) and c.get('kind')==kind
+                              and c.get('ident') and c.get('files')])
+            home[keys[0]]=consolidate(found)
+        return home
+
+    def _home_tips(self,home,store,limit=24):
+        """Actual available movies, including rewatchable titles when needed."""
+        from cinema_recommendations import recommendations
+        films=(home.get('_all_movies') or [])+(home.get('_all_shows') or [])
+        try:
+            chosen,weekly=recommendations(home,store,limit=limit)
+        except Exception as exc:
+            self._catalog_problem('recommendations',exc)
+            chosen,weekly=[],[]
+        def fill(base,tag):
+            from cinema_dedupe import consolidate,identity
+            good=[c for c in base if isinstance(c,dict) and c.get('kind') in ('movie','show')
+                  and c.get('ident') and c.get('files')]
+            seen={identity(c) for c in good}
+            for c in films:
+                if (isinstance(c,dict) and c.get('kind') in ('movie','show')
+                    and c.get('ident') and c.get('files') and identity(c) not in seen):
+                    good.append(c)
+                    seen.add(identity(c))
+                if len(good)>=limit:break
+            return [dict(c,_tip=tag) for c in consolidate(good)[:limit]]
+        return fill(chosen,'TIP PRO TEBE'),fill(weekly,'TIP TÝDNE')
+
+    def _schedule_home_discovery(self):
+        # First paint always wins. A broken provider must not blank the UI.
+        for name in ('start_home_refresh','start_tips_refresh'):
+            try:
+                callback=getattr(self.service,name,None)
+                if callable(callback):
+                    callback()
+            except Exception as exc:
+                self._catalog_problem(name,exc)
+
     def _render_primary_section(self,view):
         """Atomic, kind-strict TV shelf renderer for top menu tabs.
 
@@ -321,99 +387,75 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 'Otevři ⚙ Nastavení pro přihlášení k Webshare.')
             return
         if view=='home':
-            # Instant cached paint, network-free on the UI thread.
-            home=self.service.home_fast()
-            self.service.start_home_refresh()
-            tips_snapshot=getattr(self.service,'tips_snapshot',None)
-            if callable(tips_snapshot):
-                home=tips_snapshot(home)
-            tips_bootstrap=getattr(self.service,'start_tips_refresh',None)
-            if callable(tips_bootstrap):
-                tips_bootstrap()
+            # Cinematic home is a real page, independent from worker success.
+            home=self._home_catalogue()
             store=getattr(self,'watch_store',None)
-            films=store.continue_cards('movie') if store else []
-            series=store.continue_cards('show') if store else []
-            favorites=store.favorite_cards() if store else []
-            year=home.get('ranking_year') or __import__('datetime').date.today().year
+            try:
+                films=store.continue_cards('movie') if store else []
+                series=store.continue_cards('show') if store else []
+                favorites=store.favorite_cards() if store else []
+            except Exception as exc:
+                self._catalog_problem('watch lists',exc)
+                films,series,favorites=[],[],[]
             from cinema_rankings import csfd_only
-            from cinema_recommendations import recommendations
             all_movies=home.get('_all_movies') or []
             all_shows=home.get('_all_shows') or []
             csfd_movies=csfd_only(all_movies,'movie',limit=30)
             csfd_shows=csfd_only(all_shows,'show',limit=30)
-            personal,weekly=recommendations(home,store,limit=18)
+            personal,weekly=self._home_tips(home,store,limit=24)
+            # Show real films as soon as any verified movie is indexed.
+            if not personal:
+                personal=[
+                    tile('OBJEVIT FILMY V KNIHOVNĚ','movies'),
+                    tile('VYHLEDAT KONKRÉTNÍ FILM','search'),
+                    tile('OBNOVIT TIPY A KATALOG','tips_retry')]
+            if not weekly:
+                weekly=list(personal)
             if csfd_movies:
                 csfd_movies=list(csfd_movies)+[tile('+  CELÝ ŽEBŘÍČEK ČSFD',
                     'csfd_ranked',catalog_kind='movie')]
             if csfd_shows:
                 csfd_shows=list(csfd_shows)+[tile('+  SERIÁLY NA ČSFD',
                     'csfd_ranked',catalog_kind='show')]
-            latest=(home.get('premieres') or [])+(home.get('movies') or [])
-            shows=(home.get('shows') or [])+(home.get('classic_shows') or [])
-            if not latest:
-                latest=[tile('FILMY · OTEVŘÍT KATALOG','movies')]
-            if not shows:
-                shows=[tile('SERIÁLY · OTEVŘÍT KATALOG','shows')]
-            # Keep recommendations visible even during the first asynchronous
-            # catalogue refresh, when no verified titles are cached yet.
-            if personal:
-                personal=[dict(c,_tip='TIP PRO TEBE') for c in personal]
-            if weekly:
-                weekly=[dict(c,_tip='TIP TÝDNE') for c in weekly]
-            if not personal:
-                personal=list(weekly)
-            if not personal:
-                personal=[tile('TIPY SE PŘIPRAVUJÍ · AKTUALIZOVAT',
-                               'tips_retry',plot='Ověřený katalog se načítá na pozadí.'),
-                          tile('PŘEJÍT DO FILMOVÉ KNIHOVNY','movies'),
-                          tile('VYHLEDAT FILM NEBO SERIÁL','search')]
-            if not weekly:
-                weekly=[tile('TIPY TÝDNE SE PŘIPRAVUJÍ','tips_retry',
-                             plot='Nové doporučené tituly se objeví po aktualizaci.')]
+            latest=home.get('premieres') or all_movies[:18]
+            shows=home.get('shows') or all_shows[:18]
+            year=home.get('ranking_year') or __import__('datetime').date.today().year
             rows=[
                 ('TIPY NA SLEDOVÁNÍ',personal),
+                ('POKRAČOVAT VE SLEDOVÁNÍ',films+series),
                 ('NEJLÉPE HODNOCENÉ FILMY · ČSFD',csfd_movies or [
-                    tile('ZATÍM BEZ ČSFD HODNOCENÍ · AKTUALIZOVAT','tips_retry')]),
+                    tile('OTEVŘÍT FILMOVOU KNIHOVNU','movies')]),
                 ('NEJLÉPE HODNOCENÉ SERIÁLY · ČSFD',csfd_shows or [
-                    tile('SERIÁLY ČSFD SE NAČÍTAJÍ','tips_retry')]),
-                ('POKRAČOVAT VE SLEDOVÁNÍ · FILMY',films),
-                ('POKRAČOVAT VE SLEDOVÁNÍ · SERIÁLY',series),
+                    tile('OTEVŘÍT KATALOG SERIÁLŮ','shows')]),
+                ('NOVÉ FILMY',latest or [tile('PROCHÁZET FILMY','movies')]),
+                ('VYBER SI SERIÁL',shows or [tile('PROCHÁZET SERIÁLY','shows')]),
                 ('TIPY NA TENTO TÝDEN',weekly),
-                ('PREMIÉRY A NOVINKY',latest),
-                ('FILMY PRO VEČER',home.get('movies') or []),
-                ('OBLÍBENÉ SERIÁLY',shows),
                 ('MOJE OBLÍBENÉ',favorites),
-                ('FILMOVÉ HITY A KLASIKY',home.get('classics') or []),
+                ('FILMY PRO VEČER',all_movies[:24]),
+                ('SERIÁLY PRO VEČER',all_shows[:24]),
                 ('NEJLEPŠÍ FILMY ROKU %s · ČSFD'%year,
-                 csfd_only(all_movies,'movie',year=year,limit=20)),
+                    csfd_only(all_movies,'movie',year=year,limit=20)),
                 ('NEJLEPŠÍ SERIÁLY ROKU %s · ČSFD'%year,
-                 csfd_only(all_shows,'show',year=year,limit=20)),
+                    csfd_only(all_shows,'show',year=year,limit=20)),
             ]
             self._fill(rows[0][0],rows[0][1],rows[1][0],rows[1][1],
-                       self.service.last_diagnostics+
-                       ' · Žebříčky a tipy z ověřených titulů ČSFD',
+                       'DOMŮ  ·  tipy a ověřené filmy z Webshare',
                        extra_rows=rows[2:])
+            self._schedule_home_discovery()
         elif view=='recommendations':
-            from cinema_recommendations import recommendations
-            home=self.service.home_fast()
-            self.service.start_home_refresh()
-            tips_snapshot=getattr(self.service,'tips_snapshot',None)
-            if callable(tips_snapshot):
-                home=tips_snapshot(home)
-            tips_bootstrap=getattr(self.service,'start_tips_refresh',None)
-            if callable(tips_bootstrap):
-                tips_bootstrap()
-            personal,weekly=recommendations(home,getattr(self,'watch_store',None),limit=35)
-            personal=[dict(c,_tip='TIP PRO TEBE') for c in personal]
-            weekly=[dict(c,_tip='TIP TÝDNE') for c in weekly]
-            if not personal:
-                personal=[tile('TIPY SE NAČÍTAJÍ · OBNOVIT','tips_retry',
-                               plot='Doporučení z ověřených titulů se připravují.')]
+            home=self._home_catalogue()
+            chosen,weekly=self._home_tips(
+                home,getattr(self,'watch_store',None),limit=35)
+            if not chosen:
+                chosen=[tile('PROCHÁZET DOSTUPNÉ FILMY','movies'),
+                        tile('VYHLEDAT FILM PODLE NÁZVU','search'),
+                        tile('AKTUALIZOVAT TIPY','tips_retry')]
             if not weekly:
-                weekly=[tile('TIPY TÝDNE SE NAČÍTAJÍ · OBNOVIT','tips_retry')]
-            self._fill('DOPORUČUJEME PRO TEBE',personal,
+                weekly=list(chosen)
+            self._fill('DOPORUČUJEME PRO TEBE',chosen,
                        'TIPY NA TENTO TÝDEN',weekly,
-                       'Tipy podle dostupných titulů, hodnocení a historie sledování.')
+                       'Tipy vycházejí z dostupných filmů a seriálů')
+            self._schedule_home_discovery()
         elif view in ('movies','shows','premieres'):
             # Always repaint the selected section, even when its catalogue is
             # unavailable. Never leave the previous tab's rows on screen.
