@@ -14,7 +14,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=(401,402,403,404,405,406,407)
-VERSION='0.17.0'
+VERSION='0.18.0'
 
 
 def tile(name,kind,**extra):
