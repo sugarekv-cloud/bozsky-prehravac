@@ -51,7 +51,7 @@ class SearchV4Tests(unittest.TestCase):
             def lookup(self,*args,**kwargs): return None
         svc.artwork=Art()
         result=svc.search('Pán prstenů')
-        self.assertTrue(any('Two Towers' in c['title'] for c in result))
+        self.assertTrue(any('Two Towers' in c['raw'] for c in result))
         self.assertTrue(any('two towers' in x[0].lower() for x in found))
 
     def test_deep_page_after_first_hundred_noise(self):
