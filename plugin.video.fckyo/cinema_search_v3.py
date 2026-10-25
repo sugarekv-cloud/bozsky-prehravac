@@ -86,13 +86,13 @@ for n,o,y in MOVIE_SEEDS+SHOW_SEEDS:
     ALIASES[normalize(o)]=tuple(dict.fromkeys(x for x in (n,o) if x))
 
 
-SEARCH_YEAR = re.compile(r'^(.*?)\\s*(?:\\(|\\[)?((?:19|20)\\d{2})(?:\\)|\\])?\\s*$')
+SEARCH_YEAR = re.compile(r'^(.*?)\s*(?:\\(|\\[)?((?:19|20)\\d{2})(?:\\)|\\])?\s*$')
 
 
 def title_and_year(query):
     """Accept 'The Matrix (1999)', 'Matrix.1999' and bare title searches."""
     query=str(query or '').strip()
-    match=SEARCH_YEAR.match(query.replace('.', ' '))
+    match=SEARCH_YEAR.match(re.sub(r'[._]+', ' ',query))
     if match and normalize(match.group(1)):
         return match.group(1).strip(' ._-'),match.group(2)
     return query,''
