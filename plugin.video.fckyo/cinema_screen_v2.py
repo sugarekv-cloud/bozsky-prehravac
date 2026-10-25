@@ -16,7 +16,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.29.0'
+VERSION='0.29.1'
 
 
 def tile(name,kind,**extra):
@@ -144,18 +144,23 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
 
     def _update_hero(self):
         c=self._selected()
+        mode=getattr(self,'mode',None)
+        wanted={'movies':'movie','shows':'show','premieres':'movie'}.get(mode)
         if not c and self.getFocusId() not in ROW_IDS:
-            # Keep the cinematic banner while focus moves to the top bar or
-            # sidebar, instead of flashing an empty hero background.
+            # Preserve an existing in-section banner while navigating menus.
             c=self.featured_card
-        if (not c or c.get('kind') not in ('movie','show')) and getattr(
-                self,'mode',None) in ('home','recommendations'):
+        if c and wanted and c.get('kind')!=wanted:
+            c=None
+        if (not c or c.get('kind') not in ('movie','show')) and mode in (
+                'home','recommendations','movies','shows','premieres'):
             c=next((card for row in getattr(self,'rail_items',[])
                     for card in row if card.get('kind') in ('movie','show')
+                    and (not wanted or card.get('kind')==wanted)
                     and (card.get('fanart') or card.get('poster'))),None)
         if not c:
             self.featured_card=None
-            self.setProperty('hero_title','KIVORA')
+            self.setProperty('hero_title',{'shows':'SERIÁLY','movies':'FILMY',
+                                          'premieres':'PREMIÉRY'}.get(mode,'KIVORA'))
             self.setProperty('hero_info','TVŮJ FILMOVÝ SVĚT · FILMY · SERIÁLY')
             self.setProperty('hero_plot','Objev film nebo seriál, vyber žánr nebo otevři Tipy.')
             self.setProperty('hero_art','')
@@ -288,6 +293,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         return selected if keep_order else sort_cards(selected,self.sort)
 
     def _screen(self,view,context=None,stack=False):
+        if view!=getattr(self,'mode',None):
+            # A new section must not inherit the previous section's hero.
+            self.featured_card=None
         self.mode=view
         self.context=context
         nav=view if view in ('home','movies','shows','premieres','search','genres') else (
