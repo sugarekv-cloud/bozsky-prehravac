@@ -9,12 +9,12 @@ import xbmcgui
 import xbmc
 
 TOP_ACTIONS={
-    101:'movies', 102:'shows', 103:'search', 104:'premieres',
+    100:'home',101:'movies', 102:'shows', 103:'search', 104:'premieres',
     105:'genres', 107:'settings'
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.20.0'
+VERSION='0.21.0'
 
 
 def tile(name,kind,**extra):
@@ -169,6 +169,11 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
     def _screen(self,view,context=None,stack=False):
         self.mode=view
         self.context=context
+        nav=view if view in ('home','movies','shows','premieres','search','genres') else (
+            'shows' if view in ('seasons','episodes') else
+            'movies' if view in ('files','catalog_all','csfd_ranked','most_watched') else
+            'home')
+        self.setProperty('nav_active',nav)
         self.setProperty('section_label',{
             'home':'DOMŮ','movies':'FILMY','shows':'SERIÁLY','premieres':'PREMIÉRY',
             'search':'VYHLEDÁVÁNÍ','seasons':'SÉRIE','episodes':'EPIZODY',
@@ -186,7 +191,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 'Otevři ⚙ Nastavení pro přihlášení k Webshare.')
             return
         if view=='home':
-            # Draw cached, previously verified titles immediately.
+            # Instant cached paint, network-free on the UI thread.
             home=self.service.home_fast()
             self.service.start_home_refresh()
             store=getattr(self,'watch_store',None)
@@ -195,48 +200,42 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             favorites=store.favorite_cards() if store else []
             year=home.get('ranking_year') or __import__('datetime').date.today().year
             from cinema_rankings import csfd_only
-            csfd_movies=csfd_only(home.get('_all_movies') or [],'movie',limit=30)
-            csfd_shows=csfd_only(home.get('_all_shows') or [],'show',limit=30)
-            web_movies=self._filtered(home.get('_webshare_movies') or [],
-                                      keep_order=True)[:18]
-            web_shows=self._filtered(home.get('_webshare_shows') or [],
-                                     keep_order=True)[:18]
-            if web_movies:
-                web_movies.append(tile('+  CELÝ ŽEBŘÍČEK','most_watched',
-                    catalog_kind='movie',plot='Popularita souborů, nikoli počet zhlédnutí'))
-            if web_shows:
-                web_shows.append(tile('+  CELÝ ŽEBŘÍČEK SERIÁLŮ','most_watched',
-                    catalog_kind='show',plot='Popularita seriálových souborů Webshare'))
+            from cinema_recommendations import recommendations
+            all_movies=home.get('_all_movies') or []
+            all_shows=home.get('_all_shows') or []
+            csfd_movies=csfd_only(all_movies,'movie',limit=30)
+            csfd_shows=csfd_only(all_shows,'show',limit=30)
+            personal,weekly=recommendations(home,store,limit=18)
             if csfd_movies:
-                csfd_movies.append(tile('+  ŽEBŘÍČEK ČSFD','csfd_ranked',
-                    catalog_kind='movie'))
+                csfd_movies=list(csfd_movies)+[tile('+  CELÝ ŽEBŘÍČEK ČSFD',
+                    'csfd_ranked',catalog_kind='movie')]
             if csfd_shows:
-                csfd_shows.append(tile('+  SERIÁLY ČSFD','csfd_ranked',
-                    catalog_kind='show'))
-            top=(home.get('premieres') or [])+(home.get('movies') or [])
+                csfd_shows=list(csfd_shows)+[tile('+  SERIÁLY NA ČSFD',
+                    'csfd_ranked',catalog_kind='show')]
+            latest=(home.get('premieres') or [])+(home.get('movies') or [])
             shows=(home.get('shows') or [])+(home.get('classic_shows') or [])
-            if not top:
-                top=[tile('FILMY · OTEVŘÍT KATALOG','movies')]
+            if not latest:
+                latest=[tile('FILMY · OTEVŘÍT KATALOG','movies')]
             if not shows:
                 shows=[tile('SERIÁLY · OTEVŘÍT KATALOG','shows')]
             rows=[
-                ('POKRAČOVAT · FILMY',films),
-                ('POKRAČOVAT · SERIÁLY',series),
-                ('POPULÁRNÍ NA WEBSHARE · FILMY',web_movies),
-                ('NEJLÉPE HODNOCENÉ NA ČSFD · FILMY',csfd_movies),
-                ('POPULÁRNÍ NA WEBSHARE · SERIÁLY',web_shows),
-                ('NEJLÉPE HODNOCENÉ NA ČSFD · SERIÁLY',csfd_shows),
-                ('PREMIÉRY A NOVÉ FILMY',top),
+                ('NEJLÉPE HODNOCENÉ FILMY · ČSFD',csfd_movies),
+                ('NEJLÉPE HODNOCENÉ SERIÁLY · ČSFD',csfd_shows),
+                ('POKRAČOVAT VE SLEDOVÁNÍ · FILMY',films),
+                ('POKRAČOVAT VE SLEDOVÁNÍ · SERIÁLY',series),
+                ('TIPY PRO TEBE · PODLE OBLÍBENÝCH ŽÁNRŮ A ČSFD',personal),
+                ('TIPY NA TENTO TÝDEN · ČSFD',weekly),
+                ('PREMIÉRY A NOVINKY',latest),
+                ('FILMY PRO VEČER',home.get('movies') or []),
                 ('SERIÁLY NA WEBSHARE',shows),
                 ('MOJE OBLÍBENÉ',favorites),
                 ('FILMOVÉ HITY A KLASIKY',home.get('classics') or []),
-                ('NEJLEPŠÍ FILMY ROKU %s'%year,home.get('best_movies_year') or []),
-                ('NEJLEPŠÍ SERIÁLY VŠECH DOB',home.get('best_shows_all') or []),
-                ('NEJLEPŠÍ SERIÁLY ROKU %s'%year,home.get('best_shows_year') or []),
+                ('NEJLEPŠÍ FILMY ROKU %s · ČSFD'%year,home.get('best_movies_year') or []),
+                ('NEJLEPŠÍ SERIÁLY ROKU %s · ČSFD'%year,home.get('best_shows_year') or []),
             ]
             self._fill(rows[0][0],rows[0][1],rows[1][0],rows[1][1],
                        self.service.last_diagnostics+
-                       ' · Webshare: popularita · ČSFD: hodnocení',
+                       ' · Žebříčky a tipy z ověřených titulů ČSFD',
                        extra_rows=rows[2:])
         elif view in ('movies','shows','premieres'):
             load=self._loading('Řadím dostupné tituly…')
@@ -245,44 +244,32 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                     self.quality,self.language))
                 if not ordered:
                     ordered=[tile('VYHLEDAT NÁZEV','search')]
-                row_one=ordered[:24]
-                if view in ('movies','shows'):
-                    what='movie' if view=='movies' else 'show'
-                    row_one.append(tile('+  VŠECHNY FILMY' if what=='movie' else
-                                        '+  VŠECHNY SERIÁLY','catalog_open',
-                                        catalog_kind=what,
-                                        plot='Otevřít rozsáhlý katalog a načítat další tituly po dávkách.'))
                 other_rows=[]
                 if view in ('movies','shows'):
-                    what='movie' if view=='movies' else 'show'
-                    cached=self.service.home_fast()
-                    source='_webshare_movies' if what=='movie' else '_webshare_shows'
-                    popular=cached.get(source) or (
-                        self.service.most_watched_movies(24,self.quality,self.language)
-                        if what=='movie' else
-                        self.service.most_watched_shows(24,self.quality,self.language))
-                    from cinema_dedupe import identity
-                    excluded={identity(c) for c in row_one
-                              if c.get('kind') in ('movie','show')}
-                    row_two=[c for c in self._filtered(popular,keep_order=True)
-                             if identity(c) not in excluded][:24]
-                    row_two.append(tile('+  CELÝ ŽEBŘÍČEK WEBSHARE',
-                        'most_watched',catalog_kind=what))
-                    heading='POPULÁRNÍ NA WEBSHARE · FILMY' if what=='movie' else 'POPULÁRNÍ NA WEBSHARE · SERIÁLY'
+                    kind='movie' if view=='movies' else 'show'
                     from cinema_rankings import csfd_only
-                    records=cached.get('_all_movies') if what=='movie' else cached.get('_all_shows')
-                    csfd=csfd_only(records or [],what,limit=35)
-                    if csfd:
-                        csfd=list(csfd)+[tile('+  CELÝ ŽEBŘÍČEK ČSFD',
-                            'csfd_ranked',catalog_kind=what)]
-                    other_rows=[('NEJLÉPE HODNOCENÉ NA ČSFD · FILMY' if what=='movie'
-                                 else 'NEJLÉPE HODNOCENÉ NA ČSFD · SERIÁLY',csfd)]
+                    cache=self.service.home_fast()
+                    source=cache.get('_all_movies') if kind=='movie' else cache.get('_all_shows')
+                    top=csfd_only(source or [],kind,limit=40)
+                    row_one=list(top[:24]) if top else [
+                        tile('ČSFD · ZATÍM BEZ OVĚŘENÉHO HODNOCENÍ','none')]
+                    if top:
+                        row_one.append(tile('+  CELÝ ŽEBŘÍČEK ČSFD',
+                                            'csfd_ranked',catalog_kind=kind))
+                    row_two=list(ordered[:24])
+                    row_two.append(tile('+  VŠECHNY FILMY' if kind=='movie'
+                                        else '+  VŠECHNY SERIÁLY','catalog_open',
+                                        catalog_kind=kind,
+                                        plot='Načítat další ověřené filmy a seriály po dávkách'))
+                    heading='FILMY NA WEBSHARE' if kind=='movie' else 'SERIÁLY NA WEBSHARE'
+                    first_heading=('NEJLÉPE HODNOCENÉ FILMY · ČSFD' if kind=='movie'
+                                   else 'NEJLÉPE HODNOCENÉ SERIÁLY · ČSFD')
                 else:
+                    row_one=ordered[:24]
                     row_two=ordered[24:48]
+                    first_heading='PREMIÉRY PODLE ČSFD'
                     heading='DALŠÍ PREMIÉRY'
-                self._fill('FILMY NA WEBSHARE' if view=='movies' else
-                           'SERIÁLY NA WEBSHARE' if view=='shows' else
-                           'PREMIÉRY PODLE ČSFD',row_one,heading,row_two,
+                self._fill(first_heading,row_one,heading,row_two,
                            'ŘAZENÍ: '+self.sort+' · KVALITA: '+self.quality+
                            ' · JAZYK: '+self.language,extra_rows=other_rows)
             finally:load.close()
