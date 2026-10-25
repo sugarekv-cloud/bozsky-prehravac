@@ -58,7 +58,7 @@ class KivoraDesignTests(unittest.TestCase):
     def test_upgrade_preserves_kodi_technical_identifier(self):
         self.assertEqual(self.addon.get('id'),'plugin.video.fckyo')
         self.assertEqual(self.addon.get('name'),'KIVORA')
-        self.assertEqual(self.addon.get('version'),'0.29.0')
+        self.assertEqual(self.addon.get('version'),'0.29.1')
 
     def test_all_sidebar_entries_have_graphic_icon_files(self):
         for cid in range(201,209):
