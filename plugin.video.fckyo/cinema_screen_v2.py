@@ -541,7 +541,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self._screen(self.mode,self.context)
 
     def _apply_background_home(self):
-        if self.mode!='home':
+        if getattr(self,'mode',None)!='home':
             return
         updated=self.service.take_home_refresh()
         if not updated:
