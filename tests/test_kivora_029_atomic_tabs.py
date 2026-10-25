@@ -126,6 +126,7 @@ class TabRenderingTests(unittest.TestCase):
 
     def test_header_never_displays_movie_banner_in_series(self):
         win,rendered=self.window()
+        win._update_hero=CinemaScreen._update_hero.__get__(win,CinemaScreen)
         win.mode='shows'
         win.featured_card=verified('movie','shawshank')
         win.featured_card.update(title='Vykoupení z věznice Shawshank',
@@ -144,6 +145,7 @@ class TabRenderingTests(unittest.TestCase):
 
     def test_no_series_art_never_preserves_movie_hero(self):
         win,rendered=self.window(error=True)
+        win._update_hero=CinemaScreen._update_hero.__get__(win,CinemaScreen)
         win.mode='shows'
         win.featured_card=verified('movie','shawshank')
         win.rail_items=[[] for _ in range(13)]
