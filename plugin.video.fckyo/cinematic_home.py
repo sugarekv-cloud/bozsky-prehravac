@@ -41,10 +41,10 @@ def _rgba_png(path, width, height, kind):
         for x in range(width):
             if kind == 'background':
                 h = y / float(max(1,height-1))
-                color = (int(10+8*h),int(10+8*h),int(14+8*h),255)
+                color = (int(7+5*h),int(9+5*h),int(20+12*h),255)
             elif kind == 'fade':
-                a = int(245-220*x/float(max(1,width-1)))
-                color = (12,12,16,a)
+                a = int(250-220*x/float(max(1,width-1)))
+                color = (7,9,20,a)
             elif kind in ('gear','gear_dark'):
                 # Crisp 8-tooth settings icon with a transparent center.
                 cx=(x-(width-1)/2.0)/(min(width,height))
@@ -57,9 +57,15 @@ def _rgba_png(path, width, height, kind):
                 else:
                     color = (0,0,0,0)
             elif kind == 'focus':
-                color = (154,108,255,255)
+                color = (157,109,255,255)
+            elif kind == 'chip':
+                color = (8,10,21,220)
+            elif kind == 'nav_hover':
+                color = (43,35,72,235)
+            elif kind == 'tile':
+                color = (21,24,41,255)
             else:
-                color = (33,33,39,255)
+                color = (28,30,48,255)
             raw.extend(color)
     header = b'\x89PNG\r\n\x1a\n'
     ihdr = struct.pack('>IIBBBBB', width, height, 8, 6, 0, 0, 0)
@@ -79,10 +85,11 @@ def ensure_textures(profile):
         os.makedirs(folder)
     specs = {'background':(128,72), 'fade':(256,72),
              'focus':(2,2), 'button':(2,2),
-             'gear':(96,96), 'gear_dark':(96,96)}
+             'gear':(96,96), 'gear_dark':(96,96),
+             'chip':(2,2),'nav_hover':(2,2),'tile':(2,2)}
     result = {}
     for kind,(w,h) in specs.items():
-        result[kind] = _rgba_png(os.path.join(folder,'stream_v3_'+kind+'.png'),w,h,kind)
+        result[kind] = _rgba_png(os.path.join(folder,'stream_v4_'+kind+'.png'),w,h,kind)
     return result
 
 
