@@ -885,7 +885,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         if control_id==110:
             selected=self.featured_card
             if selected:
-                summary='\\n'.join(x for x in (
+                summary='\n'.join(x for x in (
                     str(selected.get('year') or ''),
                     str(selected.get('genre') or ''),
                     str(selected.get('plot') or 'Popis není dostupný.')
