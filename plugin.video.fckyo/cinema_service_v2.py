@@ -43,6 +43,7 @@ class CinemaService:
         self._most_watched_source=0
         self._most_watched_offset=0
         self._most_watched_done=False
+        self._browse_streams={}
 
     def _decorate(self, group, metadata=None):
         if metadata:
@@ -148,6 +149,7 @@ class CinemaService:
 
     def refresh_catalogue(self):
         """Explicit user-triggered refresh; never runs in the background."""
+        self._browse_streams={}
         self._most_watched_cards=[]
         self._most_watched_idents=set()
         self._most_watched_source=0
@@ -489,6 +491,97 @@ class CinemaService:
             self._most_watched_cards=consolidate(
                 self._most_watched_cards+cards)
         return filtered()[:wanted]
+
+    # Small predictable batches: using a nonempty filename query is required
+    # by Webshare's search API. These are discovery queries, not a claim that
+    # Webshare exposes an exhaustive movie/series database.
+    FULL_CATALOG_QUERIES={
+        'movie':(('1080p','rating'),('2160p','rating'),
+                 ('720p','rating'),('WEB-DL','recent'),
+                 ('BluRay','rating'),('2026','recent'),
+                 ('2025','recent'),('2024','recent'),
+                 ('DVDRip','rating')),
+        'show':(('S01E','rating'),('S02E','rating'),
+                ('S03E','recent'),('S04E','recent'),
+                ('S01','recent'),('S02','recent'),
+                ('1080p','rating'),('2026','recent'),
+                ('2025','recent')),
+    }
+
+    def full_catalog(self, kind, requested=24, sort='date',
+                     quality='all', language='all'):
+        """On-demand verified film/series discovery, never a bulk preload.
+
+        The cursor is independent per kind. Deduplicating by file ID before
+        verifying and by film identity after verifying retains quality variants
+        while keeping remakes distinct. A request fetches at most four pages.
+        """
+        if kind not in ('movie','show'):
+            raise ValueError('Unsupported catalogue kind')
+        wanted=max(1,min(int(requested),1500))
+        if kind not in self._browse_streams:
+            home=self.home()
+            originals=(home.get('_all_movies') if kind=='movie'
+                       else home.get('_all_shows')) or []
+            # Seed with previously verified on-screen results at zero API cost.
+            cards=consolidate(originals)
+            self._browse_streams[kind]={
+                'cards':cards,
+                'idents':{str(f['ident']) for c in cards
+                          for f in (c.get('files') or []) if f.get('ident')},
+                'source':0,'offset':0,'done':False}
+        stream=self._browse_streams[kind]
+        queries=self.FULL_CATALOG_QUERIES[kind]
+
+        def filtered():
+            return [c for c in stream['cards']
+                    if choose_files(c.get('files') or [],quality,language)]
+
+        pages=0
+        while len(filtered())<wanted and not stream['done'] and pages<4:
+            if stream['source']>=len(queries):
+                stream['done']=True
+                break
+            query,order=queries[stream['source']]
+            try:
+                files,total=self.fetch(self.token,stream['offset'],
+                                       query,sort=order)
+            except Exception:
+                # Retry the SAME page next time; no accidental cursor advance.
+                break
+            if not isinstance(files,list):
+                break
+            pages+=1
+            stream['offset']+=100
+            try:
+                end_of_query=(len(files)<100 or
+                              bool(total) and stream['offset']>=int(total))
+            except (TypeError,ValueError):
+                end_of_query=(len(files)<100)
+            if end_of_query:
+                stream['source']+=1
+                stream['offset']=0
+                stream['done']=stream['source']>=len(queries)
+            new=[]
+            for file in files:
+                if not isinstance(file,dict) or not file.get('ident'):
+                    continue
+                ident=str(file['ident'])
+                if ident not in stream['idents']:
+                    stream['idents'].add(ident)
+                    new.append(file)
+            candidates=groups(new,kind)
+            if not candidates:
+                continue
+            # Confirm real files, never build a poster from metadata alone.
+            checked=verified_groups(candidates,self.availability,
+                                    maximum=48,checked=100)
+            add_metadata(checked,self.metadata,maximum=12)
+            additions=[self._decorate(g,g.get('metadata')) for g in checked]
+            if additions:
+                stream['cards']=consolidate(stream['cards']+additions)
+        return (sort_cards(filtered(),sort)[:wanted],
+                not stream['done'])
 
     def browse(self, view, sort='date', quality='all', language='all'):
         home=self.home()
