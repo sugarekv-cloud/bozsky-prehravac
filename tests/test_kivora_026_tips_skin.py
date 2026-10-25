@@ -53,6 +53,8 @@ class RealTipsTests(unittest.TestCase):
         CinemaService.full_catalog=verified
         try:
             svc=self.service()
+            svc.home_cache={'_all_movies':[media('Cached movie','cached-film')],
+                            '_all_shows':[]}
             self.assertTrue(svc.start_tips_refresh())
             self.assertTrue(svc._tips_done.wait(5))
             cards=svc.take_tips_refresh()
