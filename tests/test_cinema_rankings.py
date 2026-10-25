@@ -84,7 +84,7 @@ class ScrollableSkinTests(unittest.TestCase):
         root=ET.parse(path).getroot()
         ids={x.get('id') for x in root.findall('.//control')}
         self.assertTrue({'101','102','103','104','107'} <= ids)
-        self.assertNotIn('106',ids)
+        self.assertIn('106',ids)
 
 if __name__=='__main__':
     unittest.main()
