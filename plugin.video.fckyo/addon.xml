@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="FCKYO" version="0.16.0" provider-name="FCKYO Community">
+<addon id="plugin.video.fckyo" name="FCKYO" version="0.17.0" provider-name="FCKYO Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -21,6 +21,14 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.17.0 Rozšířené vyhledávání a filmové rozhraní[/B]
+- Větší filmový banner s plakátem, popisem a tlačítkem pro otevření filmu
+- Tmavé streamovací rozhraní s vysokými plakáty a bez přeskakování ze spodní řady
+- Nejsledovanější filmy s tlačítkem + a postupným načítáním ověřených souborů
+- Vyhledávání originálních a českých názvů, filmových sérií a více stránek Webshare
+- Přesné hledání filmu i podle roku vydání a lepší řazení nalezených titulů
+- Automatické testy chrání slučování filmů a různé roky remaků
+
 [B]0.16.0 FCKYO – nový název a technické ID[/B]
 - Kodi doplněk má samostatné ID plugin.video.fckyo, hlavní modul fckyo.py
 - Odstraněny staré identifikátory ze zdrojového kódu a veřejných nabídek
