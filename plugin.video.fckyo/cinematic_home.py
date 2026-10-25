@@ -127,7 +127,7 @@ class CinemaWindow(xbmcgui.WindowXMLDialog):
         textures = self.textures
         for kind,path in textures.items():
             self.setProperty('cinema_'+kind,path)
-        self.setProperty('hero_title','KIVORA')
+        self.setProperty('hero_title','Božský přehrávač')
         self.setProperty('hero_info','Všechny dostupné filmy na jednom místě')
         self.setProperty('hero_plot','Pohyb šipkami • OK pro výběr • Zpět pro návrat')
         self.setProperty('hero_art','')
