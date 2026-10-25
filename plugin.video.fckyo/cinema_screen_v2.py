@@ -582,7 +582,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self._screen(self.mode,self.context)
 
     def _apply_background_home(self):
-        if getattr(self,'mode',None)!='home':
+        current_mode=getattr(self,'mode',None)
+        if current_mode not in ('home','recommendations') or getattr(self,'_updating_home',False):
             return
         updated=self.service.take_home_refresh()
         if not updated:
@@ -594,7 +595,11 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 position=max(0,self.getControl(focused).getSelectedPosition())
         except (RuntimeError,AttributeError):
             pass
-        self._screen('home')
+        self._updating_home=True
+        try:
+            self._screen(current_mode,self.context)
+        finally:
+            self._updating_home=False
         if focused in ROW_IDS and self.rail_items[ROW_IDS.index(focused)]:
             try:
                 self.setFocusId(focused)
@@ -697,6 +702,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             elif command=='home':
                 # Reset to a fresh home screen, never another stacked copy.
                 self.stack=[]
+                service=getattr(self,'service',None)
+                if service:
+                    service.take_home_refresh()
                 self._screen('home',stack=False)
             elif command=='csfd_ranked':
                 self._refresh(command,'movie')
@@ -720,7 +728,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         elif kind=='tips_retry':
             self._apply_background_home()
             if self.mode in ('home','recommendations'):
-                self.service.start_home_refresh()
+                self.service.start_home_refresh(force=True)
                 xbmcgui.Dialog().notification('KIVORA',
                     'Doporučení se aktualizují na pozadí')
         elif kind=='genre_open':
