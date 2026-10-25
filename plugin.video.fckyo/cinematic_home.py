@@ -41,10 +41,10 @@ def _rgba_png(path, width, height, kind):
         for x in range(width):
             if kind == 'background':
                 h = y / float(max(1,height-1))
-                color = (int(8+5*h),int(18+3*h),int(32+3*h),255)
+                color = (int(10+8*h),int(10+8*h),int(14+8*h),255)
             elif kind == 'fade':
                 a = int(245-220*x/float(max(1,width-1)))
-                color = (9,18,31,a)
+                color = (12,12,16,a)
             elif kind in ('gear','gear_dark'):
                 # Crisp 8-tooth settings icon with a transparent center.
                 cx=(x-(width-1)/2.0)/(min(width,height))
@@ -53,13 +53,13 @@ def _rgba_png(path, width, height, kind):
                 theta=math.atan2(cy,cx)
                 outer=0.39 if math.cos(8*theta)>0.28 else 0.305
                 if 0.132 < radial <= outer:
-                    color = (18,32,51,255) if kind=='gear_dark' else (246,203,130,255)
+                    color = (18,18,23,255) if kind=='gear_dark' else (238,238,241,255)
                 else:
                     color = (0,0,0,0)
             elif kind == 'focus':
-                color = (220,171,82,255)
+                color = (225,27,55,255)
             else:
-                color = (19,32,52,240)
+                color = (33,33,39,255)
             raw.extend(color)
     header = b'\x89PNG\r\n\x1a\n'
     ihdr = struct.pack('>IIBBBBB', width, height, 8, 6, 0, 0, 0)
@@ -82,7 +82,7 @@ def ensure_textures(profile):
              'gear':(96,96), 'gear_dark':(96,96)}
     result = {}
     for kind,(w,h) in specs.items():
-        result[kind] = _rgba_png(os.path.join(folder,kind+'.png'),w,h,kind)
+        result[kind] = _rgba_png(os.path.join(folder,'stream_v2_'+kind+'.png'),w,h,kind)
     return result
 
 
