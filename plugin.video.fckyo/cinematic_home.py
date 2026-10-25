@@ -57,7 +57,7 @@ def _rgba_png(path, width, height, kind):
                 else:
                     color = (0,0,0,0)
             elif kind == 'focus':
-                color = (225,27,55,255)
+                color = (154,108,255,255)
             else:
                 color = (33,33,39,255)
             raw.extend(color)
@@ -82,7 +82,7 @@ def ensure_textures(profile):
              'gear':(96,96), 'gear_dark':(96,96)}
     result = {}
     for kind,(w,h) in specs.items():
-        result[kind] = _rgba_png(os.path.join(folder,'stream_v2_'+kind+'.png'),w,h,kind)
+        result[kind] = _rgba_png(os.path.join(folder,'stream_v3_'+kind+'.png'),w,h,kind)
     return result
 
 
@@ -98,7 +98,7 @@ class CinemaWindow(xbmcgui.WindowXMLDialog):
         textures = self.textures
         for kind,path in textures.items():
             self.setProperty('cinema_'+kind,path)
-        self.setProperty('hero_title','BOŽSKÝ PŘEHRÁVAČ')
+        self.setProperty('hero_title','KIVORA')
         self.setProperty('hero_info','Všechny dostupné filmy na jednom místě')
         self.setProperty('hero_plot','Pohyb šipkami • OK pro výběr • Zpět pro návrat')
         self.setProperty('hero_art','')
