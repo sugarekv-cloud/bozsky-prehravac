@@ -485,89 +485,15 @@
                     <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>9</left><top>10</top><width>140</width><height>190</height>
-                    <texture>$INFO[ListItem.Art(poster)]</texture><aspectratio>keep</aspectratio>
+                    <left>7</left><top>7</top><width>344</width><height>196</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture>
+                    <aspectratio>scale</aspectratio><colordiffuse>44FFFFFF</colordiffuse>
                     <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
-                <control type="textbox">
-                    <left>158</left><top>56</top><width>187</width><height>88</height>
-                    <font>font13</font><textcolor>FFF9F8FC</textcolor>
-                    <label>$INFO[ListItem.Label]</label>
-                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
-                <control type="label">
-                    <left>161</left><top>160</top><width>180</width><height>28</height>
-                    <font>font12</font><textcolor>FFBBB9C5</textcolor>
-                    <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>String.IsEmpty(ListItem.Art(fanart))</visible>
-                </control>
-                <control type="label">
-                    <left>14</left><top>72</top>
-                    <width>325</width><height>54</height>
-                    <font>font13</font><textcolor>FFB9B8C5</textcolor>
-                    <align>center</align><aligny>center</aligny>
-                    <label>$INFO[ListItem.Label]</label>
-                    <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
-                <control type="label">
-                    <left>20</left><top>43</top>
-                    <width>318</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFB596FF</textcolor>
-                    <align>center</align><aligny>center</aligny>
-                    <label>+</label>
-                    <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
                 <control type="image">
-                    <left>13</left><top>13</top><width>133</width><height>26</height>
-                    <texture>$INFO[Window.Property(cinema_chip)]</texture><aspectratio>stretch</aspectratio>
-                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
-                </control>
-                <control type="label">
-                    <left>18</left><top>13</top><width>125</width><height>26</height>
-                    <font>font12</font><textcolor>FFF2EAFF</textcolor>
-                    <align>center</align><aligny>center</aligny>
-                    <label>$INFO[ListItem.Property(rating_label)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
-                </control>
-                <control type="progress">
-                    <left>8</left><top>197</top>
-                    <width>344</width><height>5</height>
-                    <info>ListItem.Property(progress)</info>
-                    <texturebg>$INFO[Window.Property(cinema_chip)]</texturebg>
-                    <midtexture>$INFO[Window.Property(cinema_focus)]</midtexture>
-                    <visible>String.IsEqual(ListItem.Property(is_resume),yes)</visible>
-                </control>
-                <control type="label">
-                    <left>9</left><top>207</top>
-                    <width>340</width><height>35</height>
-                    <font>font13</font>
-                    <textcolor>FFE5E5E8</textcolor>
-                    <label>$INFO[ListItem.Label]</label>
-                    <scroll>false</scroll>
-                </control>
-                <control type="label">
-                    <left>9</left><top>236</top>
-                    <width>338</width><height>19</height>
-                    <font>font12</font><textcolor>FF9D9DA7</textcolor>
-                    <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
-                
-            </itemlayout>
-            <focusedlayout width="359" height="259">
-                <control type="image">
-                    <left>5</left><top>7</top><width>348</width><height>201</height>
-                    <texture>$INFO[Window.Property(cinema_tile)]</texture><aspectratio>stretch</aspectratio>
-                    
-                </control>
-                <control type="image">
-                    <left>3</left><top>3</top><width>353</width><height>208</height>
-                    <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
-                    <visible>Control.HasFocus(401)</visible>
-                </control>
-                <control type="image">
-                    <left>7</left><top>7</top><width>344</width><height>196</height>
-                    <texture>$INFO[ListItem.Art(fanart)]</texture><aspectratio>scale</aspectratio>
+                    <left>7</left><top>123</top><width>344</width><height>80</height>
+                    <texture>$INFO[Window.Property(cinema_cardfade)]</texture>
+                    <aspectratio>stretch</aspectratio>
                     <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
@@ -624,16 +550,116 @@
                     <visible>String.IsEqual(ListItem.Property(is_resume),yes)</visible>
                 </control>
                 <control type="label">
-                    <left>9</left><top>207</top>
-                    <width>340</width><height>35</height>
+                    <left>16</left><top>158</top><width>327</width><height>39</height>
+                    <font>font13</font>
+                    <textcolor>FFE5E5E8</textcolor>
+                    <label>$INFO[ListItem.Label]</label>
+                    <scroll>false</scroll>
+                
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>16</left><top>208</top>
+                    <width>326</width><height>22</height>
+                    <font>font12</font><textcolor>FF9D9DA7</textcolor>
+                    <label>$INFO[ListItem.Property(year)]</label>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                
+            </itemlayout>
+            <focusedlayout width="359" height="259">
+                <control type="image">
+                    <left>5</left><top>7</top><width>348</width><height>201</height>
+                    <texture>$INFO[Window.Property(cinema_tile)]</texture><aspectratio>stretch</aspectratio>
+                    
+                </control>
+                <control type="image">
+                    <left>3</left><top>3</top><width>353</width><height>208</height>
+                    <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
+                    <visible>Control.HasFocus(401)</visible>
+                </control>
+                <control type="image">
+                    <left>7</left><top>7</top><width>344</width><height>196</height>
+                    <texture>$INFO[ListItem.Art(fanart)]</texture><aspectratio>scale</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>7</left><top>7</top><width>344</width><height>196</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture>
+                    <aspectratio>scale</aspectratio><colordiffuse>44FFFFFF</colordiffuse>
+                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>7</left><top>123</top><width>344</width><height>80</height>
+                    <texture>$INFO[Window.Property(cinema_cardfade)]</texture>
+                    <aspectratio>stretch</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>9</left><top>10</top><width>140</width><height>190</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture><aspectratio>keep</aspectratio>
+                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="textbox">
+                    <left>158</left><top>56</top><width>187</width><height>88</height>
+                    <font>font13</font><textcolor>FFF9F8FC</textcolor>
+                    <label>$INFO[ListItem.Label]</label>
+                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>161</left><top>160</top><width>180</width><height>28</height>
+                    <font>font12</font><textcolor>FFBBB9C5</textcolor>
+                    <label>$INFO[ListItem.Property(year)]</label>
+                    <visible>String.IsEmpty(ListItem.Art(fanart))</visible>
+                </control>
+                <control type="label">
+                    <left>14</left><top>72</top>
+                    <width>325</width><height>54</height>
+                    <font>font13</font><textcolor>FFB9B8C5</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>$INFO[ListItem.Label]</label>
+                    <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>20</left><top>43</top>
+                    <width>318</width><height>88</height>
+                    <font>font40_title</font><textcolor>FFB596FF</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>+</label>
+                    <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>13</left><top>13</top><width>133</width><height>26</height>
+                    <texture>$INFO[Window.Property(cinema_chip)]</texture><aspectratio>stretch</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
+                </control>
+                <control type="label">
+                    <left>18</left><top>13</top><width>125</width><height>26</height>
+                    <font>font12</font><textcolor>FFF2EAFF</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>$INFO[ListItem.Property(rating_label)]</label>
+                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
+                </control>
+                <control type="progress">
+                    <left>8</left><top>197</top>
+                    <width>344</width><height>5</height>
+                    <info>ListItem.Property(progress)</info>
+                    <texturebg>$INFO[Window.Property(cinema_chip)]</texturebg>
+                    <midtexture>$INFO[Window.Property(cinema_focus)]</midtexture>
+                    <visible>String.IsEqual(ListItem.Property(is_resume),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>16</left><top>158</top><width>327</width><height>39</height>
                     <font>font13</font>
                     <textcolor>FFFFFFFF</textcolor>
                     <label>$INFO[ListItem.Label]</label>
-                    <scroll>true</scroll>
+                    <scroll>false</scroll>
+                
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="label">
-                    <left>9</left><top>236</top>
-                    <width>338</width><height>19</height>
+                    <left>16</left><top>208</top>
+                    <width>326</width><height>22</height>
                     <font>font12</font><textcolor>FF9D9DA7</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -677,89 +703,15 @@
                     <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>9</left><top>10</top><width>140</width><height>190</height>
-                    <texture>$INFO[ListItem.Art(poster)]</texture><aspectratio>keep</aspectratio>
+                    <left>7</left><top>7</top><width>344</width><height>196</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture>
+                    <aspectratio>scale</aspectratio><colordiffuse>44FFFFFF</colordiffuse>
                     <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
-                <control type="textbox">
-                    <left>158</left><top>56</top><width>187</width><height>88</height>
-                    <font>font13</font><textcolor>FFF9F8FC</textcolor>
-                    <label>$INFO[ListItem.Label]</label>
-                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
-                <control type="label">
-                    <left>161</left><top>160</top><width>180</width><height>28</height>
-                    <font>font12</font><textcolor>FFBBB9C5</textcolor>
-                    <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>String.IsEmpty(ListItem.Art(fanart))</visible>
-                </control>
-                <control type="label">
-                    <left>14</left><top>72</top>
-                    <width>325</width><height>54</height>
-                    <font>font13</font><textcolor>FFB9B8C5</textcolor>
-                    <align>center</align><aligny>center</aligny>
-                    <label>$INFO[ListItem.Label]</label>
-                    <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
-                <control type="label">
-                    <left>20</left><top>43</top>
-                    <width>318</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFB596FF</textcolor>
-                    <align>center</align><aligny>center</aligny>
-                    <label>+</label>
-                    <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
                 <control type="image">
-                    <left>13</left><top>13</top><width>133</width><height>26</height>
-                    <texture>$INFO[Window.Property(cinema_chip)]</texture><aspectratio>stretch</aspectratio>
-                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
-                </control>
-                <control type="label">
-                    <left>18</left><top>13</top><width>125</width><height>26</height>
-                    <font>font12</font><textcolor>FFF2EAFF</textcolor>
-                    <align>center</align><aligny>center</aligny>
-                    <label>$INFO[ListItem.Property(rating_label)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
-                </control>
-                <control type="progress">
-                    <left>8</left><top>197</top>
-                    <width>344</width><height>5</height>
-                    <info>ListItem.Property(progress)</info>
-                    <texturebg>$INFO[Window.Property(cinema_chip)]</texturebg>
-                    <midtexture>$INFO[Window.Property(cinema_focus)]</midtexture>
-                    <visible>String.IsEqual(ListItem.Property(is_resume),yes)</visible>
-                </control>
-                <control type="label">
-                    <left>9</left><top>207</top>
-                    <width>340</width><height>35</height>
-                    <font>font13</font>
-                    <textcolor>FFE5E5E8</textcolor>
-                    <label>$INFO[ListItem.Label]</label>
-                    <scroll>false</scroll>
-                </control>
-                <control type="label">
-                    <left>9</left><top>236</top>
-                    <width>338</width><height>19</height>
-                    <font>font12</font><textcolor>FF9D9DA7</textcolor>
-                    <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
-                
-            </itemlayout>
-            <focusedlayout width="359" height="259">
-                <control type="image">
-                    <left>5</left><top>7</top><width>348</width><height>201</height>
-                    <texture>$INFO[Window.Property(cinema_tile)]</texture><aspectratio>stretch</aspectratio>
-                    
-                </control>
-                <control type="image">
-                    <left>3</left><top>3</top><width>353</width><height>208</height>
-                    <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
-                    <visible>Control.HasFocus(402)</visible>
-                </control>
-                <control type="image">
-                    <left>7</left><top>7</top><width>344</width><height>196</height>
-                    <texture>$INFO[ListItem.Art(fanart)]</texture><aspectratio>scale</aspectratio>
+                    <left>7</left><top>123</top><width>344</width><height>80</height>
+                    <texture>$INFO[Window.Property(cinema_cardfade)]</texture>
+                    <aspectratio>stretch</aspectratio>
                     <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
@@ -816,16 +768,116 @@
                     <visible>String.IsEqual(ListItem.Property(is_resume),yes)</visible>
                 </control>
                 <control type="label">
-                    <left>9</left><top>207</top>
-                    <width>340</width><height>35</height>
+                    <left>16</left><top>158</top><width>327</width><height>39</height>
+                    <font>font13</font>
+                    <textcolor>FFE5E5E8</textcolor>
+                    <label>$INFO[ListItem.Label]</label>
+                    <scroll>false</scroll>
+                
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>16</left><top>208</top>
+                    <width>326</width><height>22</height>
+                    <font>font12</font><textcolor>FF9D9DA7</textcolor>
+                    <label>$INFO[ListItem.Property(year)]</label>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                
+            </itemlayout>
+            <focusedlayout width="359" height="259">
+                <control type="image">
+                    <left>5</left><top>7</top><width>348</width><height>201</height>
+                    <texture>$INFO[Window.Property(cinema_tile)]</texture><aspectratio>stretch</aspectratio>
+                    
+                </control>
+                <control type="image">
+                    <left>3</left><top>3</top><width>353</width><height>208</height>
+                    <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
+                    <visible>Control.HasFocus(402)</visible>
+                </control>
+                <control type="image">
+                    <left>7</left><top>7</top><width>344</width><height>196</height>
+                    <texture>$INFO[ListItem.Art(fanart)]</texture><aspectratio>scale</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>7</left><top>7</top><width>344</width><height>196</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture>
+                    <aspectratio>scale</aspectratio><colordiffuse>44FFFFFF</colordiffuse>
+                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>7</left><top>123</top><width>344</width><height>80</height>
+                    <texture>$INFO[Window.Property(cinema_cardfade)]</texture>
+                    <aspectratio>stretch</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>9</left><top>10</top><width>140</width><height>190</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture><aspectratio>keep</aspectratio>
+                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="textbox">
+                    <left>158</left><top>56</top><width>187</width><height>88</height>
+                    <font>font13</font><textcolor>FFF9F8FC</textcolor>
+                    <label>$INFO[ListItem.Label]</label>
+                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>161</left><top>160</top><width>180</width><height>28</height>
+                    <font>font12</font><textcolor>FFBBB9C5</textcolor>
+                    <label>$INFO[ListItem.Property(year)]</label>
+                    <visible>String.IsEmpty(ListItem.Art(fanart))</visible>
+                </control>
+                <control type="label">
+                    <left>14</left><top>72</top>
+                    <width>325</width><height>54</height>
+                    <font>font13</font><textcolor>FFB9B8C5</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>$INFO[ListItem.Label]</label>
+                    <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>20</left><top>43</top>
+                    <width>318</width><height>88</height>
+                    <font>font40_title</font><textcolor>FFB596FF</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>+</label>
+                    <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>13</left><top>13</top><width>133</width><height>26</height>
+                    <texture>$INFO[Window.Property(cinema_chip)]</texture><aspectratio>stretch</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
+                </control>
+                <control type="label">
+                    <left>18</left><top>13</top><width>125</width><height>26</height>
+                    <font>font12</font><textcolor>FFF2EAFF</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>$INFO[ListItem.Property(rating_label)]</label>
+                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
+                </control>
+                <control type="progress">
+                    <left>8</left><top>197</top>
+                    <width>344</width><height>5</height>
+                    <info>ListItem.Property(progress)</info>
+                    <texturebg>$INFO[Window.Property(cinema_chip)]</texturebg>
+                    <midtexture>$INFO[Window.Property(cinema_focus)]</midtexture>
+                    <visible>String.IsEqual(ListItem.Property(is_resume),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>16</left><top>158</top><width>327</width><height>39</height>
                     <font>font13</font>
                     <textcolor>FFFFFFFF</textcolor>
                     <label>$INFO[ListItem.Label]</label>
-                    <scroll>true</scroll>
+                    <scroll>false</scroll>
+                
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="label">
-                    <left>9</left><top>236</top>
-                    <width>338</width><height>19</height>
+                    <left>16</left><top>208</top>
+                    <width>326</width><height>22</height>
                     <font>font12</font><textcolor>FF9D9DA7</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1209,89 +1261,15 @@
                     <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>9</left><top>10</top><width>140</width><height>190</height>
-                    <texture>$INFO[ListItem.Art(poster)]</texture><aspectratio>keep</aspectratio>
+                    <left>7</left><top>7</top><width>344</width><height>196</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture>
+                    <aspectratio>scale</aspectratio><colordiffuse>44FFFFFF</colordiffuse>
                     <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
-                <control type="textbox">
-                    <left>158</left><top>56</top><width>187</width><height>88</height>
-                    <font>font13</font><textcolor>FFF9F8FC</textcolor>
-                    <label>$INFO[ListItem.Label]</label>
-                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
-                <control type="label">
-                    <left>161</left><top>160</top><width>180</width><height>28</height>
-                    <font>font12</font><textcolor>FFBBB9C5</textcolor>
-                    <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>String.IsEmpty(ListItem.Art(fanart))</visible>
-                </control>
-                <control type="label">
-                    <left>14</left><top>72</top>
-                    <width>325</width><height>54</height>
-                    <font>font13</font><textcolor>FFB9B8C5</textcolor>
-                    <align>center</align><aligny>center</aligny>
-                    <label>$INFO[ListItem.Label]</label>
-                    <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
-                <control type="label">
-                    <left>20</left><top>43</top>
-                    <width>318</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFB596FF</textcolor>
-                    <align>center</align><aligny>center</aligny>
-                    <label>+</label>
-                    <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
                 <control type="image">
-                    <left>13</left><top>13</top><width>133</width><height>26</height>
-                    <texture>$INFO[Window.Property(cinema_chip)]</texture><aspectratio>stretch</aspectratio>
-                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
-                </control>
-                <control type="label">
-                    <left>18</left><top>13</top><width>125</width><height>26</height>
-                    <font>font12</font><textcolor>FFF2EAFF</textcolor>
-                    <align>center</align><aligny>center</aligny>
-                    <label>$INFO[ListItem.Property(rating_label)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
-                </control>
-                <control type="progress">
-                    <left>8</left><top>197</top>
-                    <width>344</width><height>5</height>
-                    <info>ListItem.Property(progress)</info>
-                    <texturebg>$INFO[Window.Property(cinema_chip)]</texturebg>
-                    <midtexture>$INFO[Window.Property(cinema_focus)]</midtexture>
-                    <visible>String.IsEqual(ListItem.Property(is_resume),yes)</visible>
-                </control>
-                <control type="label">
-                    <left>9</left><top>207</top>
-                    <width>340</width><height>35</height>
-                    <font>font13</font>
-                    <textcolor>FFE5E5E8</textcolor>
-                    <label>$INFO[ListItem.Label]</label>
-                    <scroll>false</scroll>
-                </control>
-                <control type="label">
-                    <left>9</left><top>236</top>
-                    <width>338</width><height>19</height>
-                    <font>font12</font><textcolor>FF9D9DA7</textcolor>
-                    <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
-                
-            </itemlayout>
-            <focusedlayout width="359" height="259">
-                <control type="image">
-                    <left>5</left><top>7</top><width>348</width><height>201</height>
-                    <texture>$INFO[Window.Property(cinema_tile)]</texture><aspectratio>stretch</aspectratio>
-                    
-                </control>
-                <control type="image">
-                    <left>3</left><top>3</top><width>353</width><height>208</height>
-                    <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
-                    <visible>Control.HasFocus(405)</visible>
-                </control>
-                <control type="image">
-                    <left>7</left><top>7</top><width>344</width><height>196</height>
-                    <texture>$INFO[ListItem.Art(fanart)]</texture><aspectratio>scale</aspectratio>
+                    <left>7</left><top>123</top><width>344</width><height>80</height>
+                    <texture>$INFO[Window.Property(cinema_cardfade)]</texture>
+                    <aspectratio>stretch</aspectratio>
                     <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
@@ -1348,16 +1326,116 @@
                     <visible>String.IsEqual(ListItem.Property(is_resume),yes)</visible>
                 </control>
                 <control type="label">
-                    <left>9</left><top>207</top>
-                    <width>340</width><height>35</height>
+                    <left>16</left><top>158</top><width>327</width><height>39</height>
+                    <font>font13</font>
+                    <textcolor>FFE5E5E8</textcolor>
+                    <label>$INFO[ListItem.Label]</label>
+                    <scroll>false</scroll>
+                
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>16</left><top>208</top>
+                    <width>326</width><height>22</height>
+                    <font>font12</font><textcolor>FF9D9DA7</textcolor>
+                    <label>$INFO[ListItem.Property(year)]</label>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                
+            </itemlayout>
+            <focusedlayout width="359" height="259">
+                <control type="image">
+                    <left>5</left><top>7</top><width>348</width><height>201</height>
+                    <texture>$INFO[Window.Property(cinema_tile)]</texture><aspectratio>stretch</aspectratio>
+                    
+                </control>
+                <control type="image">
+                    <left>3</left><top>3</top><width>353</width><height>208</height>
+                    <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
+                    <visible>Control.HasFocus(405)</visible>
+                </control>
+                <control type="image">
+                    <left>7</left><top>7</top><width>344</width><height>196</height>
+                    <texture>$INFO[ListItem.Art(fanart)]</texture><aspectratio>scale</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>7</left><top>7</top><width>344</width><height>196</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture>
+                    <aspectratio>scale</aspectratio><colordiffuse>44FFFFFF</colordiffuse>
+                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>7</left><top>123</top><width>344</width><height>80</height>
+                    <texture>$INFO[Window.Property(cinema_cardfade)]</texture>
+                    <aspectratio>stretch</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>9</left><top>10</top><width>140</width><height>190</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture><aspectratio>keep</aspectratio>
+                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="textbox">
+                    <left>158</left><top>56</top><width>187</width><height>88</height>
+                    <font>font13</font><textcolor>FFF9F8FC</textcolor>
+                    <label>$INFO[ListItem.Label]</label>
+                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>161</left><top>160</top><width>180</width><height>28</height>
+                    <font>font12</font><textcolor>FFBBB9C5</textcolor>
+                    <label>$INFO[ListItem.Property(year)]</label>
+                    <visible>String.IsEmpty(ListItem.Art(fanart))</visible>
+                </control>
+                <control type="label">
+                    <left>14</left><top>72</top>
+                    <width>325</width><height>54</height>
+                    <font>font13</font><textcolor>FFB9B8C5</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>$INFO[ListItem.Label]</label>
+                    <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>20</left><top>43</top>
+                    <width>318</width><height>88</height>
+                    <font>font40_title</font><textcolor>FFB596FF</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>+</label>
+                    <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>13</left><top>13</top><width>133</width><height>26</height>
+                    <texture>$INFO[Window.Property(cinema_chip)]</texture><aspectratio>stretch</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
+                </control>
+                <control type="label">
+                    <left>18</left><top>13</top><width>125</width><height>26</height>
+                    <font>font12</font><textcolor>FFF2EAFF</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>$INFO[ListItem.Property(rating_label)]</label>
+                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
+                </control>
+                <control type="progress">
+                    <left>8</left><top>197</top>
+                    <width>344</width><height>5</height>
+                    <info>ListItem.Property(progress)</info>
+                    <texturebg>$INFO[Window.Property(cinema_chip)]</texturebg>
+                    <midtexture>$INFO[Window.Property(cinema_focus)]</midtexture>
+                    <visible>String.IsEqual(ListItem.Property(is_resume),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>16</left><top>158</top><width>327</width><height>39</height>
                     <font>font13</font>
                     <textcolor>FFFFFFFF</textcolor>
                     <label>$INFO[ListItem.Label]</label>
-                    <scroll>true</scroll>
+                    <scroll>false</scroll>
+                
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="label">
-                    <left>9</left><top>236</top>
-                    <width>338</width><height>19</height>
+                    <left>16</left><top>208</top>
+                    <width>326</width><height>22</height>
                     <font>font12</font><textcolor>FF9D9DA7</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1401,89 +1479,15 @@
                     <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>9</left><top>10</top><width>140</width><height>190</height>
-                    <texture>$INFO[ListItem.Art(poster)]</texture><aspectratio>keep</aspectratio>
+                    <left>7</left><top>7</top><width>344</width><height>196</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture>
+                    <aspectratio>scale</aspectratio><colordiffuse>44FFFFFF</colordiffuse>
                     <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
-                <control type="textbox">
-                    <left>158</left><top>56</top><width>187</width><height>88</height>
-                    <font>font13</font><textcolor>FFF9F8FC</textcolor>
-                    <label>$INFO[ListItem.Label]</label>
-                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
-                <control type="label">
-                    <left>161</left><top>160</top><width>180</width><height>28</height>
-                    <font>font12</font><textcolor>FFBBB9C5</textcolor>
-                    <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>String.IsEmpty(ListItem.Art(fanart))</visible>
-                </control>
-                <control type="label">
-                    <left>14</left><top>72</top>
-                    <width>325</width><height>54</height>
-                    <font>font13</font><textcolor>FFB9B8C5</textcolor>
-                    <align>center</align><aligny>center</aligny>
-                    <label>$INFO[ListItem.Label]</label>
-                    <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
-                <control type="label">
-                    <left>20</left><top>43</top>
-                    <width>318</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFB596FF</textcolor>
-                    <align>center</align><aligny>center</aligny>
-                    <label>+</label>
-                    <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
                 <control type="image">
-                    <left>13</left><top>13</top><width>133</width><height>26</height>
-                    <texture>$INFO[Window.Property(cinema_chip)]</texture><aspectratio>stretch</aspectratio>
-                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
-                </control>
-                <control type="label">
-                    <left>18</left><top>13</top><width>125</width><height>26</height>
-                    <font>font12</font><textcolor>FFF2EAFF</textcolor>
-                    <align>center</align><aligny>center</aligny>
-                    <label>$INFO[ListItem.Property(rating_label)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
-                </control>
-                <control type="progress">
-                    <left>8</left><top>197</top>
-                    <width>344</width><height>5</height>
-                    <info>ListItem.Property(progress)</info>
-                    <texturebg>$INFO[Window.Property(cinema_chip)]</texturebg>
-                    <midtexture>$INFO[Window.Property(cinema_focus)]</midtexture>
-                    <visible>String.IsEqual(ListItem.Property(is_resume),yes)</visible>
-                </control>
-                <control type="label">
-                    <left>9</left><top>207</top>
-                    <width>340</width><height>35</height>
-                    <font>font13</font>
-                    <textcolor>FFE5E5E8</textcolor>
-                    <label>$INFO[ListItem.Label]</label>
-                    <scroll>false</scroll>
-                </control>
-                <control type="label">
-                    <left>9</left><top>236</top>
-                    <width>338</width><height>19</height>
-                    <font>font12</font><textcolor>FF9D9DA7</textcolor>
-                    <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
-                
-            </itemlayout>
-            <focusedlayout width="359" height="259">
-                <control type="image">
-                    <left>5</left><top>7</top><width>348</width><height>201</height>
-                    <texture>$INFO[Window.Property(cinema_tile)]</texture><aspectratio>stretch</aspectratio>
-                    
-                </control>
-                <control type="image">
-                    <left>3</left><top>3</top><width>353</width><height>208</height>
-                    <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
-                    <visible>Control.HasFocus(406)</visible>
-                </control>
-                <control type="image">
-                    <left>7</left><top>7</top><width>344</width><height>196</height>
-                    <texture>$INFO[ListItem.Art(fanart)]</texture><aspectratio>scale</aspectratio>
+                    <left>7</left><top>123</top><width>344</width><height>80</height>
+                    <texture>$INFO[Window.Property(cinema_cardfade)]</texture>
+                    <aspectratio>stretch</aspectratio>
                     <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
@@ -1540,16 +1544,116 @@
                     <visible>String.IsEqual(ListItem.Property(is_resume),yes)</visible>
                 </control>
                 <control type="label">
-                    <left>9</left><top>207</top>
-                    <width>340</width><height>35</height>
+                    <left>16</left><top>158</top><width>327</width><height>39</height>
+                    <font>font13</font>
+                    <textcolor>FFE5E5E8</textcolor>
+                    <label>$INFO[ListItem.Label]</label>
+                    <scroll>false</scroll>
+                
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>16</left><top>208</top>
+                    <width>326</width><height>22</height>
+                    <font>font12</font><textcolor>FF9D9DA7</textcolor>
+                    <label>$INFO[ListItem.Property(year)]</label>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                
+            </itemlayout>
+            <focusedlayout width="359" height="259">
+                <control type="image">
+                    <left>5</left><top>7</top><width>348</width><height>201</height>
+                    <texture>$INFO[Window.Property(cinema_tile)]</texture><aspectratio>stretch</aspectratio>
+                    
+                </control>
+                <control type="image">
+                    <left>3</left><top>3</top><width>353</width><height>208</height>
+                    <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
+                    <visible>Control.HasFocus(406)</visible>
+                </control>
+                <control type="image">
+                    <left>7</left><top>7</top><width>344</width><height>196</height>
+                    <texture>$INFO[ListItem.Art(fanart)]</texture><aspectratio>scale</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>7</left><top>7</top><width>344</width><height>196</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture>
+                    <aspectratio>scale</aspectratio><colordiffuse>44FFFFFF</colordiffuse>
+                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>7</left><top>123</top><width>344</width><height>80</height>
+                    <texture>$INFO[Window.Property(cinema_cardfade)]</texture>
+                    <aspectratio>stretch</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>9</left><top>10</top><width>140</width><height>190</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture><aspectratio>keep</aspectratio>
+                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="textbox">
+                    <left>158</left><top>56</top><width>187</width><height>88</height>
+                    <font>font13</font><textcolor>FFF9F8FC</textcolor>
+                    <label>$INFO[ListItem.Label]</label>
+                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>161</left><top>160</top><width>180</width><height>28</height>
+                    <font>font12</font><textcolor>FFBBB9C5</textcolor>
+                    <label>$INFO[ListItem.Property(year)]</label>
+                    <visible>String.IsEmpty(ListItem.Art(fanart))</visible>
+                </control>
+                <control type="label">
+                    <left>14</left><top>72</top>
+                    <width>325</width><height>54</height>
+                    <font>font13</font><textcolor>FFB9B8C5</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>$INFO[ListItem.Label]</label>
+                    <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>20</left><top>43</top>
+                    <width>318</width><height>88</height>
+                    <font>font40_title</font><textcolor>FFB596FF</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>+</label>
+                    <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>13</left><top>13</top><width>133</width><height>26</height>
+                    <texture>$INFO[Window.Property(cinema_chip)]</texture><aspectratio>stretch</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
+                </control>
+                <control type="label">
+                    <left>18</left><top>13</top><width>125</width><height>26</height>
+                    <font>font12</font><textcolor>FFF2EAFF</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>$INFO[ListItem.Property(rating_label)]</label>
+                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
+                </control>
+                <control type="progress">
+                    <left>8</left><top>197</top>
+                    <width>344</width><height>5</height>
+                    <info>ListItem.Property(progress)</info>
+                    <texturebg>$INFO[Window.Property(cinema_chip)]</texturebg>
+                    <midtexture>$INFO[Window.Property(cinema_focus)]</midtexture>
+                    <visible>String.IsEqual(ListItem.Property(is_resume),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>16</left><top>158</top><width>327</width><height>39</height>
                     <font>font13</font>
                     <textcolor>FFFFFFFF</textcolor>
                     <label>$INFO[ListItem.Label]</label>
-                    <scroll>true</scroll>
+                    <scroll>false</scroll>
+                
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="label">
-                    <left>9</left><top>236</top>
-                    <width>338</width><height>19</height>
+                    <left>16</left><top>208</top>
+                    <width>326</width><height>22</height>
                     <font>font12</font><textcolor>FF9D9DA7</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1593,89 +1697,15 @@
                     <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>9</left><top>10</top><width>140</width><height>190</height>
-                    <texture>$INFO[ListItem.Art(poster)]</texture><aspectratio>keep</aspectratio>
+                    <left>7</left><top>7</top><width>344</width><height>196</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture>
+                    <aspectratio>scale</aspectratio><colordiffuse>44FFFFFF</colordiffuse>
                     <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
-                <control type="textbox">
-                    <left>158</left><top>56</top><width>187</width><height>88</height>
-                    <font>font13</font><textcolor>FFF9F8FC</textcolor>
-                    <label>$INFO[ListItem.Label]</label>
-                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
-                <control type="label">
-                    <left>161</left><top>160</top><width>180</width><height>28</height>
-                    <font>font12</font><textcolor>FFBBB9C5</textcolor>
-                    <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>String.IsEmpty(ListItem.Art(fanart))</visible>
-                </control>
-                <control type="label">
-                    <left>14</left><top>72</top>
-                    <width>325</width><height>54</height>
-                    <font>font13</font><textcolor>FFB9B8C5</textcolor>
-                    <align>center</align><aligny>center</aligny>
-                    <label>$INFO[ListItem.Label]</label>
-                    <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
-                <control type="label">
-                    <left>20</left><top>43</top>
-                    <width>318</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFB596FF</textcolor>
-                    <align>center</align><aligny>center</aligny>
-                    <label>+</label>
-                    <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
                 <control type="image">
-                    <left>13</left><top>13</top><width>133</width><height>26</height>
-                    <texture>$INFO[Window.Property(cinema_chip)]</texture><aspectratio>stretch</aspectratio>
-                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
-                </control>
-                <control type="label">
-                    <left>18</left><top>13</top><width>125</width><height>26</height>
-                    <font>font12</font><textcolor>FFF2EAFF</textcolor>
-                    <align>center</align><aligny>center</aligny>
-                    <label>$INFO[ListItem.Property(rating_label)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
-                </control>
-                <control type="progress">
-                    <left>8</left><top>197</top>
-                    <width>344</width><height>5</height>
-                    <info>ListItem.Property(progress)</info>
-                    <texturebg>$INFO[Window.Property(cinema_chip)]</texturebg>
-                    <midtexture>$INFO[Window.Property(cinema_focus)]</midtexture>
-                    <visible>String.IsEqual(ListItem.Property(is_resume),yes)</visible>
-                </control>
-                <control type="label">
-                    <left>9</left><top>207</top>
-                    <width>340</width><height>35</height>
-                    <font>font13</font>
-                    <textcolor>FFE5E5E8</textcolor>
-                    <label>$INFO[ListItem.Label]</label>
-                    <scroll>false</scroll>
-                </control>
-                <control type="label">
-                    <left>9</left><top>236</top>
-                    <width>338</width><height>19</height>
-                    <font>font12</font><textcolor>FF9D9DA7</textcolor>
-                    <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
-                
-            </itemlayout>
-            <focusedlayout width="359" height="259">
-                <control type="image">
-                    <left>5</left><top>7</top><width>348</width><height>201</height>
-                    <texture>$INFO[Window.Property(cinema_tile)]</texture><aspectratio>stretch</aspectratio>
-                    
-                </control>
-                <control type="image">
-                    <left>3</left><top>3</top><width>353</width><height>208</height>
-                    <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
-                    <visible>Control.HasFocus(407)</visible>
-                </control>
-                <control type="image">
-                    <left>7</left><top>7</top><width>344</width><height>196</height>
-                    <texture>$INFO[ListItem.Art(fanart)]</texture><aspectratio>scale</aspectratio>
+                    <left>7</left><top>123</top><width>344</width><height>80</height>
+                    <texture>$INFO[Window.Property(cinema_cardfade)]</texture>
+                    <aspectratio>stretch</aspectratio>
                     <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
@@ -1732,16 +1762,116 @@
                     <visible>String.IsEqual(ListItem.Property(is_resume),yes)</visible>
                 </control>
                 <control type="label">
-                    <left>9</left><top>207</top>
-                    <width>340</width><height>35</height>
+                    <left>16</left><top>158</top><width>327</width><height>39</height>
+                    <font>font13</font>
+                    <textcolor>FFE5E5E8</textcolor>
+                    <label>$INFO[ListItem.Label]</label>
+                    <scroll>false</scroll>
+                
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>16</left><top>208</top>
+                    <width>326</width><height>22</height>
+                    <font>font12</font><textcolor>FF9D9DA7</textcolor>
+                    <label>$INFO[ListItem.Property(year)]</label>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                
+            </itemlayout>
+            <focusedlayout width="359" height="259">
+                <control type="image">
+                    <left>5</left><top>7</top><width>348</width><height>201</height>
+                    <texture>$INFO[Window.Property(cinema_tile)]</texture><aspectratio>stretch</aspectratio>
+                    
+                </control>
+                <control type="image">
+                    <left>3</left><top>3</top><width>353</width><height>208</height>
+                    <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
+                    <visible>Control.HasFocus(407)</visible>
+                </control>
+                <control type="image">
+                    <left>7</left><top>7</top><width>344</width><height>196</height>
+                    <texture>$INFO[ListItem.Art(fanart)]</texture><aspectratio>scale</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>7</left><top>7</top><width>344</width><height>196</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture>
+                    <aspectratio>scale</aspectratio><colordiffuse>44FFFFFF</colordiffuse>
+                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>7</left><top>123</top><width>344</width><height>80</height>
+                    <texture>$INFO[Window.Property(cinema_cardfade)]</texture>
+                    <aspectratio>stretch</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>9</left><top>10</top><width>140</width><height>190</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture><aspectratio>keep</aspectratio>
+                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="textbox">
+                    <left>158</left><top>56</top><width>187</width><height>88</height>
+                    <font>font13</font><textcolor>FFF9F8FC</textcolor>
+                    <label>$INFO[ListItem.Label]</label>
+                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>161</left><top>160</top><width>180</width><height>28</height>
+                    <font>font12</font><textcolor>FFBBB9C5</textcolor>
+                    <label>$INFO[ListItem.Property(year)]</label>
+                    <visible>String.IsEmpty(ListItem.Art(fanart))</visible>
+                </control>
+                <control type="label">
+                    <left>14</left><top>72</top>
+                    <width>325</width><height>54</height>
+                    <font>font13</font><textcolor>FFB9B8C5</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>$INFO[ListItem.Label]</label>
+                    <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>20</left><top>43</top>
+                    <width>318</width><height>88</height>
+                    <font>font40_title</font><textcolor>FFB596FF</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>+</label>
+                    <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>13</left><top>13</top><width>133</width><height>26</height>
+                    <texture>$INFO[Window.Property(cinema_chip)]</texture><aspectratio>stretch</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
+                </control>
+                <control type="label">
+                    <left>18</left><top>13</top><width>125</width><height>26</height>
+                    <font>font12</font><textcolor>FFF2EAFF</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>$INFO[ListItem.Property(rating_label)]</label>
+                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
+                </control>
+                <control type="progress">
+                    <left>8</left><top>197</top>
+                    <width>344</width><height>5</height>
+                    <info>ListItem.Property(progress)</info>
+                    <texturebg>$INFO[Window.Property(cinema_chip)]</texturebg>
+                    <midtexture>$INFO[Window.Property(cinema_focus)]</midtexture>
+                    <visible>String.IsEqual(ListItem.Property(is_resume),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>16</left><top>158</top><width>327</width><height>39</height>
                     <font>font13</font>
                     <textcolor>FFFFFFFF</textcolor>
                     <label>$INFO[ListItem.Label]</label>
-                    <scroll>true</scroll>
+                    <scroll>false</scroll>
+                
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="label">
-                    <left>9</left><top>236</top>
-                    <width>338</width><height>19</height>
+                    <left>16</left><top>208</top>
+                    <width>326</width><height>22</height>
                     <font>font12</font><textcolor>FF9D9DA7</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1955,89 +2085,15 @@
                     <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>9</left><top>10</top><width>140</width><height>190</height>
-                    <texture>$INFO[ListItem.Art(poster)]</texture><aspectratio>keep</aspectratio>
+                    <left>7</left><top>7</top><width>344</width><height>196</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture>
+                    <aspectratio>scale</aspectratio><colordiffuse>44FFFFFF</colordiffuse>
                     <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
-                <control type="textbox">
-                    <left>158</left><top>56</top><width>187</width><height>88</height>
-                    <font>font13</font><textcolor>FFF9F8FC</textcolor>
-                    <label>$INFO[ListItem.Label]</label>
-                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
-                <control type="label">
-                    <left>161</left><top>160</top><width>180</width><height>28</height>
-                    <font>font12</font><textcolor>FFBBB9C5</textcolor>
-                    <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>String.IsEmpty(ListItem.Art(fanart))</visible>
-                </control>
-                <control type="label">
-                    <left>14</left><top>72</top>
-                    <width>325</width><height>54</height>
-                    <font>font13</font><textcolor>FFB9B8C5</textcolor>
-                    <align>center</align><aligny>center</aligny>
-                    <label>$INFO[ListItem.Label]</label>
-                    <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
-                <control type="label">
-                    <left>20</left><top>43</top>
-                    <width>318</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFB596FF</textcolor>
-                    <align>center</align><aligny>center</aligny>
-                    <label>+</label>
-                    <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
                 <control type="image">
-                    <left>13</left><top>13</top><width>133</width><height>26</height>
-                    <texture>$INFO[Window.Property(cinema_chip)]</texture><aspectratio>stretch</aspectratio>
-                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
-                </control>
-                <control type="label">
-                    <left>18</left><top>13</top><width>125</width><height>26</height>
-                    <font>font12</font><textcolor>FFF2EAFF</textcolor>
-                    <align>center</align><aligny>center</aligny>
-                    <label>$INFO[ListItem.Property(rating_label)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
-                </control>
-                <control type="progress">
-                    <left>8</left><top>197</top>
-                    <width>344</width><height>5</height>
-                    <info>ListItem.Property(progress)</info>
-                    <texturebg>$INFO[Window.Property(cinema_chip)]</texturebg>
-                    <midtexture>$INFO[Window.Property(cinema_focus)]</midtexture>
-                    <visible>String.IsEqual(ListItem.Property(is_resume),yes)</visible>
-                </control>
-                <control type="label">
-                    <left>9</left><top>207</top>
-                    <width>340</width><height>35</height>
-                    <font>font13</font>
-                    <textcolor>FFE5E5E8</textcolor>
-                    <label>$INFO[ListItem.Label]</label>
-                    <scroll>false</scroll>
-                </control>
-                <control type="label">
-                    <left>9</left><top>236</top>
-                    <width>338</width><height>19</height>
-                    <font>font12</font><textcolor>FF9D9DA7</textcolor>
-                    <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
-                
-            </itemlayout>
-            <focusedlayout width="359" height="259">
-                <control type="image">
-                    <left>5</left><top>7</top><width>348</width><height>201</height>
-                    <texture>$INFO[Window.Property(cinema_tile)]</texture><aspectratio>stretch</aspectratio>
-                    
-                </control>
-                <control type="image">
-                    <left>3</left><top>3</top><width>353</width><height>208</height>
-                    <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
-                    <visible>Control.HasFocus(409)</visible>
-                </control>
-                <control type="image">
-                    <left>7</left><top>7</top><width>344</width><height>196</height>
-                    <texture>$INFO[ListItem.Art(fanart)]</texture><aspectratio>scale</aspectratio>
+                    <left>7</left><top>123</top><width>344</width><height>80</height>
+                    <texture>$INFO[Window.Property(cinema_cardfade)]</texture>
+                    <aspectratio>stretch</aspectratio>
                     <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
@@ -2094,16 +2150,116 @@
                     <visible>String.IsEqual(ListItem.Property(is_resume),yes)</visible>
                 </control>
                 <control type="label">
-                    <left>9</left><top>207</top>
-                    <width>340</width><height>35</height>
+                    <left>16</left><top>158</top><width>327</width><height>39</height>
+                    <font>font13</font>
+                    <textcolor>FFE5E5E8</textcolor>
+                    <label>$INFO[ListItem.Label]</label>
+                    <scroll>false</scroll>
+                
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>16</left><top>208</top>
+                    <width>326</width><height>22</height>
+                    <font>font12</font><textcolor>FF9D9DA7</textcolor>
+                    <label>$INFO[ListItem.Property(year)]</label>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                
+            </itemlayout>
+            <focusedlayout width="359" height="259">
+                <control type="image">
+                    <left>5</left><top>7</top><width>348</width><height>201</height>
+                    <texture>$INFO[Window.Property(cinema_tile)]</texture><aspectratio>stretch</aspectratio>
+                    
+                </control>
+                <control type="image">
+                    <left>3</left><top>3</top><width>353</width><height>208</height>
+                    <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
+                    <visible>Control.HasFocus(409)</visible>
+                </control>
+                <control type="image">
+                    <left>7</left><top>7</top><width>344</width><height>196</height>
+                    <texture>$INFO[ListItem.Art(fanart)]</texture><aspectratio>scale</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>7</left><top>7</top><width>344</width><height>196</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture>
+                    <aspectratio>scale</aspectratio><colordiffuse>44FFFFFF</colordiffuse>
+                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>7</left><top>123</top><width>344</width><height>80</height>
+                    <texture>$INFO[Window.Property(cinema_cardfade)]</texture>
+                    <aspectratio>stretch</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>9</left><top>10</top><width>140</width><height>190</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture><aspectratio>keep</aspectratio>
+                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="textbox">
+                    <left>158</left><top>56</top><width>187</width><height>88</height>
+                    <font>font13</font><textcolor>FFF9F8FC</textcolor>
+                    <label>$INFO[ListItem.Label]</label>
+                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>161</left><top>160</top><width>180</width><height>28</height>
+                    <font>font12</font><textcolor>FFBBB9C5</textcolor>
+                    <label>$INFO[ListItem.Property(year)]</label>
+                    <visible>String.IsEmpty(ListItem.Art(fanart))</visible>
+                </control>
+                <control type="label">
+                    <left>14</left><top>72</top>
+                    <width>325</width><height>54</height>
+                    <font>font13</font><textcolor>FFB9B8C5</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>$INFO[ListItem.Label]</label>
+                    <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>20</left><top>43</top>
+                    <width>318</width><height>88</height>
+                    <font>font40_title</font><textcolor>FFB596FF</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>+</label>
+                    <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>13</left><top>13</top><width>133</width><height>26</height>
+                    <texture>$INFO[Window.Property(cinema_chip)]</texture><aspectratio>stretch</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
+                </control>
+                <control type="label">
+                    <left>18</left><top>13</top><width>125</width><height>26</height>
+                    <font>font12</font><textcolor>FFF2EAFF</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>$INFO[ListItem.Property(rating_label)]</label>
+                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
+                </control>
+                <control type="progress">
+                    <left>8</left><top>197</top>
+                    <width>344</width><height>5</height>
+                    <info>ListItem.Property(progress)</info>
+                    <texturebg>$INFO[Window.Property(cinema_chip)]</texturebg>
+                    <midtexture>$INFO[Window.Property(cinema_focus)]</midtexture>
+                    <visible>String.IsEqual(ListItem.Property(is_resume),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>16</left><top>158</top><width>327</width><height>39</height>
                     <font>font13</font>
                     <textcolor>FFFFFFFF</textcolor>
                     <label>$INFO[ListItem.Label]</label>
-                    <scroll>true</scroll>
+                    <scroll>false</scroll>
+                
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="label">
-                    <left>9</left><top>236</top>
-                    <width>338</width><height>19</height>
+                    <left>16</left><top>208</top>
+                    <width>326</width><height>22</height>
                     <font>font12</font><textcolor>FF9D9DA7</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -2147,89 +2303,15 @@
                     <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>9</left><top>10</top><width>140</width><height>190</height>
-                    <texture>$INFO[ListItem.Art(poster)]</texture><aspectratio>keep</aspectratio>
+                    <left>7</left><top>7</top><width>344</width><height>196</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture>
+                    <aspectratio>scale</aspectratio><colordiffuse>44FFFFFF</colordiffuse>
                     <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
-                <control type="textbox">
-                    <left>158</left><top>56</top><width>187</width><height>88</height>
-                    <font>font13</font><textcolor>FFF9F8FC</textcolor>
-                    <label>$INFO[ListItem.Label]</label>
-                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
-                <control type="label">
-                    <left>161</left><top>160</top><width>180</width><height>28</height>
-                    <font>font12</font><textcolor>FFBBB9C5</textcolor>
-                    <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>String.IsEmpty(ListItem.Art(fanart))</visible>
-                </control>
-                <control type="label">
-                    <left>14</left><top>72</top>
-                    <width>325</width><height>54</height>
-                    <font>font13</font><textcolor>FFB9B8C5</textcolor>
-                    <align>center</align><aligny>center</aligny>
-                    <label>$INFO[ListItem.Label]</label>
-                    <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
-                <control type="label">
-                    <left>20</left><top>43</top>
-                    <width>318</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFB596FF</textcolor>
-                    <align>center</align><aligny>center</aligny>
-                    <label>+</label>
-                    <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
                 <control type="image">
-                    <left>13</left><top>13</top><width>133</width><height>26</height>
-                    <texture>$INFO[Window.Property(cinema_chip)]</texture><aspectratio>stretch</aspectratio>
-                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
-                </control>
-                <control type="label">
-                    <left>18</left><top>13</top><width>125</width><height>26</height>
-                    <font>font12</font><textcolor>FFF2EAFF</textcolor>
-                    <align>center</align><aligny>center</aligny>
-                    <label>$INFO[ListItem.Property(rating_label)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
-                </control>
-                <control type="progress">
-                    <left>8</left><top>197</top>
-                    <width>344</width><height>5</height>
-                    <info>ListItem.Property(progress)</info>
-                    <texturebg>$INFO[Window.Property(cinema_chip)]</texturebg>
-                    <midtexture>$INFO[Window.Property(cinema_focus)]</midtexture>
-                    <visible>String.IsEqual(ListItem.Property(is_resume),yes)</visible>
-                </control>
-                <control type="label">
-                    <left>9</left><top>207</top>
-                    <width>340</width><height>35</height>
-                    <font>font13</font>
-                    <textcolor>FFE5E5E8</textcolor>
-                    <label>$INFO[ListItem.Label]</label>
-                    <scroll>false</scroll>
-                </control>
-                <control type="label">
-                    <left>9</left><top>236</top>
-                    <width>338</width><height>19</height>
-                    <font>font12</font><textcolor>FF9D9DA7</textcolor>
-                    <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
-                </control>
-                
-            </itemlayout>
-            <focusedlayout width="359" height="259">
-                <control type="image">
-                    <left>5</left><top>7</top><width>348</width><height>201</height>
-                    <texture>$INFO[Window.Property(cinema_tile)]</texture><aspectratio>stretch</aspectratio>
-                    
-                </control>
-                <control type="image">
-                    <left>3</left><top>3</top><width>353</width><height>208</height>
-                    <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
-                    <visible>Control.HasFocus(410)</visible>
-                </control>
-                <control type="image">
-                    <left>7</left><top>7</top><width>344</width><height>196</height>
-                    <texture>$INFO[ListItem.Art(fanart)]</texture><aspectratio>scale</aspectratio>
+                    <left>7</left><top>123</top><width>344</width><height>80</height>
+                    <texture>$INFO[Window.Property(cinema_cardfade)]</texture>
+                    <aspectratio>stretch</aspectratio>
                     <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
@@ -2286,16 +2368,116 @@
                     <visible>String.IsEqual(ListItem.Property(is_resume),yes)</visible>
                 </control>
                 <control type="label">
-                    <left>9</left><top>207</top>
-                    <width>340</width><height>35</height>
+                    <left>16</left><top>158</top><width>327</width><height>39</height>
+                    <font>font13</font>
+                    <textcolor>FFE5E5E8</textcolor>
+                    <label>$INFO[ListItem.Label]</label>
+                    <scroll>false</scroll>
+                
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>16</left><top>208</top>
+                    <width>326</width><height>22</height>
+                    <font>font12</font><textcolor>FF9D9DA7</textcolor>
+                    <label>$INFO[ListItem.Property(year)]</label>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                
+            </itemlayout>
+            <focusedlayout width="359" height="259">
+                <control type="image">
+                    <left>5</left><top>7</top><width>348</width><height>201</height>
+                    <texture>$INFO[Window.Property(cinema_tile)]</texture><aspectratio>stretch</aspectratio>
+                    
+                </control>
+                <control type="image">
+                    <left>3</left><top>3</top><width>353</width><height>208</height>
+                    <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
+                    <visible>Control.HasFocus(410)</visible>
+                </control>
+                <control type="image">
+                    <left>7</left><top>7</top><width>344</width><height>196</height>
+                    <texture>$INFO[ListItem.Art(fanart)]</texture><aspectratio>scale</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>7</left><top>7</top><width>344</width><height>196</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture>
+                    <aspectratio>scale</aspectratio><colordiffuse>44FFFFFF</colordiffuse>
+                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>7</left><top>123</top><width>344</width><height>80</height>
+                    <texture>$INFO[Window.Property(cinema_cardfade)]</texture>
+                    <aspectratio>stretch</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>9</left><top>10</top><width>140</width><height>190</height>
+                    <texture>$INFO[ListItem.Art(poster)]</texture><aspectratio>keep</aspectratio>
+                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="textbox">
+                    <left>158</left><top>56</top><width>187</width><height>88</height>
+                    <font>font13</font><textcolor>FFF9F8FC</textcolor>
+                    <label>$INFO[ListItem.Label]</label>
+                    <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>161</left><top>160</top><width>180</width><height>28</height>
+                    <font>font12</font><textcolor>FFBBB9C5</textcolor>
+                    <label>$INFO[ListItem.Property(year)]</label>
+                    <visible>String.IsEmpty(ListItem.Art(fanart))</visible>
+                </control>
+                <control type="label">
+                    <left>14</left><top>72</top>
+                    <width>325</width><height>54</height>
+                    <font>font13</font><textcolor>FFB9B8C5</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>$INFO[ListItem.Label]</label>
+                    <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>20</left><top>43</top>
+                    <width>318</width><height>88</height>
+                    <font>font40_title</font><textcolor>FFB596FF</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>+</label>
+                    <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="image">
+                    <left>13</left><top>13</top><width>133</width><height>26</height>
+                    <texture>$INFO[Window.Property(cinema_chip)]</texture><aspectratio>stretch</aspectratio>
+                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
+                </control>
+                <control type="label">
+                    <left>18</left><top>13</top><width>125</width><height>26</height>
+                    <font>font12</font><textcolor>FFF2EAFF</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>$INFO[ListItem.Property(rating_label)]</label>
+                    <visible>!String.IsEmpty(ListItem.Property(rating_label))</visible>
+                </control>
+                <control type="progress">
+                    <left>8</left><top>197</top>
+                    <width>344</width><height>5</height>
+                    <info>ListItem.Property(progress)</info>
+                    <texturebg>$INFO[Window.Property(cinema_chip)]</texturebg>
+                    <midtexture>$INFO[Window.Property(cinema_focus)]</midtexture>
+                    <visible>String.IsEqual(ListItem.Property(is_resume),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>16</left><top>158</top><width>327</width><height>39</height>
                     <font>font13</font>
                     <textcolor>FFFFFFFF</textcolor>
                     <label>$INFO[ListItem.Label]</label>
-                    <scroll>true</scroll>
+                    <scroll>false</scroll>
+                
+                    <visible>!String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="label">
-                    <left>9</left><top>236</top>
-                    <width>338</width><height>19</height>
+                    <left>16</left><top>208</top>
+                    <width>326</width><height>22</height>
                     <font>font12</font><textcolor>FF9D9DA7</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
