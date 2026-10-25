@@ -38,6 +38,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.featured_card=None
         self._updating_home=False
         self._switching_section=False
+        self._hero_property_cache={}
         self._nav_focus_target=None
         try:
             # Tracked by the playback service: retain the original screen
@@ -145,6 +146,18 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         except (RuntimeError,IndexError,AttributeError):
             return None
 
+    def _set_hero_property(self, name, value):
+        """Avoid redundant Kodi texture reloads on every remote-control focus event."""
+        value=str(value or '')
+        cache=getattr(self,'_hero_property_cache',None)
+        if cache is None:
+            cache={}
+            self._hero_property_cache=cache
+        if cache.get(name)==value:
+            return
+        self.setProperty(name,value)
+        cache[name]=value
+
     def _update_hero(self):
         c=self._selected()
         mode=getattr(self,'mode',None)
@@ -162,21 +175,21 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                     and (card.get('fanart') or card.get('poster'))),None)
         if not c:
             self.featured_card=None
-            self.setProperty('hero_title',{'shows':'SERIÁLY','movies':'FILMY',
+            self._set_hero_property('hero_title',{'shows':'SERIÁLY','movies':'FILMY',
                                           'premieres':'PREMIÉRY'}.get(mode,'Božský přehrávač'))
-            self.setProperty('hero_info','TVŮJ FILMOVÝ SVĚT · FILMY · SERIÁLY')
-            self.setProperty('hero_plot','Objev film nebo seriál, vyber žánr nebo otevři Tipy.')
-            self.setProperty('hero_art','')
-            self.setProperty('hero_poster','')
-            self.setProperty('hero_action','')
+            self._set_hero_property('hero_info','TVŮJ FILMOVÝ SVĚT · FILMY · SERIÁLY')
+            self._set_hero_property('hero_plot','Objev film nebo seriál, vyber žánr nebo otevři Tipy.')
+            self._set_hero_property('hero_art','')
+            self._set_hero_property('hero_poster','')
+            self._set_hero_property('hero_action','')
             return
         if c.get('kind') in ('movie','show'):
             self.featured_card=c
-            self.setProperty('hero_action','yes')
+            self._set_hero_property('hero_action','yes')
         else:
             self.featured_card=None
-            self.setProperty('hero_action','')
-        self.setProperty('hero_title',str(c.get('title') or ''))
+            self._set_hero_property('hero_action','')
+        self._set_hero_property('hero_title',str(c.get('title') or ''))
         genre=str(c.get('genre') or '').split(',')[:2]
         text=[str(c.get('year') or ''),', '.join(x.strip() for x in genre if x.strip())]
         source=str(c.get('rating_source') or '').casefold()
@@ -187,14 +200,14 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                     text.append('ČSFD %d %%'%rating)
             except (ValueError,TypeError):
                 pass
-        self.setProperty('hero_info','  ·  '.join(x for x in text if x)[:115])
+        self._set_hero_property('hero_info','  ·  '.join(x for x in text if x)[:115])
         plot=str(c.get('plot') or '').strip()
         if (not plot or plot.casefold().startswith('soubor nalezen na webshare')):
             plot='Film nebo seriál je dostupný · zvol si jazyk a kvalitu.'
-        self.setProperty('hero_plot',plot[:255])
+        self._set_hero_property('hero_plot',plot[:255])
         # Never stretch a vertical, low-res Webshare poster across the TV hero.
-        self.setProperty('hero_art',str(c.get('fanart') or ''))
-        self.setProperty('hero_poster',str(c.get('poster') or ''))
+        self._set_hero_property('hero_art',str(c.get('fanart') or ''))
+        self._set_hero_property('hero_poster',str(c.get('poster') or ''))
 
     def _refresh(self,view,context=None,stack=True):
         if stack:
@@ -814,6 +827,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self._update_hero()
 
     def onFocus(self,control_id):
+        if getattr(self,'_switching_section',False) or getattr(self,'_updating_home',False):
+            return
         self._apply_background_home()
         self._update_hero()
 
