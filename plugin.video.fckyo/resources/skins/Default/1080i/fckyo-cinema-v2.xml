@@ -150,72 +150,42 @@
             <colordiffuse>FFAA7BFF</colordiffuse>
             <visible>Control.HasFocus(106) | String.IsEqual(Window.Property(nav_active),home)</visible>
         </control>
-        <control type="image">
-            <left>564</left><top>19</top><width>94</width><height>3</height>
-            <texture>$INFO[Window.Property(cinema_focus)]</texture>
-            <colordiffuse>FFFAB6C0</colordiffuse>
-            <visible>Control.HasFocus(106)</visible>
-        </control>
+
         <control type="image">
             <left>682</left><top>86</top><width>114</width><height>5</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
             <colordiffuse>FFAA7BFF</colordiffuse>
             <visible>Control.HasFocus(101) | String.IsEqual(Window.Property(nav_active),movies)</visible>
         </control>
-        <control type="image">
-            <left>683</left><top>19</top><width>112</width><height>3</height>
-            <texture>$INFO[Window.Property(cinema_focus)]</texture>
-            <colordiffuse>FFFAB6C0</colordiffuse>
-            <visible>Control.HasFocus(101)</visible>
-        </control>
+
         <control type="image">
             <left>816</left><top>86</top><width>121</width><height>5</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
             <colordiffuse>FFAA7BFF</colordiffuse>
             <visible>Control.HasFocus(102) | String.IsEqual(Window.Property(nav_active),shows)</visible>
         </control>
-        <control type="image">
-            <left>817</left><top>19</top><width>119</width><height>3</height>
-            <texture>$INFO[Window.Property(cinema_focus)]</texture>
-            <colordiffuse>FFFAB6C0</colordiffuse>
-            <visible>Control.HasFocus(102)</visible>
-        </control>
+
         <control type="image">
             <left>957</left><top>86</top><width>125</width><height>5</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
             <colordiffuse>FFAA7BFF</colordiffuse>
             <visible>Control.HasFocus(103) | String.IsEqual(Window.Property(nav_active),search)</visible>
         </control>
-        <control type="image">
-            <left>958</left><top>19</top><width>123</width><height>3</height>
-            <texture>$INFO[Window.Property(cinema_focus)]</texture>
-            <colordiffuse>FFFAB6C0</colordiffuse>
-            <visible>Control.HasFocus(103)</visible>
-        </control>
+
         <control type="image">
             <left>1102</left><top>86</top><width>146</width><height>5</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
             <colordiffuse>FFAA7BFF</colordiffuse>
             <visible>Control.HasFocus(104) | String.IsEqual(Window.Property(nav_active),premieres)</visible>
         </control>
-        <control type="image">
-            <left>1103</left><top>19</top><width>144</width><height>3</height>
-            <texture>$INFO[Window.Property(cinema_focus)]</texture>
-            <colordiffuse>FFFAB6C0</colordiffuse>
-            <visible>Control.HasFocus(104)</visible>
-        </control>
+
         <control type="image">
             <left>1272</left><top>86</top><width>132</width><height>5</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
             <colordiffuse>FFAA7BFF</colordiffuse>
             <visible>Control.HasFocus(105) | String.IsEqual(Window.Property(nav_active),genres)</visible>
         </control>
-        <control type="image">
-            <left>1273</left><top>19</top><width>130</width><height>3</height>
-            <texture>$INFO[Window.Property(cinema_focus)]</texture>
-            <colordiffuse>FFFAB6C0</colordiffuse>
-            <visible>Control.HasFocus(105)</visible>
-        </control>
+
 
         <!-- Featured title changes as the user moves over posters. -->
         <control type="label">
@@ -401,40 +371,88 @@
             <visible>Control.HasFocus(208)</visible>
         </control>
         <!-- Accessible labels appear when an icon in the slim rail receives focus. -->
+        <control type="image">
+            <left>92</left><top>151</top><width>245</width><height>49</height>
+            <texture>$INFO[Window.Property(cinema_nav_hover)]</texture>
+            <colordiffuse>F5FFFFFF</colordiffuse>
+            <visible>Control.HasFocus(201)</visible>
+        </control>
         <control type="label">
             <left>100</left><top>155</top><width>255</width><height>40</height>
             <font>font13</font><textcolor>FFFFFFFF</textcolor>
             <label>DOMŮ</label><visible>Control.HasFocus(201)</visible>
+        </control>
+        <control type="image">
+            <left>92</left><top>225</top><width>245</width><height>49</height>
+            <texture>$INFO[Window.Property(cinema_nav_hover)]</texture>
+            <colordiffuse>F5FFFFFF</colordiffuse>
+            <visible>Control.HasFocus(208)</visible>
         </control>
         <control type="label">
             <left>100</left><top>229</top><width>255</width><height>40</height>
             <font>font13</font><textcolor>FFFFFFFF</textcolor>
             <label>TIPY PRO TEBE</label><visible>Control.HasFocus(208)</visible>
         </control>
+        <control type="image">
+            <left>92</left><top>299</top><width>245</width><height>49</height>
+            <texture>$INFO[Window.Property(cinema_nav_hover)]</texture>
+            <colordiffuse>F5FFFFFF</colordiffuse>
+            <visible>Control.HasFocus(202)</visible>
+        </control>
         <control type="label">
             <left>100</left><top>303</top><width>255</width><height>40</height>
             <font>font13</font><textcolor>FFFFFFFF</textcolor>
             <label>ROZKOUKANÉ</label><visible>Control.HasFocus(202)</visible>
+        </control>
+        <control type="image">
+            <left>92</left><top>373</top><width>245</width><height>49</height>
+            <texture>$INFO[Window.Property(cinema_nav_hover)]</texture>
+            <colordiffuse>F5FFFFFF</colordiffuse>
+            <visible>Control.HasFocus(203)</visible>
         </control>
         <control type="label">
             <left>100</left><top>377</top><width>255</width><height>40</height>
             <font>font13</font><textcolor>FFFFFFFF</textcolor>
             <label>OBLÍBENÉ</label><visible>Control.HasFocus(203)</visible>
         </control>
+        <control type="image">
+            <left>92</left><top>447</top><width>245</width><height>49</height>
+            <texture>$INFO[Window.Property(cinema_nav_hover)]</texture>
+            <colordiffuse>F5FFFFFF</colordiffuse>
+            <visible>Control.HasFocus(204)</visible>
+        </control>
         <control type="label">
             <left>100</left><top>451</top><width>255</width><height>40</height>
             <font>font13</font><textcolor>FFFFFFFF</textcolor>
             <label>ŽÁNRY</label><visible>Control.HasFocus(204)</visible>
+        </control>
+        <control type="image">
+            <left>92</left><top>521</top><width>245</width><height>49</height>
+            <texture>$INFO[Window.Property(cinema_nav_hover)]</texture>
+            <colordiffuse>F5FFFFFF</colordiffuse>
+            <visible>Control.HasFocus(205)</visible>
         </control>
         <control type="label">
             <left>100</left><top>525</top><width>255</width><height>40</height>
             <font>font13</font><textcolor>FFFFFFFF</textcolor>
             <label>TOP ČSFD</label><visible>Control.HasFocus(205)</visible>
         </control>
+        <control type="image">
+            <left>92</left><top>595</top><width>245</width><height>49</height>
+            <texture>$INFO[Window.Property(cinema_nav_hover)]</texture>
+            <colordiffuse>F5FFFFFF</colordiffuse>
+            <visible>Control.HasFocus(206)</visible>
+        </control>
         <control type="label">
             <left>100</left><top>599</top><width>255</width><height>40</height>
             <font>font13</font><textcolor>FFFFFFFF</textcolor>
             <label>PREMIÉRY</label><visible>Control.HasFocus(206)</visible>
+        </control>
+        <control type="image">
+            <left>92</left><top>669</top><width>245</width><height>49</height>
+            <texture>$INFO[Window.Property(cinema_nav_hover)]</texture>
+            <colordiffuse>F5FFFFFF</colordiffuse>
+            <visible>Control.HasFocus(207)</visible>
         </control>
         <control type="label">
             <left>100</left><top>673</top><width>255</width><height>40</height>
