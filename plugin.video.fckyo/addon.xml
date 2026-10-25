@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="KIVORA" version="0.27.0" provider-name="KIVORA Community">
+<addon id="plugin.video.fckyo" name="KIVORA" version="0.28.0" provider-name="KIVORA Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -22,6 +22,14 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.28.0 Opravené horní záložky a ovládání televizorem[/B]
+- Domů, Filmy, Seriály, Hledat, Premiéry, Žánry a Nastavení fungují přes kliknutí i dálkový ovladač
+- Přepínání Filmů, Seriálů a Premiér už nečeká na Webshare: katalog se zobrazuje okamžitě z lokálního ověřeného indexu
+- Nové tituly se průběžně aktualizují na pozadí i při otevřené kartě Filmy či Seriály
+- Po potvrzení horní záložky zůstává zaměření v horní nabídce, nepřesouvá se automaticky na první film
+- Klávesy vlevo/vpravo procházejí všechny záložky, dolů se přechází na první dostupnou řadu
+- Zachovány nastavení, přehrávání, historie a technické ID plugin.video.fckyo
+
 [B]0.27.0 Oprava vyhledávání filmů[/B]
 - Ruční hledání má nyní přednost před načítáním katalogu a Tipů na pozadí
 - Odstraněn souběh dvou rozsáhlých průzkumů Webshare při spuštění obrazovky
