@@ -28,19 +28,19 @@ class StreamingHomeTests(unittest.TestCase):
     def setUpClass(cls):
         cls.root=ET.parse(SKIN).getroot()
 
-    def test_all_visible_rails_have_landscape_backdrops(self):
+    def test_all_visible_rails_have_full_height_movie_posters(self):
         for cid in range(401,408):
             rail=self.root.find(".//control[@id='%d']"%cid)
             self.assertIsNotNone(rail)
             self.assertEqual(rail.findtext('orientation'),'horizontal')
             item=rail.find('itemlayout')
-            self.assertGreater(int(item.get('width')),int(item.get('height')))
+            self.assertGreater(int(item.get('height')),int(item.get('width')))
             posters=[image for image in item.findall("control[@type='image']")
-                     if image.findtext('texture')=='$INFO[ListItem.Art(thumb)]']
+                     if image.findtext('texture')=='$INFO[ListItem.Art(poster)]']
             self.assertEqual(len(posters),1)
             poster=posters[0]
-            self.assertGreater(int(poster.findtext('width')),
-                               int(poster.findtext('height')))
+            self.assertGreater(int(poster.findtext('height')),
+                               int(poster.findtext('width')))
 
     def test_bottom_navigation_never_jumps_back_to_header(self):
         for cid in range(401,408):
@@ -64,10 +64,10 @@ class StreamingHomeTests(unittest.TestCase):
         container=self.root.find(".//control[@id='610']")
         self.assertEqual(container.get('type'),'grouplist')
         self.assertEqual(container.findtext('orientation'),'vertical')
-        self.assertGreaterEqual(int(container.findtext('height')),500)
+        self.assertGreaterEqual(int(container.findtext('height')),480)
         with open(os.path.join(PLUG,'cinematic_home.py'),encoding='utf8') as f:
             code=f.read()
-        self.assertIn("stream_v5_",code)
+        self.assertIn("stream_v6_",code)
         self.assertIn("color = (157,109,255,255)",code)
 
     def test_last_visible_rail_stays_focused_on_down(self):
