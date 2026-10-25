@@ -130,6 +130,7 @@ class WatchStore:
             if position<15:
                 continue
             item=dict(v)
+            item['_continue']=True
             item['raw']=item.get('raw_title') or item.get('title')
             item['files']=[{'ident':item['ident'],'name':item['name']}]
             item['progress']=min(99,int(position/total*100)) if total else 0
