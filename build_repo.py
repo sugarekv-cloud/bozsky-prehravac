@@ -39,7 +39,11 @@ def main():
     plugin=HERE/PLUGIN_ID
     # Render the original logo into every published addon/repository ZIP.
     from tools.create_brand import make_brand
+    from tools.create_genre_icons import make_genre_icons
     make_brand()
+    genre_art=make_genre_icons()
+    assert len(genre_art)==24 and all(p.is_file() and p.stat().st_size>1000
+                                      for p in genre_art)
     plugxml=ET.parse(plugin/'addon.xml').getroot()
     version=plugxml.get('version')
     assert plugxml.get('id')==PLUGIN_ID and version
