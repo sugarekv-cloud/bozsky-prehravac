@@ -70,7 +70,7 @@ class FeaturedMovieTests(unittest.TestCase):
         banner=self.window.find(".//control[@id='108']")
         self.assertIsNotNone(banner)
         self.assertEqual(banner.get('type'),'button')
-        self.assertEqual(banner.findtext('onup'),'101')
+        self.assertEqual(banner.findtext('onup'),'106')
         self.assertEqual(banner.findtext('ondown'),'401')
         self.assertIn('hero_action',banner.findtext('visible'))
         image=next(node for node in self.window.findall(".//control[@type='image']")
