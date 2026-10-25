@@ -12,7 +12,7 @@ import build_repo
 
 
 KODI_LINK_REGEX=re.compile(
-    r'<a href="([^"]*)"[^>]*>\\s*(.*?)\\s*</a>(.+?)(?=<a|</tr|$)',
+    r'<a href="([^"]*)"[^>]*>\s*(.*?)\s*</a>(.+?)(?=<a|</tr|$)',
     re.IGNORECASE | re.DOTALL
 )
 
