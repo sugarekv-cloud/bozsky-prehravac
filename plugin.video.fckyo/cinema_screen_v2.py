@@ -16,7 +16,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.27.0'
+VERSION='0.28.0'
 
 
 def tile(name,kind,**extra):
@@ -37,6 +37,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.genre_limits={'movie':24,'show':24}
         self.featured_card=None
         self._updating_home=False
+        self._nav_focus_target=None
         try:
             # Tracked by the playback service: retain the original screen
             # underneath fullscreen playback whenever Kodi permits it.
@@ -114,9 +115,16 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 li.append(item)
             if li:
                 lst.addItems(li)
+        # A header selection must remain focused after the rail redraw.
+        # Previous implementation jumped to the first poster every time.
+        focus_target=getattr(self,'_nav_focus_target',None)
+        self._nav_focus_target=None
+        if focus_target not in TOP_ACTIONS:
+            focus_target=next((rid for rid,cards in zip(ROW_IDS,self.rail_items)
+                               if cards),107)
         try:
-            self.setFocusId(next((rid for rid,cards in zip(ROW_IDS,self.rail_items) if cards),107))
-        except RuntimeError:
+            self.setFocusId(focus_target)
+        except (RuntimeError,AttributeError):
             pass
         self._update_hero()
 
@@ -324,7 +332,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                        'TIPY NA TENTO TÝDEN',weekly,
                        'Tipy podle dostupných titulů, hodnocení a historie sledování.')
         elif view in ('movies','shows','premieres'):
-            load=self._loading('Řadím dostupné tituly…')
+            # Cached-first; no blocking modal when changing primary tabs.
+            # A completed refresh is repainted by _apply_background_home().
             try:
                 ordered=self._filtered(self.service.browse(view,self.sort,
                     self.quality,self.language))
@@ -371,7 +380,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 self._fill(first_heading,row_one,heading,row_two,
                            'ŘAZENÍ: '+self.sort+' · KVALITA: '+self.quality+
                            ' · JAZYK: '+self.language,extra_rows=other_rows)
-            finally:load.close()
+            finally:
+                pass
         elif view=='genres':
             from cinema_genres import GENRES
             cards=[tile('🎭  '+name,'genre_open',genre_name=name,
@@ -638,7 +648,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
 
     def _apply_background_home(self):
         current_mode=getattr(self,'mode',None)
-        if current_mode not in ('home','recommendations') or getattr(self,'_updating_home',False):
+        if current_mode not in ('home','recommendations','movies','shows','premieres') or getattr(self,'_updating_home',False):
             return
         updated=self.service.take_home_refresh()
         take_tips=getattr(self.service,'take_tips_refresh',None)
@@ -657,7 +667,12 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self._screen(current_mode,self.context)
         finally:
             self._updating_home=False
-        if focused in ROW_IDS and self.rail_items[ROW_IDS.index(focused)]:
+        if focused in TOP_ACTIONS:
+            try:
+                self.setFocusId(focused)
+            except (RuntimeError,AttributeError):
+                pass
+        elif focused in ROW_IDS and self.rail_items[ROW_IDS.index(focused)]:
             try:
                 self.setFocusId(focused)
                 self.getControl(focused).selectItem(min(position,len(
@@ -754,6 +769,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             return
         if control_id in TOP_ACTIONS:
             command=TOP_ACTIONS[control_id]
+            # Preserve the clicked tab, including for remote OK presses.
+            # _fill() otherwise steals focus for the first poster.
+            self._nav_focus_target=control_id
             if command=='settings':
                 self._gear_menu()
             elif command=='home':
