@@ -9,6 +9,7 @@ import os
 import io
 import json
 import time
+import threading
 from cinema_catalog_v2 import (groups,verified_groups,add_metadata,card,
     sort_cards,grouped_episodes,choose_files,collect_pages,matching_release)
 from cinematic_discovery import discover
@@ -44,6 +45,11 @@ class CinemaService:
         self._most_watched_offset=0
         self._most_watched_done=False
         self._browse_streams={}
+        self._show_popularity={'cards':[],'idents':set(),'source':0,'offset':0,'done':False}
+        self._background_done=threading.Event()
+        self._background_started=False
+        self._background_result=None
+        self._snapshot_age=None
 
     def _decorate(self, group, metadata=None):
         if metadata:
@@ -150,6 +156,10 @@ class CinemaService:
     def refresh_catalogue(self):
         """Explicit user-triggered refresh; never runs in the background."""
         self._browse_streams={}
+        self._show_popularity={'cards':[],'idents':set(),'source':0,'offset':0,'done':False}
+        self._background_result=None
+        self._background_done.clear()
+        self._background_started=False
         self._most_watched_cards=[]
         self._most_watched_idents=set()
         self._most_watched_source=0
@@ -380,12 +390,12 @@ class CinemaService:
         home['_dedupe_v1']=True
         return home
 
-    def home(self):
-        if self.home_cache is not None:
+    def home(self, force=False):
+        if self.home_cache is not None and not force:
             return self.home_cache
         # The short cache avoids repeating expensive ČSFD/Webshare calls
         # every time the user returns to the television home screen.
-        if self.cache_path:
+        if self.cache_path and not force:
             try:
                 with io.open(self.cache_path,'r',encoding='utf8') as handle:
                     cached=json.load(handle)
@@ -427,6 +437,123 @@ class CinemaService:
             except (OSError,TypeError):
                 pass
         return self.home_cache
+
+    def home_fast(self):
+        """Network-free verified homepage; even an expired snapshot displays."""
+        if self.home_cache is not None:
+            return self.home_cache
+        if self.cache_path:
+            try:
+                with io.open(self.cache_path,'r',encoding='utf8') as handle:
+                    payload=json.load(handle)
+                home=payload.get('home')
+                if isinstance(home,dict) and home.get('_dedupe_v1') is True:
+                    self._snapshot_age=max(0,time.time()-float(payload.get('saved') or 0))
+                    self.home_cache=home
+                    self.last_diagnostics='Mezipaměť · kontrola novinek na pozadí'
+                    return home
+            except (OSError,ValueError,TypeError,AttributeError):
+                pass
+        self._snapshot_age=None
+        self.last_diagnostics='První katalog se připravuje na pozadí'
+        return {'premieres':[],'movies':[],'shows':[],'classics':[],
+                'classic_shows':[],'_all_movies':[],'_all_shows':[],
+                'best_movies_year':[],'best_shows_all':[],'best_shows_year':[]}
+
+    def start_home_refresh(self):
+        """Refresh metadata and Webshare outside the Kodi GUI thread."""
+        if not self.token or self._background_started:
+            return False
+        if (self._snapshot_age is not None and self._snapshot_age<480
+                and self.home_cache is not None
+                and '_webshare_movies' in self.home_cache
+                and '_webshare_shows' in self.home_cache):
+            return False
+        self._background_started=True
+        self._background_done.clear()
+        def worker():
+            try:
+                profile=os.path.dirname(self.cache_path) if self.cache_path else None
+                clone=CinemaService(self.token,self.fetch,self.availability,
+                                    self.metadata,self.calendar,profile)
+                home=clone.home(force=True)
+                home['_webshare_movies']=clone.most_watched_movies(18)
+                home['_webshare_shows']=clone.most_watched_shows(18)
+                if clone.cache_path and (home.get('_all_movies') or home.get('_all_shows')):
+                    with io.open(clone.cache_path+'.tmp','w',encoding='utf8') as out:
+                        json.dump({'saved':time.time(),'home':home},out,ensure_ascii=False)
+                    os.replace(clone.cache_path+'.tmp',clone.cache_path)
+                self._background_result=home
+            except Exception:
+                import traceback
+                traceback.print_exc()
+            finally:
+                self._background_done.set()
+        threading.Thread(target=worker,name='fckyo-home-refresh',daemon=True).start()
+        return True
+
+    def take_home_refresh(self):
+        """Consume a completed snapshot only on the UI thread."""
+        if not self._background_done.is_set():
+            return None
+        self._background_done.clear()
+        result=self._background_result
+        self._background_result=None
+        if result:
+            self.home_cache=result
+            self._snapshot_age=0
+            self.last_diagnostics='Katalog aktualizován na pozadí'
+        return result
+
+    def most_watched_shows(self, count=24, quality='all', language='all'):
+        """Popular Webshare series by file-rating search, not ČSFD ranking."""
+        state=getattr(self,'_show_popularity',None)
+        if state is None:
+            state={'cards':[],'idents':set(),'source':0,'offset':0,'done':False}
+            self._show_popularity=state
+        queries=('S01E','S02E','S03E','S01','S02','1080p','720p')
+        wanted=max(1,int(count))
+        def eligible():
+            return [c for c in state['cards']
+                    if choose_files(c.get('files') or [],quality,language)]
+        pages=0
+        while len(eligible())<wanted and not state['done'] and pages<2:
+            if state['source']>=len(queries):
+                state['done']=True
+                break
+            try:
+                files,total=self.fetch(self.token,state['offset'],
+                                       queries[state['source']],sort='rating')
+            except Exception:
+                break
+            if not isinstance(files,list):
+                break
+            pages+=1
+            state['offset']+=100
+            try:
+                end=len(files)<100 or (bool(total) and state['offset']>=int(total))
+            except (TypeError,ValueError):
+                end=len(files)<100
+            if end:
+                state['source']+=1
+                state['offset']=0
+                state['done']=state['source']>=len(queries)
+            distinct=[]
+            for file in files:
+                if not isinstance(file,dict) or not file.get('ident'):
+                    continue
+                key=str(file['ident'])
+                if key not in state['idents']:
+                    state['idents'].add(key)
+                    distinct.append(file)
+            candidates=groups(distinct,'show')
+            if not candidates:
+                continue
+            valid=verified_groups(candidates,self.availability,maximum=35,checked=75)
+            add_metadata(valid,self.metadata,maximum=12)
+            cards=[self._decorate(g,g.get('metadata')) for g in valid]
+            state['cards']=consolidate(state['cards']+cards)
+        return eligible()[:wanted]
 
     def most_watched_has_more(self):
         """Whether another page of Webshare popularity results may exist."""
