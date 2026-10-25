@@ -52,3 +52,13 @@ def create_shelves(movies, shows, current_year=None, limit=20):
         'ranking_year':year,
         'ranking_basis':'Hodnocení ČSFD dostupných souborů Webshare'
     }
+
+def csfd_only(cards, kind='movie', year=None, limit=35):
+    """Rank *only* genuine ČSFD-sourced ratings of verified Webshare cards.
+
+    IMDb scores and Webshare's search 'rating' order must not be relabeled ČSFD.
+    """
+    matching=[card for card in (cards or [])
+              if str(card.get('rating_source') or '').strip().casefold()
+                 in ('čsfd','csfd','czdb')]
+    return ranked_cards(matching,kind,year=year,limit=limit)
