@@ -22,7 +22,19 @@ from cinema_search_v3 import (MOVIE_SEEDS, SHOW_SEEDS, candidate_names,
                                title_and_year)
 
 
+class WebshareSearchUnavailable(Exception):
+    """Backend failed; distinguish unavailable search from a genuine empty result."""
+
+
 class CinemaService:
+    _foreground_search=threading.Event()
+
+    def _fetch_background(self,token,offset,what,sort='recent'):
+        """Yield background discovery requests to explicit user searches."""
+        while CinemaService._foreground_search.is_set():
+            time.sleep(0.08)
+        return self.fetch(token,offset,what,sort=sort)
+
     def __init__(self, token, fetch, availability, catalogue=None, calendar=None, profile=None):
         self.token=token
         self.fetch=fetch
@@ -493,7 +505,7 @@ class CinemaService:
         def worker():
             try:
                 profile=os.path.dirname(self.cache_path) if self.cache_path else None
-                clone=CinemaService(self.token,self.fetch,self.availability,
+                clone=CinemaService(self.token,self._fetch_background,self.availability,
                                     self.metadata,self.calendar,profile)
                 # One metadata/discovery pass only: no expensive popularity
                 # searches blocking the requested ČSFD-first experience.
@@ -562,7 +574,7 @@ class CinemaService:
         def worker():
             try:
                 profile=os.path.dirname(self.cache_path) if self.cache_path else None
-                clone=CinemaService(self.token,self.fetch,self.availability,
+                clone=CinemaService(self.token,self._fetch_background,self.availability,
                                     self.metadata,self.calendar,profile)
                 # These are real, availability-verified Webshare groups. The
                 # full_catalog method is bounded to four new search pages.
@@ -819,6 +831,14 @@ class CinemaService:
         return sort_cards(consolidate(filtered),sort)
 
     def search(self, query, kind='all'):
+        """Prioritize direct title searches over catalogue background refresh."""
+        CinemaService._foreground_search.set()
+        try:
+            return self._search_impl(query,kind)
+        finally:
+            CinemaService._foreground_search.clear()
+
+    def _search_impl(self, query, kind='all'):
         """Search both localized and original filenames, including older pages.
 
         A film can only appear after Webshare returned a matching file and the
@@ -837,22 +857,27 @@ class CinemaService:
         names=candidate_names(title,md)
         cached_aliases=cached_title_aliases(title,self.home_fast())
         names=list(dict.fromkeys(names+cached_aliases))
-        plan=query_plan(title,md,limit=22)
-        # Verified catalogue aliases enter early, ahead of punctuation variants.
-        plan=list(dict.fromkeys(plan[:1]+cached_aliases+plan[1:]))[:24]
+        plan=query_plan(title,md,limit=14)
+        # First query Czech/original names; then dotted filenames. Bound
+        # requests so a missing title cannot appear to freeze the television.
+        from cinema_search_v3 import variants
+        dotted=[alias.replace(' ','.') for alias in names[:2] if ' ' in alias]
+        plan=list(dict.fromkeys(plan[:1]+cached_aliases[:2]+plan[1:7]+dotted))[:9]
         matches={}
         # Ensure the English alias and individual franchise installments are
         # considered before giving attention to punctuation/spelling variants.
         core_count=min(len(names),len(plan))
         successful=0
+        failed=0
         for index,attempt in enumerate(plan):
             # Scan beyond the first 100 broad Webshare hits to avoid a search
             # dominated by unrelated filenames or different resolutions.
-            max_pages=4 if index==0 else 3 if index<core_count else 1
+            max_pages=2 if index<2 else 1
             page=collect_pages(self.fetch,self.token,attempt,
                                max_pages=max_pages,
                                sort='rating' if index<core_count else 'recent')
             if page is None:
+                failed+=1
                 continue
             valid=matching_files(page,names,kind=None,year=requested_year)
             if requested_year:
@@ -867,18 +892,22 @@ class CinemaService:
                 successful+=1
             # Always attempt every core alias when feasible. For a generic
             # query, cap expensive round trips once plenty of releases exist.
-            if len(matches)>=180:
+            if len(matches)>=90:
                 break
-            if index>=min(core_count-1,12) and successful>=4 and len(matches)>=80:
+            if successful>=3 and len(matches)>=30:
                 break
+        if failed and failed==len(plan):
+            raise WebshareSearchUnavailable(
+                'Vyhledávání Webshare právě neodpovídá. Ověř připojení a účet, '
+                'potom použij Hledat znovu.')
         combined=[]
         for mode in ('movie','show'):
             if kind in ('movie','show') and kind!=mode:
                 continue
             candidates=groups(list(matches.values()),mode)
             candidates=verified_groups(candidates,self.availability,
-                                       maximum=60,checked=120)
-            add_metadata(candidates,self.metadata,maximum=25)
+                                       maximum=28,checked=44)
+            add_metadata(candidates,self.metadata,maximum=6)
             for group in candidates:
                 # A metadata match for Avengers (2012) must never relabel
                 # Avengers: Endgame (2019) as the earlier release.
@@ -909,7 +938,8 @@ class CinemaService:
                     0 if year_match else 1,
                     -rating,displayed,str(card.get('year') or ''))
         combined.sort(key=rank)
-        self.search_cache[key]=combined
+        if combined:
+            self.search_cache[key]=combined
         return [c for c in combined if kind=='all' or c['kind']==kind]
 
     def files(self, card, quality='all', language='all'):
