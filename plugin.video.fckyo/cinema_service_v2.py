@@ -37,6 +37,11 @@ class CinemaService:
         self.hits_path=os.path.join(profile,'cinema-v3-hits.json') if profile else None
         self.feed=None
         self._feed_force=False
+        self._most_watched_cards=[]
+        self._most_watched_idents=set()
+        self._most_watched_source=0
+        self._most_watched_offset=0
+        self._most_watched_done=False
 
     def _decorate(self, group, metadata=None):
         if metadata:
@@ -142,6 +147,11 @@ class CinemaService:
 
     def refresh_catalogue(self):
         """Explicit user-triggered refresh; never runs in the background."""
+        self._most_watched_cards=[]
+        self._most_watched_idents=set()
+        self._most_watched_source=0
+        self._most_watched_offset=0
+        self._most_watched_done=False
         self.home_cache=None
         self.search_cache.clear()
         self._feed_force=True
@@ -414,6 +424,70 @@ class CinemaService:
             except (OSError,TypeError):
                 pass
         return self.home_cache
+
+    def most_watched_has_more(self):
+        """Whether another page of Webshare popularity results may exist."""
+        return not self._most_watched_done
+
+    def most_watched_movies(self, count=24, quality='all', language='all'):
+        """Load checked movies progressively in Webshare's rating search order.
+
+        This is a popularity proxy, not a measured view-count ranking.
+        Never search with an empty term, and never fetch the whole index at once.
+        """
+        terms=('1080p','720p','2160p','DVDRip','WEB-DL')
+        wanted=max(1,int(count))
+        def filtered():
+            return [c for c in self._most_watched_cards if
+                    choose_files(c.get('files') or [],quality,language)]
+        pages=0
+        while (len(filtered())<wanted and not self._most_watched_done
+               and pages<2):
+            if self._most_watched_source>=len(terms):
+                self._most_watched_done=True
+                break
+            term=terms[self._most_watched_source]
+            try:
+                files,total=self.fetch(self.token,self._most_watched_offset,
+                                       term,sort='rating')
+            except Exception:
+                # Retry on the next explicit '+' click after an API failure.
+                break
+            if files is None or not isinstance(files,list):
+                break
+            pages+=1
+            self._most_watched_offset+=100
+            last_page=len(files)<100
+            try:
+                last_page=last_page or (bool(total) and
+                    self._most_watched_offset>=int(total))
+            except (ValueError,TypeError):
+                pass
+            if last_page:
+                self._most_watched_source+=1
+                self._most_watched_offset=0
+                if self._most_watched_source>=len(terms):
+                    self._most_watched_done=True
+            distinct=[]
+            for f in files:
+                if not isinstance(f,dict) or not f.get('ident'):
+                    continue
+                ident=str(f['ident'])
+                if ident not in self._most_watched_idents:
+                    self._most_watched_idents.add(ident)
+                    distinct.append(f)
+            candidates=groups(distinct,'movie')
+            if not candidates:
+                continue
+            verified=verified_groups(candidates,self.availability,
+                                     maximum=48,checked=85)
+            add_metadata(verified,self.metadata,maximum=16)
+            cards=[self._decorate(group,group.get('metadata'))
+                   for group in verified]
+            # Keep original popularity order; combine quality and CZ/EN copies.
+            self._most_watched_cards=consolidate(
+                self._most_watched_cards+cards)
+        return filtered()[:wanted]
 
     def browse(self, view, sort='date', quality='all', language='all'):
         home=self.home()
