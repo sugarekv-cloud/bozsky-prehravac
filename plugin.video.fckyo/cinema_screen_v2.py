@@ -31,6 +31,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.context=None
         self.rail_items=[[] for _ in ROW_IDS]
         self.popular_limit=24
+        self.featured_card=None
         for name,path in self.textures.items():
             self.setProperty('cinema_'+name,path)
         self.setProperty('app_version','v'+VERSION)
@@ -40,6 +41,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.setProperty('hero_info','Katalog ověřených souborů Webshare')
         self.setProperty('hero_plot','Nové filmy podle českých kinopremiér a jejich dostupnosti.')
         self.setProperty('hero_art','')
+        self.setProperty('hero_action','')
         try:
             self._screen('home',stack=False)
         except Exception:
@@ -105,12 +107,22 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
 
     def _update_hero(self):
         c=self._selected()
+        if not c and self.getFocusId()==108:
+            c=self.featured_card
         if not c:
+            self.featured_card=None
             self.setProperty('hero_title','FCKYO')
             self.setProperty('hero_info','FILMY · SERIÁLY · HLEDÁNÍ')
             self.setProperty('hero_plot','Vyber kategorii nebo titul.')
             self.setProperty('hero_art','')
+            self.setProperty('hero_action','')
             return
+        if c.get('kind') in ('movie','show'):
+            self.featured_card=c
+            self.setProperty('hero_action','yes')
+        else:
+            self.featured_card=None
+            self.setProperty('hero_action','')
         self.setProperty('hero_title',str(c.get('title') or ''))
         text=[str(c.get('year') or ''),str(c.get('genre') or ''),
               str(c.get('quality') or '')]
@@ -414,6 +426,13 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self._update_hero()
 
     def onClick(self,control_id):
+        if control_id==108:
+            chosen=self.featured_card
+            if chosen and chosen.get('kind')=='movie':
+                self._refresh('files',(chosen,None,None))
+            elif chosen and chosen.get('kind')=='show':
+                self._refresh('seasons',chosen)
+            return
         if control_id in TOP_ACTIONS:
             command=TOP_ACTIONS[control_id]
             if command=='settings':
