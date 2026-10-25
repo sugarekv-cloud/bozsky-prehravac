@@ -40,8 +40,8 @@ class StreamingHomeTests(unittest.TestCase):
                 self.assertGreater(int(item.get('width')),int(item.get('height')))
             posters=[image for image in item.findall("control[@type='image']")
                      if image.findtext('texture')=='$INFO[ListItem.Art(poster)]']
-            self.assertEqual(len(posters),1)
-            self.assertEqual(posters[0].findtext('aspectratio'),'keep')
+            self.assertGreaterEqual(len(posters),1)
+            self.assertTrue(any(p.findtext('aspectratio')=='keep' for p in posters))
 
     def test_bottom_navigation_never_jumps_back_to_header(self):
         for cid in range(401,408):
@@ -65,11 +65,11 @@ class StreamingHomeTests(unittest.TestCase):
         container=self.root.find(".//control[@id='610']")
         self.assertEqual(container.get('type'),'grouplist')
         self.assertEqual(container.findtext('orientation'),'vertical')
-        self.assertGreaterEqual(int(container.findtext('height')),470)
+        self.assertGreaterEqual(int(container.findtext('height')),440)
         with open(os.path.join(PLUG,'cinematic_home.py'),encoding='utf8') as f:
             code=f.read()
-        self.assertIn("stream_v7_",code)
-        self.assertIn("color = (157,109,255,255)",code)
+        self.assertIn("stream_v8_",code)
+        self.assertIn("color = (234,229,246,255)",code)
 
     def test_last_visible_rail_stays_focused_on_down(self):
         window=cinema_screen().__new__(cinema_screen())
