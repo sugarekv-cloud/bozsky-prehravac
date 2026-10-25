@@ -130,8 +130,8 @@ class FullCatalogueUiTests(unittest.TestCase):
         self.assertIn("'catalog_more'",text)
         self.assertIn("self.catalog_limit+=24",text)
         self.assertIn("self._refresh('catalog_all'",text)
-        self.assertIn("+  VŠECHNY SERIÁLY",text)
-        self.assertIn("+  VŠECHNY FILMY",text)
+        self.assertIn("+  OBJEVIT DALŠÍ SERIÁLY",text)
+        self.assertIn("+  OBJEVIT DALŠÍ FILMY",text)
         self.assertIn('identity(item)==marker',text)
 
     def test_plus_uses_same_poster_card_in_skin(self):
