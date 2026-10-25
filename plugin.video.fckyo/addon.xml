@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="KIVORA" version="0.28.0" provider-name="KIVORA Community">
+<addon id="plugin.video.fckyo" name="KIVORA" version="0.29.0" provider-name="KIVORA Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -22,6 +22,14 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.29.0 Pevné přepínání záložek bez starého obsahu[/B]
+- Opraveno přepnutí SERIÁLY po FILMY: již nesmí zůstat vidět starý filmový žebříček, ani když selže načtení seriálů
+- Primární sekce Filmy, Seriály a Premiéry se vykreslují vždy i při chybě katalogu; zobrazují odpovídající stav a možnost otevřít knihovnu
+- Kontrola typu položek zabraňuje zobrazení filmů v katalogu seriálů a naopak
+- Nezávislé, okamžité překreslování bez čekání na další databázové dotazy a doporučování
+- Přepínání záložek chráněno proti souběžné aktualizaci pozadí při změně zaměření
+- Diagnostika chybných katalogových odpovědí do kodi.log
+
 [B]0.28.0 Opravené horní záložky a ovládání televizorem[/B]
 - Domů, Filmy, Seriály, Hledat, Premiéry, Žánry a Nastavení fungují přes kliknutí i dálkový ovladač
 - Přepínání Filmů, Seriálů a Premiér už nečeká na Webshare: katalog se zobrazuje okamžitě z lokálního ověřeného indexu
