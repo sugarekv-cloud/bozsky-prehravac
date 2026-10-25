@@ -16,7 +16,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.22.0'
+VERSION='0.23.0'
 
 
 def tile(name,kind,**extra):
@@ -511,7 +511,10 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             'Načíst další tituly a aktualizovat Webshare',
             'Moje oblíbené',
             'Nejlépe hodnocené podle ČSFD',
-            'Vyhledat podle žánru'
+            'Vyhledat podle žánru',
+            'Automatické pokračování seriálu: '+(
+                'ZAPNUTO' if self.addon.getSetting('autoplay_next_episode')!='false'
+                else 'VYPNUTO')
         ])
         if selected==0:
             self._open_settings()
@@ -527,6 +530,13 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self._refresh('csfd_ranked')
         elif selected==5:
             self._refresh('genres')
+        elif selected==6:
+            enabled=self.addon.getSetting('autoplay_next_episode')!='false'
+            self.addon.setSetting('autoplay_next_episode',
+                                  'false' if enabled else 'true')
+            xbmcgui.Dialog().notification('FCKYO',
+                'Automatické další díly vypnuty' if enabled
+                else 'Automatické další díly zapnuty')
 
     def _filters(self):
         choice=xbmcgui.Dialog().select('Katalog · filtrování a řazení',[
@@ -635,6 +645,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             title=card.get('title') or '',raw_title=card.get('raw_title') or card.get('raw') or '',
             kind=card.get('kind') or 'movie',year=card.get('year') or '',
             poster=card.get('poster') or '',fanart=card.get('fanart') or '',
+            original=card.get('original') or '',
             season=card.get('season') or '',episode=card.get('episode') or '',
             resume=str(card.get('position') or 0))
         self.is_play=True
@@ -762,6 +773,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 kind=parent.get('kind') or 'movie',
                 year=parent.get('file_year') or parent.get('year') or '',
                 poster=parent.get('poster') or '',fanart=parent.get('fanart') or '',
+                original=parent.get('original') or '',
                 plot=parent.get('plot') or '',genre=parent.get('genre') or '',
                 quality=c.get('quality') or '',
                 season=str(season or ''),episode=str(episode or ''))
