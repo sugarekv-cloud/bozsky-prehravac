@@ -122,7 +122,15 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
 
     def _refresh(self,view,context=None,stack=True):
         if stack:
-            self.stack.append((self.mode,self.context))
+            focus=None
+            index=0
+            try:
+                focus=self.getFocusId()
+                if focus in ROW_IDS:
+                    index=max(0,self.getControl(focus).getSelectedPosition())
+            except (RuntimeError,AttributeError):
+                pass
+            self.stack.append((self.mode,self.context,focus,index))
         self._screen(view,context,stack=False)
 
     def _filtered(self,cards,keep_order=False):
@@ -299,8 +307,19 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
 
     def _go_back(self):
         if self.stack:
-            view,ctx=self.stack.pop()
+            previous=self.stack.pop()
+            view,ctx=previous[:2]
             self._screen(view,ctx)
+            if len(previous)==4:
+                focus,index=previous[2:]
+                if focus in ROW_IDS and self.rail_items[ROW_IDS.index(focus)]:
+                    try:
+                        self.setFocusId(focus)
+                        self.getControl(focus).selectItem(min(
+                            index,len(self.rail_items[ROW_IDS.index(focus)])-1))
+                        self._update_hero()
+                    except (RuntimeError,AttributeError):
+                        pass
         else:
             self.close()
 
@@ -379,9 +398,18 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
     def onFocus(self,control_id):
         self._update_hero()
 
+    def _last_filled_rail(self):
+        """Return the lowest populated row; trailing shelves can be hidden."""
+        return next((rid for rid,cards in
+                     reversed(list(zip(ROW_IDS,self.rail_items))) if cards),None)
+
     def onAction(self,action):
         if action.getId() in BACK_ACTIONS:
             self._go_back()
+        elif action.getId()==4 and self.getFocusId()==self._last_filled_rail():
+            # ACTION_MOVE_DOWN on final shelf must not send focus to the menu.
+            self._update_hero()
+            return
         else:
             self._update_hero()
 
