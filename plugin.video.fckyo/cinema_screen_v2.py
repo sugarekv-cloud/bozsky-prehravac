@@ -231,8 +231,10 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 ('SERIÁLY NA WEBSHARE',shows),
                 ('MOJE OBLÍBENÉ',favorites),
                 ('FILMOVÉ HITY A KLASIKY',home.get('classics') or []),
-                ('NEJLEPŠÍ FILMY ROKU %s · ČSFD'%year,home.get('best_movies_year') or []),
-                ('NEJLEPŠÍ SERIÁLY ROKU %s · ČSFD'%year,home.get('best_shows_year') or []),
+                ('NEJLEPŠÍ FILMY ROKU %s · ČSFD'%year,
+                 csfd_only(all_movies,'movie',year=year,limit=20)),
+                ('NEJLEPŠÍ SERIÁLY ROKU %s · ČSFD'%year,
+                 csfd_only(all_shows,'show',year=year,limit=20)),
             ]
             self._fill(rows[0][0],rows[0][1],rows[1][0],rows[1][1],
                        self.service.last_diagnostics+
