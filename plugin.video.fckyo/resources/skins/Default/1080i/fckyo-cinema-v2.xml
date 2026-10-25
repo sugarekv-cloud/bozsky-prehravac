@@ -7,46 +7,46 @@
         <posy>0</posy>
     </coordinates>
     <controls>
-        <!-- Fullscreen midnight blue artwork; textures generated without external libraries. -->
+        <!-- Streaming-style dark theme with portrait covers and fixed vertical navigation. -->
         <control type="image">
             <left>0</left><top>0</top><width>1920</width><height>1080</height>
             <texture>$INFO[Window.Property(cinema_background)]</texture>
             <aspectratio>stretch</aspectratio>
         </control>
         <control type="image">
-            <left>720</left><top>104</top><width>1200</width><height>374</height>
+            <left>700</left><top>97</top><width>1220</width><height>260</height>
             <texture>$INFO[Window.Property(hero_art)]</texture>
             <aspectratio>scale</aspectratio>
             <visible>!String.IsEmpty(Window.Property(hero_art))</visible>
         </control>
         <control type="image">
-            <left>595</left><top>102</top><width>1325</width><height>376</height>
+            <left>520</left><top>97</top><width>1400</width><height>262</height>
             <texture>$INFO[Window.Property(cinema_fade)]</texture>
             <aspectratio>stretch</aspectratio>
         </control>
         <!-- Visible build identity makes stale installations easy to diagnose. -->
         <control type="label">
-            <left>80</left><top>109</top><width>680</width><height>35</height>
-            <font>font12</font><textcolor>FFF4C577</textcolor>
+            <left>80</left><top>108</top><width>680</width><height>32</height>
+            <font>font12</font><textcolor>FFCF263F</textcolor>
             <label>$INFO[Window.Property(section_label)]  ·  $INFO[Window.Property(app_version)]</label>
         </control>
         <!-- Header -->
         <control type="label">
             <left>75</left><top>28</top><width>510</width><height>65</height>
-            <font>font40_title</font><textcolor>FFF4CB86</textcolor>
+            <font>font40_title</font><textcolor>FFF02742</textcolor>
             <label>FCKYO</label>
         </control>
         <control type="image">
             <left>72</left><top>98</top><width>1776</width><height>2</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
-            <colordiffuse>55DCAA52</colordiffuse>
+            <colordiffuse>99E21F39</colordiffuse>
         </control>
         <!-- Remote-friendly horizontal top navigation -->
         <control type="button" id="101">
             <left>675</left><top>27</top><width>128</width><height>61</height>
             <label>FILMY</label><font>font13</font>
             <align>center</align><aligny>center</aligny>
-            <textcolor>FFE7EAF0</textcolor><focusedcolor>FF142032</focusedcolor>
+            <textcolor>FFE7EAF0</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <ondown>401</ondown><onright>102</onright><onleft>107</onleft>
@@ -55,7 +55,7 @@
             <left>809</left><top>27</top><width>135</width><height>61</height>
             <label>SERIÁLY</label><font>font13</font>
             <align>center</align><aligny>center</aligny>
-            <textcolor>FFE7EAF0</textcolor><focusedcolor>FF142032</focusedcolor>
+            <textcolor>FFE7EAF0</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <ondown>401</ondown><onleft>101</onleft><onright>103</onright>
@@ -64,7 +64,7 @@
             <left>950</left><top>27</top><width>139</width><height>61</height>
             <label>HLEDAT</label><font>font13</font>
             <align>center</align><aligny>center</aligny>
-            <textcolor>FFE7EAF0</textcolor><focusedcolor>FF142032</focusedcolor>
+            <textcolor>FFE7EAF0</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <ondown>401</ondown><onleft>102</onleft><onright>104</onright>
@@ -73,7 +73,7 @@
             <left>1095</left><top>27</top><width>160</width><height>61</height>
             <label>PREMIÉRY</label><font>font13</font>
             <align>center</align><aligny>center</aligny>
-            <textcolor>FFE7EAF0</textcolor><focusedcolor>FF142032</focusedcolor>
+            <textcolor>FFE7EAF0</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <ondown>401</ondown><onleft>103</onleft><onright>107</onright>
@@ -84,7 +84,7 @@
             <description>Ozubené kolečko – nastavení a filtry</description>
             <label> </label><font>font13</font>
             <align>center</align><aligny>center</aligny>
-            <textcolor>FFE7EAF0</textcolor><focusedcolor>FF142032</focusedcolor>
+            <textcolor>FFE7EAF0</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <ondown>401</ondown><onleft>104</onleft><onright>101</onright>
@@ -104,118 +104,122 @@
 
         <!-- Featured title changes as the user moves over posters. -->
         <control type="label">
-            <left>80</left><top>158</top><width>990</width><height>62</height>
-            <font>font45_title</font><textcolor>FFFFF7E9</textcolor>
+            <left>80</left><top>145</top><width>1000</width><height>60</height>
+            <font>font45_title</font><textcolor>FFF9F9FA</textcolor>
             <label>$INFO[Window.Property(hero_title)]</label>
             <scroll>true</scroll>
         </control>
         <control type="label">
-            <left>83</left><top>235</top><width>1100</width><height>44</height>
-            <font>font13</font><textcolor>FFF4C577</textcolor>
+            <left>83</left><top>211</top><width>1070</width><height>39</height>
+            <font>font13</font><textcolor>FFF05068</textcolor>
             <label>$INFO[Window.Property(hero_info)]</label>
             <scroll>true</scroll>
         </control>
         <control type="textbox">
-            <left>83</left><top>293</top><width>1020</width><height>126</height>
-            <font>font13</font><textcolor>FFCBD3E1</textcolor>
+            <left>83</left><top>255</top><width>1065</width><height>72</height>
+            <font>font13</font><textcolor>FFD3D3D7</textcolor>
             <label>$INFO[Window.Property(hero_plot)]</label>
             <autoscroll time="1800" delay="1000" repeat="5000">true</autoscroll>
         </control>
         <control type="label">
-            <left>83</left><top>433</top><width>1210</width><height>37</height>
-            <font>font12</font><textcolor>FF9EADC1</textcolor>
+            <left>83</left><top>331</top><width>1210</width><height>29</height>
+            <font>font12</font><textcolor>FF8F8F98</textcolor>
             <label>OK = VYBRAT   ·   ŠIPKY = PROHLÍŽET   ·   ZPĚT = PŘEDCHOZÍ</label>
         </control>
 
         <!-- Vertical carousel: multiple horizontal poster rails, scrollable by remote. -->
         <control type="grouplist" id="610">
-            <left>80</left><top>490</top><width>1760</width><height>538</height>
+            <left>80</left><top>377</top><width>1760</width><height>645</height>
             <orientation>vertical</orientation>
-            <itemgap>10</itemgap>
+            <itemgap>13</itemgap>
             <scrolltime>230</scrolltime>
             <defaultcontrol>401</defaultcontrol>
             <control type="group">
-                <width>1760</width><height>266</height>
+                <width>1760</width><height>356</height>
                 <visible>!String.IsEmpty(Window.Property(row1_heading))</visible>
+                <control type="image">
+                    <left>0</left><top>6</top><width>5</width><height>29</height>
+                    <texture>$INFO[Window.Property(cinema_focus)]</texture>
+                </control>
                 <control type="label">
                     <left>3</left><top>0</top><width>1680</width><height>43</height>
-                    <font>font32</font><textcolor>FFFFEDD2</textcolor>
+                    <font>font32</font><textcolor>FFF3F3F5</textcolor>
                     <label>$INFO[Window.Property(row1_heading)]</label>
                 </control>
         <control type="list" id="401">
-            <left>0</left><top>47</top><width>1760</width><height>218</height>
+            <left>0</left><top>45</top><width>1760</width><height>307</height>
             <orientation>horizontal</orientation>
-            <onup>101</onup><ondown>402</ondown>
-            <itemlayout width="203" height="216">
+            <onup>101</onup><ondown condition="!String.IsEmpty(Window.Property(row2_heading))">402</ondown><ondown condition="String.IsEmpty(Window.Property(row2_heading)) + !String.IsEmpty(Window.Property(row3_heading))">403</ondown><ondown condition="String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + !String.IsEmpty(Window.Property(row4_heading))">404</ondown><ondown condition="String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + !String.IsEmpty(Window.Property(row5_heading))">405</ondown><ondown condition="String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row6_heading))">406</ondown><ondown condition="String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row7_heading))">407</ondown><ondown>401</ondown>
+            <itemlayout width="210" height="305">
                 <control type="image">
-                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[Window.Property(cinema_button)]</texture>
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="label">
-                    <left>20</left><top>63</top><width>158</width><height>51</height>
+                    <left>20</left><top>82</top><width>165</width><height>101</height>
                     <font>font13</font>
-                    <textcolor>FFF4C577</textcolor>
+                    <textcolor>FFE0E0E4</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>BEZ PLAKÁTU</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="label">
-                    <left>18</left><top>46</top><width>165</width><height>102</height>
-                    <font>font40_title</font><textcolor>FFF4C577</textcolor>
+                    <left>20</left><top>78</top><width>165</width><height>105</height>
+                    <font>font40_title</font><textcolor>FFE0E0E4</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
                     <aspectratio>scale</aspectratio>
                     <visible>!String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="label">
-                    <left>8</left><top>181</top><width>184</width><height>34</height>
-                    <font>font12</font><textcolor>FFC3CAD6</textcolor>
+                    <left>6</left><top>264</top><width>199</width><height>38</height>
+                    <font>font12</font><textcolor>FFCBCBD1</textcolor>
                     <align>center</align>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>true</scroll>
                 </control>
             </itemlayout>
-            <focusedlayout width="203" height="216">
+            <focusedlayout width="210" height="305">
                 <control type="image">
-                    <left>3</left><top>0</top><width>195</width><height>185</height>
+                    <left>7</left><top>0</top><width>196</width><height>259</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture>
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="image">
-                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[Window.Property(cinema_button)]</texture>
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="label">
-                    <left>20</left><top>63</top><width>158</width><height>51</height>
+                    <left>20</left><top>82</top><width>165</width><height>101</height>
                     <font>font13</font>
-                    <textcolor>FFF4C577</textcolor>
+                    <textcolor>FFE0E0E4</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>BEZ PLAKÁTU</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="label">
-                    <left>18</left><top>46</top><width>165</width><height>102</height>
-                    <font>font40_title</font><textcolor>FFF4C577</textcolor>
+                    <left>20</left><top>78</top><width>165</width><height>105</height>
+                    <font>font40_title</font><textcolor>FFE0E0E4</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>10</left><top>5</top><width>180</width><height>175</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
                     <aspectratio>scale</aspectratio>
                     <visible>!String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="label">
-                    <left>8</left><top>182</top><width>184</width><height>34</height>
-                    <font>font12</font><textcolor>FFFFE3B7</textcolor>
+                    <left>6</left><top>264</top><width>199</width><height>38</height>
+                    <font>font12</font><textcolor>FFFFFFFF</textcolor>
                     <align>center</align>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>true</scroll>
@@ -224,87 +228,91 @@
         </control>
             </control>
             <control type="group">
-                <width>1760</width><height>266</height>
+                <width>1760</width><height>356</height>
                 <visible>!String.IsEmpty(Window.Property(row2_heading))</visible>
+                <control type="image">
+                    <left>0</left><top>6</top><width>5</width><height>29</height>
+                    <texture>$INFO[Window.Property(cinema_focus)]</texture>
+                </control>
                 <control type="label">
                     <left>3</left><top>0</top><width>1680</width><height>43</height>
-                    <font>font32</font><textcolor>FFFFEDD2</textcolor>
+                    <font>font32</font><textcolor>FFF3F3F5</textcolor>
                     <label>$INFO[Window.Property(row2_heading)]</label>
                 </control>
         <control type="list" id="402">
-            <left>0</left><top>47</top><width>1760</width><height>218</height>
+            <left>0</left><top>45</top><width>1760</width><height>307</height>
             <orientation>horizontal</orientation>
-            <onup>401</onup><ondown>403</ondown>
-            <itemlayout width="203" height="216">
+            <onup condition="!String.IsEmpty(Window.Property(row1_heading))">401</onup><onup>101</onup><ondown condition="!String.IsEmpty(Window.Property(row3_heading))">403</ondown><ondown condition="String.IsEmpty(Window.Property(row3_heading)) + !String.IsEmpty(Window.Property(row4_heading))">404</ondown><ondown condition="String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + !String.IsEmpty(Window.Property(row5_heading))">405</ondown><ondown condition="String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row6_heading))">406</ondown><ondown condition="String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row7_heading))">407</ondown><ondown>402</ondown>
+            <itemlayout width="210" height="305">
                 <control type="image">
-                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[Window.Property(cinema_button)]</texture>
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="label">
-                    <left>20</left><top>63</top><width>158</width><height>51</height>
+                    <left>20</left><top>82</top><width>165</width><height>101</height>
                     <font>font13</font>
-                    <textcolor>FFF4C577</textcolor>
+                    <textcolor>FFE0E0E4</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>BEZ PLAKÁTU</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="label">
-                    <left>18</left><top>46</top><width>165</width><height>102</height>
-                    <font>font40_title</font><textcolor>FFF4C577</textcolor>
+                    <left>20</left><top>78</top><width>165</width><height>105</height>
+                    <font>font40_title</font><textcolor>FFE0E0E4</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
                     <aspectratio>scale</aspectratio>
                     <visible>!String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="label">
-                    <left>8</left><top>181</top><width>184</width><height>34</height>
-                    <font>font12</font><textcolor>FFC3CAD6</textcolor>
+                    <left>6</left><top>264</top><width>199</width><height>38</height>
+                    <font>font12</font><textcolor>FFCBCBD1</textcolor>
                     <align>center</align>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>true</scroll>
                 </control>
             </itemlayout>
-            <focusedlayout width="203" height="216">
+            <focusedlayout width="210" height="305">
                 <control type="image">
-                    <left>3</left><top>0</top><width>195</width><height>185</height>
+                    <left>7</left><top>0</top><width>196</width><height>259</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture>
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="image">
-                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[Window.Property(cinema_button)]</texture>
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="label">
-                    <left>20</left><top>63</top><width>158</width><height>51</height>
+                    <left>20</left><top>82</top><width>165</width><height>101</height>
                     <font>font13</font>
-                    <textcolor>FFF4C577</textcolor>
+                    <textcolor>FFE0E0E4</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>BEZ PLAKÁTU</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="label">
-                    <left>18</left><top>46</top><width>165</width><height>102</height>
-                    <font>font40_title</font><textcolor>FFF4C577</textcolor>
+                    <left>20</left><top>78</top><width>165</width><height>105</height>
+                    <font>font40_title</font><textcolor>FFE0E0E4</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>10</left><top>5</top><width>180</width><height>175</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
                     <aspectratio>scale</aspectratio>
                     <visible>!String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="label">
-                    <left>8</left><top>182</top><width>184</width><height>34</height>
-                    <font>font12</font><textcolor>FFFFE3B7</textcolor>
+                    <left>6</left><top>264</top><width>199</width><height>38</height>
+                    <font>font12</font><textcolor>FFFFFFFF</textcolor>
                     <align>center</align>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>true</scroll>
@@ -313,73 +321,77 @@
         </control>
             </control>
             <control type="group">
-                <width>1760</width><height>266</height>
+                <width>1760</width><height>356</height>
                 <visible>!String.IsEmpty(Window.Property(row3_heading))</visible>
+                <control type="image">
+                    <left>0</left><top>6</top><width>5</width><height>29</height>
+                    <texture>$INFO[Window.Property(cinema_focus)]</texture>
+                </control>
                 <control type="label">
                     <left>3</left><top>0</top><width>1680</width><height>43</height>
-                    <font>font32</font><textcolor>FFFFEDD2</textcolor>
+                    <font>font32</font><textcolor>FFF3F3F5</textcolor>
                     <label>$INFO[Window.Property(row3_heading)]</label>
                 </control>
         <control type="list" id="403">
-            <left>0</left><top>47</top><width>1760</width><height>218</height>
+            <left>0</left><top>45</top><width>1760</width><height>307</height>
             <orientation>horizontal</orientation>
-            <onup>402</onup><ondown>404</ondown>
-            <itemlayout width="203" height="216">
+            <onup condition="!String.IsEmpty(Window.Property(row2_heading))">402</onup><onup condition="String.IsEmpty(Window.Property(row2_heading)) + !String.IsEmpty(Window.Property(row1_heading))">401</onup><onup>101</onup><ondown condition="!String.IsEmpty(Window.Property(row4_heading))">404</ondown><ondown condition="String.IsEmpty(Window.Property(row4_heading)) + !String.IsEmpty(Window.Property(row5_heading))">405</ondown><ondown condition="String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row6_heading))">406</ondown><ondown condition="String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row7_heading))">407</ondown><ondown>403</ondown>
+            <itemlayout width="210" height="305">
                 <control type="image">
-                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[Window.Property(cinema_button)]</texture>
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="label">
-                    <left>20</left><top>63</top><width>158</width><height>51</height>
+                    <left>20</left><top>82</top><width>165</width><height>101</height>
                     <font>font13</font>
-                    <textcolor>FFF4C577</textcolor>
+                    <textcolor>FFE0E0E4</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>BEZ PLAKÁTU</label>
                     <visible>String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="image">
-                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
                     <aspectratio>scale</aspectratio>
                     <visible>!String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="label">
-                    <left>8</left><top>181</top><width>184</width><height>34</height>
-                    <font>font12</font><textcolor>FFC3CAD6</textcolor>
+                    <left>6</left><top>264</top><width>199</width><height>38</height>
+                    <font>font12</font><textcolor>FFCBCBD1</textcolor>
                     <align>center</align>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>true</scroll>
                 </control>
             </itemlayout>
-            <focusedlayout width="203" height="216">
+            <focusedlayout width="210" height="305">
                 <control type="image">
-                    <left>3</left><top>0</top><width>195</width><height>185</height>
+                    <left>7</left><top>0</top><width>196</width><height>259</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture>
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="image">
-                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[Window.Property(cinema_button)]</texture>
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="label">
-                    <left>20</left><top>63</top><width>158</width><height>51</height>
+                    <left>20</left><top>82</top><width>165</width><height>101</height>
                     <font>font13</font>
-                    <textcolor>FFF4C577</textcolor>
+                    <textcolor>FFE0E0E4</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>BEZ PLAKÁTU</label>
                     <visible>String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="image">
-                    <left>10</left><top>5</top><width>180</width><height>175</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
                     <aspectratio>scale</aspectratio>
                     <visible>!String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="label">
-                    <left>8</left><top>182</top><width>184</width><height>34</height>
-                    <font>font12</font><textcolor>FFFFE3B7</textcolor>
+                    <left>6</left><top>264</top><width>199</width><height>38</height>
+                    <font>font12</font><textcolor>FFFFFFFF</textcolor>
                     <align>center</align>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>true</scroll>
@@ -388,73 +400,77 @@
         </control>
             </control>
             <control type="group">
-                <width>1760</width><height>266</height>
+                <width>1760</width><height>356</height>
                 <visible>!String.IsEmpty(Window.Property(row4_heading))</visible>
+                <control type="image">
+                    <left>0</left><top>6</top><width>5</width><height>29</height>
+                    <texture>$INFO[Window.Property(cinema_focus)]</texture>
+                </control>
                 <control type="label">
                     <left>3</left><top>0</top><width>1680</width><height>43</height>
-                    <font>font32</font><textcolor>FFFFEDD2</textcolor>
+                    <font>font32</font><textcolor>FFF3F3F5</textcolor>
                     <label>$INFO[Window.Property(row4_heading)]</label>
                 </control>
         <control type="list" id="404">
-            <left>0</left><top>47</top><width>1760</width><height>218</height>
+            <left>0</left><top>45</top><width>1760</width><height>307</height>
             <orientation>horizontal</orientation>
-            <onup>403</onup><ondown>405</ondown>
-            <itemlayout width="203" height="216">
+            <onup condition="!String.IsEmpty(Window.Property(row3_heading))">403</onup><onup condition="String.IsEmpty(Window.Property(row3_heading)) + !String.IsEmpty(Window.Property(row2_heading))">402</onup><onup condition="String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + !String.IsEmpty(Window.Property(row1_heading))">401</onup><onup>101</onup><ondown condition="!String.IsEmpty(Window.Property(row5_heading))">405</ondown><ondown condition="String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row6_heading))">406</ondown><ondown condition="String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row7_heading))">407</ondown><ondown>404</ondown>
+            <itemlayout width="210" height="305">
                 <control type="image">
-                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[Window.Property(cinema_button)]</texture>
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="label">
-                    <left>20</left><top>63</top><width>158</width><height>51</height>
+                    <left>20</left><top>82</top><width>165</width><height>101</height>
                     <font>font13</font>
-                    <textcolor>FFF4C577</textcolor>
+                    <textcolor>FFE0E0E4</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>BEZ PLAKÁTU</label>
                     <visible>String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="image">
-                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
                     <aspectratio>scale</aspectratio>
                     <visible>!String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="label">
-                    <left>8</left><top>181</top><width>184</width><height>34</height>
-                    <font>font12</font><textcolor>FFC3CAD6</textcolor>
+                    <left>6</left><top>264</top><width>199</width><height>38</height>
+                    <font>font12</font><textcolor>FFCBCBD1</textcolor>
                     <align>center</align>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>true</scroll>
                 </control>
             </itemlayout>
-            <focusedlayout width="203" height="216">
+            <focusedlayout width="210" height="305">
                 <control type="image">
-                    <left>3</left><top>0</top><width>195</width><height>185</height>
+                    <left>7</left><top>0</top><width>196</width><height>259</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture>
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="image">
-                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[Window.Property(cinema_button)]</texture>
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="label">
-                    <left>20</left><top>63</top><width>158</width><height>51</height>
+                    <left>20</left><top>82</top><width>165</width><height>101</height>
                     <font>font13</font>
-                    <textcolor>FFF4C577</textcolor>
+                    <textcolor>FFE0E0E4</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>BEZ PLAKÁTU</label>
                     <visible>String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="image">
-                    <left>10</left><top>5</top><width>180</width><height>175</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
                     <aspectratio>scale</aspectratio>
                     <visible>!String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="label">
-                    <left>8</left><top>182</top><width>184</width><height>34</height>
-                    <font>font12</font><textcolor>FFFFE3B7</textcolor>
+                    <left>6</left><top>264</top><width>199</width><height>38</height>
+                    <font>font12</font><textcolor>FFFFFFFF</textcolor>
                     <align>center</align>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>true</scroll>
@@ -463,73 +479,77 @@
         </control>
             </control>
             <control type="group">
-                <width>1760</width><height>266</height>
+                <width>1760</width><height>356</height>
                 <visible>!String.IsEmpty(Window.Property(row5_heading))</visible>
+                <control type="image">
+                    <left>0</left><top>6</top><width>5</width><height>29</height>
+                    <texture>$INFO[Window.Property(cinema_focus)]</texture>
+                </control>
                 <control type="label">
                     <left>3</left><top>0</top><width>1680</width><height>43</height>
-                    <font>font32</font><textcolor>FFFFEDD2</textcolor>
+                    <font>font32</font><textcolor>FFF3F3F5</textcolor>
                     <label>$INFO[Window.Property(row5_heading)]</label>
                 </control>
         <control type="list" id="405">
-            <left>0</left><top>47</top><width>1760</width><height>218</height>
+            <left>0</left><top>45</top><width>1760</width><height>307</height>
             <orientation>horizontal</orientation>
-            <onup>404</onup><ondown>406</ondown>
-            <itemlayout width="203" height="216">
+            <onup condition="!String.IsEmpty(Window.Property(row4_heading))">404</onup><onup condition="String.IsEmpty(Window.Property(row4_heading)) + !String.IsEmpty(Window.Property(row3_heading))">403</onup><onup condition="String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + !String.IsEmpty(Window.Property(row2_heading))">402</onup><onup condition="String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + !String.IsEmpty(Window.Property(row1_heading))">401</onup><onup>101</onup><ondown condition="!String.IsEmpty(Window.Property(row6_heading))">406</ondown><ondown condition="String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row7_heading))">407</ondown><ondown>405</ondown>
+            <itemlayout width="210" height="305">
                 <control type="image">
-                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[Window.Property(cinema_button)]</texture>
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="label">
-                    <left>20</left><top>63</top><width>158</width><height>51</height>
+                    <left>20</left><top>82</top><width>165</width><height>101</height>
                     <font>font13</font>
-                    <textcolor>FFF4C577</textcolor>
+                    <textcolor>FFE0E0E4</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>BEZ PLAKÁTU</label>
                     <visible>String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="image">
-                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
                     <aspectratio>scale</aspectratio>
                     <visible>!String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="label">
-                    <left>8</left><top>181</top><width>184</width><height>34</height>
-                    <font>font12</font><textcolor>FFC3CAD6</textcolor>
+                    <left>6</left><top>264</top><width>199</width><height>38</height>
+                    <font>font12</font><textcolor>FFCBCBD1</textcolor>
                     <align>center</align>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>true</scroll>
                 </control>
             </itemlayout>
-            <focusedlayout width="203" height="216">
+            <focusedlayout width="210" height="305">
                 <control type="image">
-                    <left>3</left><top>0</top><width>195</width><height>185</height>
+                    <left>7</left><top>0</top><width>196</width><height>259</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture>
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="image">
-                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[Window.Property(cinema_button)]</texture>
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="label">
-                    <left>20</left><top>63</top><width>158</width><height>51</height>
+                    <left>20</left><top>82</top><width>165</width><height>101</height>
                     <font>font13</font>
-                    <textcolor>FFF4C577</textcolor>
+                    <textcolor>FFE0E0E4</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>BEZ PLAKÁTU</label>
                     <visible>String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="image">
-                    <left>10</left><top>5</top><width>180</width><height>175</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
                     <aspectratio>scale</aspectratio>
                     <visible>!String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="label">
-                    <left>8</left><top>182</top><width>184</width><height>34</height>
-                    <font>font12</font><textcolor>FFFFE3B7</textcolor>
+                    <left>6</left><top>264</top><width>199</width><height>38</height>
+                    <font>font12</font><textcolor>FFFFFFFF</textcolor>
                     <align>center</align>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>true</scroll>
@@ -538,73 +558,77 @@
         </control>
             </control>
             <control type="group">
-                <width>1760</width><height>266</height>
+                <width>1760</width><height>356</height>
                 <visible>!String.IsEmpty(Window.Property(row6_heading))</visible>
+                <control type="image">
+                    <left>0</left><top>6</top><width>5</width><height>29</height>
+                    <texture>$INFO[Window.Property(cinema_focus)]</texture>
+                </control>
                 <control type="label">
                     <left>3</left><top>0</top><width>1680</width><height>43</height>
-                    <font>font32</font><textcolor>FFFFEDD2</textcolor>
+                    <font>font32</font><textcolor>FFF3F3F5</textcolor>
                     <label>$INFO[Window.Property(row6_heading)]</label>
                 </control>
         <control type="list" id="406">
-            <left>0</left><top>47</top><width>1760</width><height>218</height>
+            <left>0</left><top>45</top><width>1760</width><height>307</height>
             <orientation>horizontal</orientation>
-            <onup>405</onup><ondown>407</ondown>
-            <itemlayout width="203" height="216">
+            <onup condition="!String.IsEmpty(Window.Property(row5_heading))">405</onup><onup condition="String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row4_heading))">404</onup><onup condition="String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row3_heading))">403</onup><onup condition="String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row2_heading))">402</onup><onup condition="String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row1_heading))">401</onup><onup>101</onup><ondown condition="!String.IsEmpty(Window.Property(row7_heading))">407</ondown><ondown>406</ondown>
+            <itemlayout width="210" height="305">
                 <control type="image">
-                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[Window.Property(cinema_button)]</texture>
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="label">
-                    <left>20</left><top>63</top><width>158</width><height>51</height>
+                    <left>20</left><top>82</top><width>165</width><height>101</height>
                     <font>font13</font>
-                    <textcolor>FFF4C577</textcolor>
+                    <textcolor>FFE0E0E4</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>BEZ PLAKÁTU</label>
                     <visible>String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="image">
-                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
                     <aspectratio>scale</aspectratio>
                     <visible>!String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="label">
-                    <left>8</left><top>181</top><width>184</width><height>34</height>
-                    <font>font12</font><textcolor>FFC3CAD6</textcolor>
+                    <left>6</left><top>264</top><width>199</width><height>38</height>
+                    <font>font12</font><textcolor>FFCBCBD1</textcolor>
                     <align>center</align>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>true</scroll>
                 </control>
             </itemlayout>
-            <focusedlayout width="203" height="216">
+            <focusedlayout width="210" height="305">
                 <control type="image">
-                    <left>3</left><top>0</top><width>195</width><height>185</height>
+                    <left>7</left><top>0</top><width>196</width><height>259</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture>
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="image">
-                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[Window.Property(cinema_button)]</texture>
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="label">
-                    <left>20</left><top>63</top><width>158</width><height>51</height>
+                    <left>20</left><top>82</top><width>165</width><height>101</height>
                     <font>font13</font>
-                    <textcolor>FFF4C577</textcolor>
+                    <textcolor>FFE0E0E4</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>BEZ PLAKÁTU</label>
                     <visible>String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="image">
-                    <left>10</left><top>5</top><width>180</width><height>175</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
                     <aspectratio>scale</aspectratio>
                     <visible>!String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="label">
-                    <left>8</left><top>182</top><width>184</width><height>34</height>
-                    <font>font12</font><textcolor>FFFFE3B7</textcolor>
+                    <left>6</left><top>264</top><width>199</width><height>38</height>
+                    <font>font12</font><textcolor>FFFFFFFF</textcolor>
                     <align>center</align>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>true</scroll>
@@ -613,73 +637,77 @@
         </control>
             </control>
             <control type="group">
-                <width>1760</width><height>266</height>
+                <width>1760</width><height>356</height>
                 <visible>!String.IsEmpty(Window.Property(row7_heading))</visible>
+                <control type="image">
+                    <left>0</left><top>6</top><width>5</width><height>29</height>
+                    <texture>$INFO[Window.Property(cinema_focus)]</texture>
+                </control>
                 <control type="label">
                     <left>3</left><top>0</top><width>1680</width><height>43</height>
-                    <font>font32</font><textcolor>FFFFEDD2</textcolor>
+                    <font>font32</font><textcolor>FFF3F3F5</textcolor>
                     <label>$INFO[Window.Property(row7_heading)]</label>
                 </control>
         <control type="list" id="407">
-            <left>0</left><top>47</top><width>1760</width><height>218</height>
+            <left>0</left><top>45</top><width>1760</width><height>307</height>
             <orientation>horizontal</orientation>
-            <onup>406</onup><ondown>101</ondown>
-            <itemlayout width="203" height="216">
+            <onup condition="!String.IsEmpty(Window.Property(row6_heading))">406</onup><onup condition="String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row5_heading))">405</onup><onup condition="String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row4_heading))">404</onup><onup condition="String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row3_heading))">403</onup><onup condition="String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row2_heading))">402</onup><onup condition="String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row1_heading))">401</onup><onup>101</onup><ondown>407</ondown>
+            <itemlayout width="210" height="305">
                 <control type="image">
-                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[Window.Property(cinema_button)]</texture>
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="label">
-                    <left>20</left><top>63</top><width>158</width><height>51</height>
+                    <left>20</left><top>82</top><width>165</width><height>101</height>
                     <font>font13</font>
-                    <textcolor>FFF4C577</textcolor>
+                    <textcolor>FFE0E0E4</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>BEZ PLAKÁTU</label>
                     <visible>String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="image">
-                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
                     <aspectratio>scale</aspectratio>
                     <visible>!String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="label">
-                    <left>8</left><top>181</top><width>184</width><height>34</height>
-                    <font>font12</font><textcolor>FFC3CAD6</textcolor>
+                    <left>6</left><top>264</top><width>199</width><height>38</height>
+                    <font>font12</font><textcolor>FFCBCBD1</textcolor>
                     <align>center</align>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>true</scroll>
                 </control>
             </itemlayout>
-            <focusedlayout width="203" height="216">
+            <focusedlayout width="210" height="305">
                 <control type="image">
-                    <left>3</left><top>0</top><width>195</width><height>185</height>
+                    <left>7</left><top>0</top><width>196</width><height>259</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture>
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="image">
-                    <left>10</left><top>3</top><width>180</width><height>177</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[Window.Property(cinema_button)]</texture>
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="label">
-                    <left>20</left><top>63</top><width>158</width><height>51</height>
+                    <left>20</left><top>82</top><width>165</width><height>101</height>
                     <font>font13</font>
-                    <textcolor>FFF4C577</textcolor>
+                    <textcolor>FFE0E0E4</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>BEZ PLAKÁTU</label>
                     <visible>String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="image">
-                    <left>10</left><top>5</top><width>180</width><height>175</height>
+                    <left>13</left><top>4</top><width>184</width><height>250</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
                     <aspectratio>scale</aspectratio>
                     <visible>!String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="label">
-                    <left>8</left><top>182</top><width>184</width><height>34</height>
-                    <font>font12</font><textcolor>FFFFE3B7</textcolor>
+                    <left>6</left><top>264</top><width>199</width><height>38</height>
+                    <font>font12</font><textcolor>FFFFFFFF</textcolor>
                     <align>center</align>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>true</scroll>
@@ -690,7 +718,7 @@
         </control>
         <control type="label">
             <left>82</left><top>1033</top><width>1760</width><height>37</height>
-            <font>font12</font><textcolor>FF9EA9BC</textcolor>
+            <font>font12</font><textcolor>FF8B8B91</textcolor>
             <label>$INFO[Window.Property(ui_status)]</label>
             <scroll>true</scroll>
         </control>
