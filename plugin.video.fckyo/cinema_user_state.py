@@ -37,7 +37,8 @@ def watch_key(entry):
 def _safe(entry):
     result={}
     for field in ('kind','title','raw_title','year','poster','fanart',
-                  'plot','genre','quality','ident','name','season','episode'):
+                  'plot','genre','quality','ident','name','season','episode',
+                  'original'):
         if field in entry:
             result[field]=_text(entry[field],800 if field in ('poster','fanart') else 350)
     return result
