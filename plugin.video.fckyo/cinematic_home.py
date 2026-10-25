@@ -41,10 +41,12 @@ def _rgba_png(path, width, height, kind):
         for x in range(width):
             if kind == 'background':
                 h = y / float(max(1,height-1))
-                color = (int(7+5*h),int(7+5*h),int(10+6*h),255)
+                color = (int(7+3*h),int(7+3*h),int(9+5*h),255)
             elif kind == 'fade':
-                a = int(252-224*x/float(max(1,width-1)))
-                color = (6,6,10,a)
+                edge = 249-231*x/float(max(1,width-1))
+                bottom = 252*(y/float(max(1,height-1)))**3
+                a = int(min(255,max(edge,bottom)))
+                color = (7,7,10,a)
             elif kind in ('gear','gear_dark'):
                 # Crisp 8-tooth settings icon with a transparent center.
                 cx=(x-(width-1)/2.0)/(min(width,height))
@@ -61,7 +63,7 @@ def _rgba_png(path, width, height, kind):
             elif kind == 'chip':
                 color = (11,11,16,225)
             elif kind == 'nav_hover':
-                color = (42,31,65,235)
+                color = (34,31,42,244)
             elif kind == 'tile':
                 # Rounded graphite surface with a subtle violet edge/glow.
                 radius=8
@@ -75,11 +77,11 @@ def _rgba_png(path, width, height, kind):
                     edge=(x<=1 or x>=width-2 or y<=1 or y>=height-2)
                     accent=max(0,1-math.hypot(x-width*.74,y-height*.20)/
                                         float(max(1,width)))
-                    color=(int(15+6*top+6*accent),
-                           int(15+5*top+3*accent),
-                           int(19+7*top+9*accent),255)
+                    color=(int(17+6*top+5*accent),
+                           int(17+6*top+3*accent),
+                           int(20+7*top+8*accent),255)
                     if edge:
-                        color=(47,43,55,230)
+                        color=(38,36,44,230)
             else:
                 color = (22,22,27,255)
             raw.extend(color)
@@ -105,7 +107,7 @@ def ensure_textures(profile):
              'chip':(2,2),'nav_hover':(2,2),'tile':(128,72)}
     result = {}
     for kind,(w,h) in specs.items():
-        result[kind] = _rgba_png(os.path.join(folder,'stream_v6_'+kind+'.png'),w,h,kind)
+        result[kind] = _rgba_png(os.path.join(folder,'stream_v7_'+kind+'.png'),w,h,kind)
     return result
 
 
