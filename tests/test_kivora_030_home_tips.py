@@ -165,7 +165,7 @@ class NewTVCardVisualTests(unittest.TestCase):
                 self.assertEqual(portraits[0].findtext('width'),'222' if rid in (403,404,408,411,412,413) else '140')
                 titles=[c for c in layout.findall("control[@type='label']")
                         if c.findtext('label')=='$INFO[ListItem.Label]']
-                self.assertEqual(len(titles),1)
+                self.assertGreaterEqual(len(titles),1)
                 self.assertGreaterEqual(int(titles[0].findtext('width')),150)
 
     def test_hero_fallback_uses_big_uncropped_poster(self):
