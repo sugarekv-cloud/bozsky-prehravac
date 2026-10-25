@@ -41,10 +41,10 @@ def _rgba_png(path, width, height, kind):
         for x in range(width):
             if kind == 'background':
                 h = y / float(max(1,height-1))
-                color = (int(7+5*h),int(9+5*h),int(20+12*h),255)
+                color = (int(7+5*h),int(7+5*h),int(10+6*h),255)
             elif kind == 'fade':
-                a = int(250-220*x/float(max(1,width-1)))
-                color = (7,9,20,a)
+                a = int(252-224*x/float(max(1,width-1)))
+                color = (6,6,10,a)
             elif kind in ('gear','gear_dark'):
                 # Crisp 8-tooth settings icon with a transparent center.
                 cx=(x-(width-1)/2.0)/(min(width,height))
@@ -59,9 +59,9 @@ def _rgba_png(path, width, height, kind):
             elif kind == 'focus':
                 color = (157,109,255,255)
             elif kind == 'chip':
-                color = (8,10,21,220)
+                color = (11,11,16,225)
             elif kind == 'nav_hover':
-                color = (43,35,72,235)
+                color = (42,31,65,235)
             elif kind == 'tile':
                 # Rounded graphite surface with a subtle violet edge/glow.
                 radius=8
@@ -75,13 +75,13 @@ def _rgba_png(path, width, height, kind):
                     edge=(x<=1 or x>=width-2 or y<=1 or y>=height-2)
                     accent=max(0,1-math.hypot(x-width*.74,y-height*.20)/
                                         float(max(1,width)))
-                    color=(int(19+12*top+10*accent),
-                           int(22+7*top+5*accent),
-                           int(37+16*top+25*accent),255)
+                    color=(int(15+6*top+6*accent),
+                           int(15+5*top+3*accent),
+                           int(19+7*top+9*accent),255)
                     if edge:
-                        color=(63,55,91,230)
+                        color=(47,43,55,230)
             else:
-                color = (28,30,48,255)
+                color = (22,22,27,255)
             raw.extend(color)
     header = b'\x89PNG\r\n\x1a\n'
     ihdr = struct.pack('>IIBBBBB', width, height, 8, 6, 0, 0, 0)
@@ -105,7 +105,7 @@ def ensure_textures(profile):
              'chip':(2,2),'nav_hover':(2,2),'tile':(128,72)}
     result = {}
     for kind,(w,h) in specs.items():
-        result[kind] = _rgba_png(os.path.join(folder,'stream_v5_'+kind+'.png'),w,h,kind)
+        result[kind] = _rgba_png(os.path.join(folder,'stream_v6_'+kind+'.png'),w,h,kind)
     return result
 
 
