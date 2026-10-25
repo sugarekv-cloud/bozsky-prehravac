@@ -16,7 +16,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.26.0'
+VERSION='0.27.0'
 
 
 def tile(name,kind,**extra):
@@ -466,7 +466,15 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 return
             load=self._loading('Vyhledávám "'+query[:60]+'" na Webshare…')
             try:
-                found=self.service.search(query)
+                from cinema_service_v2 import WebshareSearchUnavailable
+                try:
+                    found=self.service.search(query)
+                except WebshareSearchUnavailable as exc:
+                    self._fill('VYHLEDÁVÁNÍ NENÍ DOSTUPNÉ',[
+                        tile('OPAKOVAT HLEDÁNÍ: '+query,'search_retry',search_text=query),
+                        tile('KONTROLOVAT ÚČET WEBSHARE','settings')],
+                        'FILMY A SERIÁLY',[],str(exc))
+                    return
                 movies=self._filtered([c for c in found if c['kind']=='movie'])
                 shows=self._filtered([c for c in found if c['kind']=='show'])
                 self.context=query
@@ -774,6 +782,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 self._refresh(kind,c.get('catalog_kind') or 'movie')
             else:
                 self._refresh(kind)
+        elif kind=='search_retry':
+            self._refresh('search',c.get('search_text') or '')
         elif kind=='tips_retry':
             self._apply_background_home()
             if self.mode in ('home','recommendations'):
