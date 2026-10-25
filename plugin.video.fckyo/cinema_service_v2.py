@@ -561,6 +561,15 @@ class CinemaService:
         """Expand discoverable recommendations in a single worker, not GUI thread."""
         if not self.token or self._tips_loading:
             return False
+        # Never start another broad discovery pass while the initial home
+        # refresh or an explicit title search is using Webshare.
+        if (self._background_started and not self._background_done.is_set()
+                or CinemaService._foreground_search.is_set()):
+            return False
+        snapshot=self.home_fast()
+        if not ((snapshot.get('_all_movies') or snapshot.get('movies') or [])+
+                (snapshot.get('_all_shows') or snapshot.get('shows') or [])):
+            return False
         now=time.time()
         if not force and self._tips_cards and now-self._tips_saved<12*3600:
             return False
@@ -576,10 +585,11 @@ class CinemaService:
                 profile=os.path.dirname(self.cache_path) if self.cache_path else None
                 clone=CinemaService(self.token,self._fetch_background,self.availability,
                                     self.metadata,self.calendar,profile)
-                # These are real, availability-verified Webshare groups. The
-                # full_catalog method is bounded to four new search pages.
-                movies,_=clone.full_catalog('movie',80)
-                shows,_=clone.full_catalog('show',45)
+                # Reuse the validated home snapshot, never call clone.home()
+                # here: previously this launched a second huge discovery pass.
+                clone.home_cache=snapshot
+                movies,_=clone.full_catalog('movie',48)
+                shows,_=clone.full_catalog('show',24)
                 result=consolidate((movies or [])+(shows or []))
                 if result:
                     if self.tips_path:
@@ -860,7 +870,6 @@ class CinemaService:
         plan=query_plan(title,md,limit=14)
         # First query Czech/original names; then dotted filenames. Bound
         # requests so a missing title cannot appear to freeze the television.
-        from cinema_search_v3 import variants
         dotted=[alias.replace(' ','.') for alias in names[:2] if ' ' in alias]
         plan=list(dict.fromkeys(plan[:1]+cached_aliases[:2]+plan[1:7]+dotted))[:9]
         matches={}
