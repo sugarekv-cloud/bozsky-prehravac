@@ -42,7 +42,17 @@ class WatchTracker:
 
     @staticmethod
     def _return_to_addon():
-        """Open the plugin window after our video exits, not Kodi's root."""
+        """Leave a still-open KIVORA dialog visible; reopen only if Kodi closed it.
+
+        Running ActivateWindow unconditionally was sending the user back to
+        Kodi Videos and could spawn a second nested add-on window.
+        """
+        try:
+            import xbmcgui
+            if xbmcgui.Window(10000).getProperty('kivora_window_open')=='yes':
+                return
+        except (ImportError,AttributeError,RuntimeError,TypeError):
+            pass
         builtin=getattr(xbmc,'executebuiltin',None)
         if builtin:
             builtin('ActivateWindow(Videos,plugin://plugin.video.fckyo/?action=cinematic_home,return)')
