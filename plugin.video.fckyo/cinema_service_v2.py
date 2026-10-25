@@ -460,11 +460,16 @@ class CinemaService:
                 'classic_shows':[],'_all_movies':[],'_all_shows':[],
                 'best_movies_year':[],'best_shows_all':[],'best_shows_year':[]}
 
-    def start_home_refresh(self):
-        """Refresh metadata and Webshare outside the Kodi GUI thread."""
-        if not self.token or self._background_started:
+    def start_home_refresh(self, force=False):
+        """Refresh Webshare outside the GUI; explicit retry may restart a finished worker."""
+        if not self.token:
             return False
-        if (self._snapshot_age is not None and self._snapshot_age<480
+        if force and self._background_started and self._background_done.is_set():
+            self.take_home_refresh()
+            self._background_started=False
+        if self._background_started:
+            return False
+        if (not force and self._snapshot_age is not None and self._snapshot_age<480
                 and self.home_cache is not None):
             return False
         self._background_started=True
@@ -501,6 +506,8 @@ class CinemaService:
             self.home_cache=result
             self._snapshot_age=0
             self.last_diagnostics='Katalog aktualizován na pozadí'
+        else:
+            self.last_diagnostics='Katalog se nepodařilo obnovit – opakuj pokus v nabídce Tipy'
         return result
 
     def most_watched_shows(self, count=24, quality='all', language='all'):
