@@ -23,6 +23,17 @@ def zip_folder(path, target):
             if p.is_file() and '__pycache__' not in p.parts and not p.name.endswith('.pyc') and p.resolve()!=target.resolve():
                 z.write(p,p.relative_to(path.parent).as_posix())
 
+def website_index(repo_name, version, base):
+    """Use Apache-style filename anchors: Kodi's HTTPDirectory parser requires
+    visible anchor text to match the link target, not a friendly CTA caption.
+    """
+    return f'''<!doctype html><html lang="cs"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Božský přehrávač – Kodi repozitář</title>
+<style>body{{font:18px system-ui;background:#0c1420;color:#f2e6d2;max-width:800px;margin:5em auto;padding:1em}}a{{color:#ffcc66}}h1{{font-size:2.2em}}</style><h1>Božský přehrávač</h1><p>Neoficiální doplněk Kodi s kalendářem filmových premiér a vyhledáváním přes Webshare.</p><h2>Instalační soubory (kompatibilní s Kodi)</h2>
+<pre>
+<a href="{html.escape(repo_name)}">{html.escape(repo_name)}</a>  – instalační repozitář
+<a href="{PLUGIN_ID}/{PLUGIN_ID}-{version}.zip">{PLUGIN_ID}/{PLUGIN_ID}-{version}.zip</a>  – samostatný doplněk
+</pre><p>V Kodi vyberte přímo soubor <strong>{html.escape(repo_name)}</strong> ze zdroje {base}.</p><p>Pokud Kodi nenabízí aktualizaci: Doplňky → Moje doplňky → Video doplňky → Božský přehrávač → Verze / Aktualizovat → zvolit Božský přehrávač repozitář. Doplňky původně instalované ručně ze ZIPu mohou mít aktualizace připnuté k původnímu zdroji. Samotný ZIP lze použít nouzově, ale automatické aktualizace pak nemusí fungovat.</p><p>Následně v Kodi: Nastavení → Doplňky → Instalovat ze ZIP → Instalovat z repozitáře → Božský přehrávač repozitář.</p><small>Komunitní doplněk Božský přehrávač · Licence AGPL-3.0 · Žádná videa nejsou součástí doplňku.</small></html>'''
+
 def main():
     ap=argparse.ArgumentParser()
     ap.add_argument('--owner',required=True,help='GitHub user or organization account')
@@ -83,12 +94,7 @@ def main():
     xmlbytes=b'<?xml version="1.0" encoding="UTF-8"?>\n'+ET.tostring(addons,encoding='utf-8')
     (out/'addons.xml').write_bytes(xmlbytes)
     (out/'addons.xml.md5').write_text(hashlib.md5(xmlbytes).hexdigest(),encoding='ascii')
-    (out/'index.html').write_text(f'''<!doctype html><html lang="cs"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Božský přehrávač – Kodi repozitář</title>
-<style>body{{font:18px system-ui;background:#0c1420;color:#f2e6d2;max-width:800px;margin:5em auto;padding:1em}}a{{color:#ffcc66}}h1{{font-size:2.2em}}</style><h1>Božský přehrávač</h1><p>Neoficiální doplněk Kodi s kalendářem filmových premiér a vyhledáváním přes Webshare.</p><h2>Instalační soubory (kompatibilní s Kodi)</h2>
-<pre>
-<a href="{html.escape(repo_file.name)}">{html.escape(repo_file.name)}</a>  – instalační repozitář
-<a href="{PLUGIN_ID}/{PLUGIN_ID}-{version}.zip">{PLUGIN_ID}/{PLUGIN_ID}-{version}.zip</a>  – samostatný doplněk
-</pre><p>V Kodi vyberte přímo soubor <strong>{html.escape(repo_file.name)}</strong> ze zdroje {base}.</p><p>Pokud Kodi nenabízí aktualizaci: Doplňky → Moje doplňky → Video doplňky → Božský přehrávač → Verze / Aktualizovat → zvolit Božský přehrávač repozitář. Doplňky původně instalované ručně ze ZIPu mohou mít aktualizace připnuté k původnímu zdroji. Samotný ZIP lze použít nouzově, ale automatické aktualizace pak nemusí fungovat.</p><p>Následně v Kodi: Nastavení → Doplňky → Instalovat ze ZIP → Instalovat z repozitáře → Božský přehrávač repozitář.</p><small>Komunitní doplněk Božský přehrávač · Licence AGPL-3.0 · Žádná videa nejsou součástí doplňku.</small></html>''',encoding='utf-8')
+    (out/'index.html').write_text(website_index(repo_file.name,version,base),encoding='utf-8')
     ET.parse(out/'addons.xml')
     ET.parse(out/REPO_ID/'addon.xml')
     with zipfile.ZipFile(repo_file) as z:
