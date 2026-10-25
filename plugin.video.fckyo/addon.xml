@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="KIVORA" version="0.26.0" provider-name="KIVORA Community">
+<addon id="plugin.video.fckyo" name="KIVORA" version="0.27.0" provider-name="KIVORA Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -22,6 +22,16 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.27.0 Oprava vyhledávání filmů[/B]
+- Ruční hledání má nyní přednost před načítáním katalogu a Tipů na pozadí
+- Odstraněn souběh dvou rozsáhlých průzkumů Webshare při spuštění obrazovky
+- Vyhledávání českých a originálních názvů používá omezený počet cílených požadavků a rychleji vrací výsledky
+- Zajištěna cesta k hlubší druhé stránce pro známé tituly i k alternativním názvům souborů
+- Při nedostupnosti Webshare se zobrazí zpráva a funkční tlačítko OPAKOVAT HLEDÁNÍ
+- Přechodné chybové a prázdné výsledky se neukládají natrvalo jako negativní vyhledávání
+- Katalog Tipů využívá uložené výsledky místo druhého úplného načítání od začátku
+- Účet, historie a označení shlédnutých filmů zůstávají zachovány
+
 [B]0.26.0 Filmový redesign a skutečné tipy ke sledování[/B]
 - Přepracované televizní rozhraní: filmový banner s korektním širokoúhlým obrázkem, nezvětšuje rozmazané svislé plakáty
 - Větší filmové karty, zachovaný poměr plakátů, čitelná navigace, tmavomodrá barevná paleta a fialové zvýraznění
