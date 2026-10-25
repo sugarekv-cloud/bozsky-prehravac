@@ -13,8 +13,8 @@ TOP_ACTIONS={
     107:'settings'
 }
 BACK_ACTIONS=(9,10,92,216)
-ROW_IDS=(401,402,403,404,405,406,407)
-VERSION='0.18.0'
+ROW_IDS=tuple(range(401,412))
+VERSION='0.19.0'
 
 
 def tile(name,kind,**extra):
@@ -81,9 +81,11 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 if art:
                     item.setArt(art)
                 item.setProperty('has_poster','yes' if c.get('poster') else '')
-                item.setProperty('is_more','yes' if c.get('kind') in ('most_watched','load_more','catalog_open','catalog_more') else '')
+                item.setProperty('is_more','yes' if c.get('kind') in ('most_watched','load_more','catalog_open','catalog_more','csfd_ranked') else '')
                 item.setProperty('quality',str(c.get('quality') or ''))
                 item.setProperty('year',str(c.get('year') or ''))
+                item.setProperty('progress',str(c.get('progress') or '0'))
+                item.setProperty('is_resume','yes' if c.get('_continue') else '')
                 li.append(item)
             if li:
                 lst.addItems(li)
@@ -171,7 +173,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             'search':'VYHLEDÁVÁNÍ','seasons':'SÉRIE','episodes':'EPIZODY',
             'files':'VÝBĚR KVALITY',
              'most_watched':'NEJSLEDOVANĚJŠÍ',
-              'catalog_all':'ÚPLNÝ KATALOG'}.get(view,'KATALOG'))
+              'catalog_all':'ÚPLNÝ KATALOG',
+              'csfd_ranked':'NEJLEPŠÍ DLE ČSFD',
+              'favorites':'OBLÍBENÉ'}.get(view,'KATALOG'))
         if not self.service.token:
             self._fill('PŘIHLÁŠENÍ K WEBSHARE',[
                 tile('NASTAVIT ÚČET WEBSHARE','settings',
@@ -183,33 +187,48 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             load=self._loading('Načítám dostupné filmy a česká metadata…')
             try:
                 home=self.service.home()
-                # Each card has already been allocated to one home category.
-                # Combine remaining new releases without repeating other rails.
+                # Playback progress and favourites are local to this Kodi device.
+                store=getattr(self,'watch_store',None)
+                films=store.continue_cards('movie') if store else []
+                series=store.continue_cards('show') if store else []
+                favorites=store.favorite_cards() if store else []
+                year=home.get('ranking_year') or __import__('datetime').date.today().year
+                from cinema_rankings import csfd_only
+                all_movies=home.get('_all_movies') or []
+                csfd=csfd_only(all_movies,'movie',limit=30)
+                # Webshare's 'rating' file ordering is a popularity proxy,
+                # NOT verifiable totals of film views.
+                webshare=self._filtered(self.service.most_watched_movies(
+                    18,self.quality,self.language),keep_order=True)
+                if webshare:
+                    webshare=list(webshare)+[tile('+  CELÝ ŽEBŘÍČEK',
+                        'most_watched',plot='Procházet další populární soubory Webshare.')]
+                if csfd:
+                    csfd=list(csfd)+[tile('+  CELÝ ŽEBŘÍČEK ČSFD',
+                        'csfd_ranked',plot='Nejlépe hodnocené dostupné filmy podle ČSFD.')]
                 top=home['premieres']+home['movies']
-                bottom=home['shows']+home.get('classic_shows',[])
                 if not top:
                     top=[tile('HLEDAT FILM','search'),tile('FILMY','movies')]
-                if not bottom:
-                    bottom=[tile('HLEDAT SERIÁL','search'),
-                            tile('SERIÁLY','shows')]
-                year=home.get('ranking_year') or __import__('datetime').date.today().year
-                def shelf(items):
-                    # An empty ranking is hidden instead of repeating
-                    # identical placeholder cards in several home rows.
-                    return items or []
-                extra=[
-                    ('FILMOVÉ HITY A KLASIKY · OVĚŘENO NA WEBSHARE',
-                     home.get('classics') or []),
-                    ('NEJLEPŠÍ FILMY VŠECH DOB · ČSFD / IMDb',shelf(home.get('best_movies_all'))),
-                    ('NEJLEPŠÍ FILMY ROKU %s · ČSFD / IMDb'%year,shelf(home.get('best_movies_year'))),
-                    ('NEJLEPŠÍ SERIÁLY VŠECH DOB · ČSFD / IMDb',shelf(home.get('best_shows_all'))),
-                    ('NEJLEPŠÍ SERIÁLY ROKU %s · ČSFD / IMDb'%year,shelf(home.get('best_shows_year'))),
+                shows=home['shows']+home.get('classic_shows',[])
+                if not shows:
+                    shows=[tile('HLEDAT SERIÁL','search'),tile('SERIÁLY','shows')]
+                rows=[
+                    ('POKRAČOVAT VE SLEDOVÁNÍ · FILMY',films),
+                    ('POKRAČOVAT VE SLEDOVÁNÍ · SERIÁLY',series),
+                    ('NEJSLEDOVANĚJŠÍ NA WEBSHARE · DLE POPULARITY SOUBORŮ',webshare),
+                    ('NEJLÉPE HODNOCENÉ NA ČSFD',csfd),
+                    ('PREMIÉRY A NOVÉ FILMY',top),
+                    ('SERIÁLY NA WEBSHARE',shows),
+                    ('MOJE OBLÍBENÉ',favorites),
+                    ('FILMOVÉ HITY A KLASIKY',home.get('classics') or []),
+                    ('NEJLEPŠÍ FILMY ROKU %s'%year,home.get('best_movies_year') or []),
+                    ('NEJLEPŠÍ SERIÁLY VŠECH DOB',home.get('best_shows_all') or []),
+                    ('NEJLEPŠÍ SERIÁLY ROKU %s'%year,home.get('best_shows_year') or []),
                 ]
-                self._fill('PREMIÉRY A DALŠÍ FILMY NA WEBSHARE' if home['premieres'] else
-                           'DOSTUPNÉ FILMY',top,
-                           'DOSTUPNÉ SERIÁLY',
-                           bottom,self.service.last_diagnostics +
-                           ' · Žebříčky pouze z hodnocených dostupných titulů',extra_rows=extra)
+                self._fill(rows[0][0],rows[0][1],rows[1][0],rows[1][1],
+                           self.service.last_diagnostics+
+                           ' · Webshare: popularita souborů · ČSFD: hodnocení',
+                           extra_rows=rows[2:])
             finally:load.close()
         elif view in ('movies','shows','premieres'):
             load=self._loading('Řadím dostupné tituly…')
@@ -234,16 +253,36 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                     row_two.append(tile('+  ZOBRAZIT CELÝ ŽEBŘÍČEK',
                         'most_watched',plot='Otevřít žebříček filmů. '
                         'Další výsledky se načtou až při stisknutí +.'))
-                    heading='NEJSLEDOVANĚJŠÍ'
+                    heading='NEJSLEDOVANĚJŠÍ NA WEBSHARE'
                 else:
                     row_two=ordered[24:48]
                     heading='DALŠÍ SERIÁLY' if view=='shows' else 'DALŠÍ PREMIÉRY'
+                other_rows=[]
+                if view=='movies':
+                    from cinema_rankings import csfd_only
+                    csfd=csfd_only(self.service.home().get('_all_movies') or [],'movie',limit=35)
+                    if csfd:
+                        other_rows=[('NEJLÉPE HODNOCENÉ NA ČSFD',csfd)]
                 self._fill('FILMY NA WEBSHARE' if view=='movies' else
                            'SERIÁLY NA WEBSHARE' if view=='shows' else
                            'PREMIÉRY PODLE ČSFD',row_one,heading,row_two,
                            'ŘAZENÍ: '+self.sort+' · KVALITA: '+self.quality+
-                           ' · JAZYK: '+self.language)
+                           ' · JAZYK: '+self.language,extra_rows=other_rows)
             finally:load.close()
+        elif view=='csfd_ranked':
+            from cinema_rankings import csfd_only
+            home=self.service.home()
+            movies=csfd_only(home.get('_all_movies') or [],'movie',limit=80)
+            if not movies:
+                movies=[tile('ZATÍM BEZ OVĚŘENÉHO HODNOCENÍ ČSFD','none')]
+            self._fill('NEJLÉPE HODNOCENÉ FILMY · ČSFD',movies,'',[],
+                       'Pouze filmy ověřené na Webshare s hodnocením ze ČSFD')
+        elif view=='favorites':
+            store=getattr(self,'watch_store',None)
+            favorites=store.favorite_cards() if store else []
+            self._fill('MOJE OBLÍBENÉ',favorites or
+                       [tile('ZATÍM NIC V OBLÍBENÝCH','none')],
+                       '',[],'Na plakátu stiskni kontextovou nabídku pro přidání nebo odebrání')
         elif view=='catalog_all':
             kind=context if context in ('movie','show') else 'movie'
             load=self._loading('Načítám další ověřené filmy…' if kind=='movie'
@@ -277,7 +316,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                         plot='Postupně načítat další ověřené filmy z Webshare.'))
                 if not items:
                     items=[tile('ŽÁDNÉ DOSTUPNÉ FILMY','none')]
-                self._fill('NEJSLEDOVANĚJŠÍ · ŽEBŘÍČEK FILMŮ',items,'',[],
+                self._fill('NEJSLEDOVANĚJŠÍ NA WEBSHARE',items,'',[],
                            '%d ověřených filmů · pořadí podle popularity '
                            'vyhledávání Webshare, nikoli počtu zhlédnutí'%len(ranked))
             finally:load.close()
@@ -388,7 +427,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         selected=xbmcgui.Dialog().select('⚙  Nastavení FCKYO',[
             'Nastavení doplňku a přihlášení Webshare',
             'Filtry a řazení katalogu',
-            'Načíst další tituly a aktualizovat Webshare'
+            'Načíst další tituly a aktualizovat Webshare',
+            'Moje oblíbené',
+            'Nejlépe hodnocené podle ČSFD'
         ])
         if selected==0:
             self._open_settings()
@@ -398,6 +439,10 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self.service.refresh_catalogue()
             self.stack=[]
             self._screen('home')
+        elif selected==3:
+            self._refresh('favorites')
+        elif selected==4:
+            self._refresh('csfd_ranked')
 
     def _filters(self):
         choice=xbmcgui.Dialog().select('Katalog · filtrování a řazení',[
@@ -444,8 +489,53 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         return next((rid for rid,cards in
                      reversed(list(zip(ROW_IDS,self.rail_items))) if cards),None)
 
+    def _poster_menu(self):
+        card=self._selected()
+        store=getattr(self,'watch_store',None)
+        if not card or not store or card.get('kind') not in ('movie','show'):
+            return
+        actions=['Přidat / odebrat z oblíbených',
+                 'Označit jako dokoukáno',
+                 'Odebrat z rozkoukaných',
+                 'Otevřít titul']
+        selected=xbmcgui.Dialog().select(card.get('title') or 'Film',actions)
+        if selected==0:
+            enabled=store.toggle_favorite(card)
+            xbmcgui.Dialog().notification('FCKYO',
+                'Přidáno do oblíbených' if enabled else 'Odebráno z oblíbených')
+            self._screen(self.mode,self.context)
+        elif selected==1:
+            store.mark_watched(card)
+            self._screen(self.mode,self.context)
+        elif selected==2:
+            store.clear_progress(card)
+            self._screen(self.mode,self.context)
+        elif selected==3:
+            if card.get('_continue'):
+                self._play_saved(card)
+            elif card.get('kind')=='movie':
+                self._refresh('files',(card,None,None))
+            else:
+                self._refresh('seasons',card)
+
+    def _play_saved(self,card):
+        """Resume a real, previously played Webshare file at its stored time."""
+        if not card.get('ident') or not card.get('name'):
+            return
+        self.destination=self.make_url(
+            action='play',from_cinema='1',ident=card['ident'],name=card['name'],
+            title=card.get('title') or '',raw_title=card.get('raw_title') or card.get('raw') or '',
+            kind=card.get('kind') or 'movie',year=card.get('year') or '',
+            poster=card.get('poster') or '',fanart=card.get('fanart') or '',
+            season=card.get('season') or '',episode=card.get('episode') or '',
+            resume=str(card.get('position') or 0))
+        self.is_play=True
+        self.close()
+
     def onAction(self,action):
-        if action.getId() in BACK_ACTIONS:
+        if action.getId()==117:
+            self._poster_menu()
+        elif action.getId() in BACK_ACTIONS:
             self._go_back()
         elif action.getId()==4 and self.getFocusId()==self._last_filled_rail():
             # ACTION_MOVE_DOWN on final shelf must not send focus to the menu.
@@ -457,7 +547,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
     def onClick(self,control_id):
         if control_id==108:
             chosen=self.featured_card
-            if chosen and chosen.get('kind')=='movie':
+            if chosen and chosen.get('_continue'):
+                self._play_saved(chosen)
+            elif chosen and chosen.get('kind')=='movie':
                 self._refresh('files',(chosen,None,None))
             elif chosen and chosen.get('kind')=='show':
                 self._refresh('seasons',chosen)
@@ -474,7 +566,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         kind=c.get('kind')
         if kind=='none':
             return
-        if kind in ('movies','shows','premieres','search','most_watched'):
+        if c.get('_continue'):
+            self._play_saved(c)
+        elif kind in ('movies','shows','premieres','search','most_watched','csfd_ranked','favorites'):
             if kind=='most_watched':
                 self.popular_limit=24
             self._refresh(kind)
@@ -521,8 +615,19 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         elif kind=='episode':
             self._refresh('files',(c['show'],c['season'],c['episode']))
         elif kind=='file':
-            # Preserve old player and account handling, do not autoplay a card.
-            self.destination=self.make_url(action='play',ident=c['ident'],name=c['raw'])
+            # Hand off title/episode information only after explicit file choice.
+            # The Kodi playback service saves real progress after video starts.
+            parent,season,episode=self.context
+            self.destination=self.make_url(
+                action='play',from_cinema='1',
+                ident=c['ident'],name=c['raw'],
+                title=parent.get('title') or '',raw_title=parent.get('raw') or parent.get('title') or '',
+                kind=parent.get('kind') or 'movie',
+                year=parent.get('file_year') or parent.get('year') or '',
+                poster=parent.get('poster') or '',fanart=parent.get('fanart') or '',
+                plot=parent.get('plot') or '',genre=parent.get('genre') or '',
+                quality=c.get('quality') or '',
+                season=str(season or ''),episode=str(episode or ''))
             self.is_play=True
             self.close()
 
@@ -532,11 +637,13 @@ def launch(addon,profile,get_url,token,search_page,
     from cinema_service_v2 import CinemaService
     from ws_availability import Availability
     from cinematic_home import ensure_textures
+    from cinema_user_state import WatchStore
     metadata=metadata_factory() if addon.getSetting('smart_metadata')!='false' else None
     service=CinemaService(token,search_page,Availability(profile),
                           metadata,calendar_factory(),profile=profile)
     win=CinemaScreen('fckyo-cinema-v2.xml',addon.getAddonInfo('path'),'Default','1080i')
     win.service=service
+    win.watch_store=WatchStore(profile)
     win.addon=addon
     win.revalidate_callback=revalidate_callback
     win.textures=ensure_textures(profile)
