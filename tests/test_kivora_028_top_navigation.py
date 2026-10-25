@@ -127,7 +127,7 @@ class KodiTopControlsTests(unittest.TestCase):
         tree=ET.parse(os.path.join(PLUGIN,'resources','skins','Default',
                                    '1080i','fckyo-cinema-v2.xml'))
         root=tree.getroot()
-        ids=(106,101,102,103,104,105,107)
+        ids=(106,101,102,103,104,105,109,107)
         for i,cid in enumerate(ids):
             btn=root.find(".//control[@id='%d']"%cid)
             self.assertIsNotNone(btn)
