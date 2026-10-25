@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="KIVORA" version="0.30.0" provider-name="KIVORA Community">
+<addon id="plugin.video.fckyo" name="KIVORA" version="0.31.0" provider-name="KIVORA Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -22,6 +22,15 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.31.0 Nový Netflix-inspirovaný televizní vzhled[/B]
+- Všechny filmové a seriálové řady používají velké svislé plakáty v původním poměru stran, šest titulů přes šířku
+- Výrazný 16:9 filmový banner se širším obrázkem, tmavým přechodem pro čitelný text a vysokým plakátem, pokud chybí fanart
+- Úvodní stránka s Tipy, pokračováním ve sledování a žebříčky funguje stejně, pouze výrazně moderněji vypadá
+- Nové kompaktní štítky ČSFD, viditelné zaměření dálkovým ovladačem, větší názvy a progrese rozkoukaných titulů
+- Elegantní téměř černá barevná paleta se zachovanou fialovou KIVORA identitou
+- Plynulejší svislé rolování filmových řad; zachováno jejich pořadí a navigace v TV
+- Neměněno prohledávání Webshare, výběr kvality, přehrávání, automatické epizody ani osobní historie
+
 [B]0.30.0 Funkční úvodní stránka a ověřené Tipy · moderní TV karty[/B]
 - Domů zobrazuje skutečnou úvodní obrazovku hned z lokálního katalogu, nezávisle na výpadku ČSFD/Webshare a doporučovače
 - Tipy pro tebe ukazují reálné dostupné filmy a seriály, včetně dříve viděných nebo oblíbených jako záložní výběr
