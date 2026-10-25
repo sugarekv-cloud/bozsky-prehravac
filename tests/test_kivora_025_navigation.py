@@ -138,7 +138,7 @@ class KodiPlaybackAndHomeTests(unittest.TestCase):
         props={}
         win.setProperty=lambda k,v:props.__setitem__(k,v)
         win._update_hero()
-        self.assertEqual(props.get('hero_title'),'KIVORA')
+        self.assertEqual(props.get('hero_title'),'Božský přehrávač')
         self.assertIn('FILMOVÝ SVĚT',props.get('hero_info',''))
         self.assertEqual(props.get('hero_art'),'')
 
