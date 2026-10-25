@@ -30,6 +30,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.mode='home'
         self.context=None
         self.rail_items=[[] for _ in ROW_IDS]
+        self.popular_limit=24
         for name,path in self.textures.items():
             self.setProperty('cinema_'+name,path)
         self.setProperty('app_version','v'+VERSION)
@@ -77,6 +78,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 if art:
                     item.setArt(art)
                 item.setProperty('has_poster','yes' if c.get('poster') else '')
+                item.setProperty('is_more','yes' if c.get('kind') in ('most_watched','load_more') else '')
                 item.setProperty('quality',str(c.get('quality') or ''))
                 item.setProperty('year',str(c.get('year') or ''))
                 li.append(item)
@@ -123,7 +125,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self.stack.append((self.mode,self.context))
         self._screen(view,context,stack=False)
 
-    def _filtered(self,cards):
+    def _filtered(self,cards,keep_order=False):
         from cinema_catalog_v2 import sort_cards,choose_files
         selected=[]
         for c in cards:
@@ -138,7 +140,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             if not choose_files(c.get('files') or [],self.quality,self.language):
                 continue
             selected.append(c)
-        return sort_cards(selected,self.sort)
+        return selected if keep_order else sort_cards(selected,self.sort)
 
     def _screen(self,view,context=None,stack=False):
         self.mode=view
@@ -146,7 +148,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.setProperty('section_label',{
             'home':'DOMŮ','movies':'FILMY','shows':'SERIÁLY','premieres':'PREMIÉRY',
             'search':'VYHLEDÁVÁNÍ','seasons':'SÉRIE','episodes':'EPIZODY',
-            'files':'VÝBĚR KVALITY'}.get(view,'KATALOG'))
+            'files':'VÝBĚR KVALITY',
+             'most_watched':'NEJSLEDOVANĚJŠÍ'}.get(view,'KATALOG'))
         if not self.service.token:
             self._fill('PŘIHLÁŠENÍ K WEBSHARE',[
                 tile('NASTAVIT ÚČET WEBSHARE','settings',
@@ -193,12 +196,41 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                     self.quality,self.language))
                 if not ordered:
                     ordered=[tile('VYHLEDAT NÁZEV','search')]
-                row_one=ordered[:24];row_two=ordered[24:48]
+                row_one=ordered[:24]
+                if view=='movies':
+                    from cinema_dedupe import identity
+                    seen={identity(c) for c in row_one if c.get('kind')=='movie'}
+                    popular=self._filtered(self.service.most_watched_movies(
+                        24,self.quality,self.language),keep_order=True)
+                    row_two=[c for c in popular if identity(c) not in seen][:24]
+                    row_two.append(tile('+  ZOBRAZIT CELÝ ŽEBŘÍČEK',
+                        'most_watched',plot='Otevřít žebříček filmů. '
+                        'Další výsledky se načtou až při stisknutí +.'))
+                    heading='NEJSLEDOVANĚJŠÍ'
+                else:
+                    row_two=ordered[24:48]
+                    heading='DALŠÍ SERIÁLY' if view=='shows' else 'DALŠÍ PREMIÉRY'
                 self._fill('FILMY NA WEBSHARE' if view=='movies' else
                            'SERIÁLY NA WEBSHARE' if view=='shows' else
-                           'PREMIÉRY PODLE ČSFD',row_one,'DALŠÍ TITULY',row_two,
+                           'PREMIÉRY PODLE ČSFD',row_one,heading,row_two,
                            'ŘAZENÍ: '+self.sort+' · KVALITA: '+self.quality+
                            ' · JAZYK: '+self.language)
+            finally:load.close()
+        elif view=='most_watched':
+            load=self._loading('Načítám pořadí popularity z Webshare…')
+            try:
+                ranked=self._filtered(self.service.most_watched_movies(
+                    self.popular_limit,self.quality,self.language),
+                    keep_order=True)[:self.popular_limit]
+                items=list(ranked)
+                if self.service.most_watched_has_more():
+                    items.append(tile('+  NAČÍST DALŠÍ FILMY','load_more',
+                        plot='Postupně načítat další ověřené filmy z Webshare.'))
+                if not items:
+                    items=[tile('ŽÁDNÉ DOSTUPNÉ FILMY','none')]
+                self._fill('NEJSLEDOVANĚJŠÍ · ŽEBŘÍČEK FILMŮ',items,'',[],
+                           '%d ověřených filmů · pořadí podle popularity '
+                           'vyhledávání Webshare, nikoli počtu zhlédnutí'%len(ranked))
             finally:load.close()
         elif view=='search':
             query=(context or '').strip()
@@ -366,8 +398,20 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         kind=c.get('kind')
         if kind=='none':
             return
-        if kind in ('movies','shows','premieres','search'):
+        if kind in ('movies','shows','premieres','search','most_watched'):
+            if kind=='most_watched':
+                self.popular_limit=24
             self._refresh(kind)
+        elif kind=='load_more':
+            previous=len(self.rail_items[0])-1
+            self.popular_limit+=24
+            self._screen('most_watched')
+            try:
+                self.getControl(401).selectItem(min(previous,
+                    len(self.rail_items[0])-1))
+                self._update_hero()
+            except (RuntimeError,AttributeError):
+                pass
         elif kind=='settings':
             self._open_settings()
         elif kind=='movie':
