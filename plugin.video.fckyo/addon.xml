@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="FCKYO" version="0.17.0" provider-name="FCKYO Community">
+<addon id="plugin.video.fckyo" name="FCKYO" version="0.18.0" provider-name="FCKYO Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -21,6 +21,14 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.18.0 Postupně načítaný katalog filmů a seriálů[/B]
+- Nové položky VŠECHNY FILMY a VŠECHNY SERIÁLY ve filmové nabídce
+- Postupné načítání ověřených titulů z Webshare po 24, další stránky jen po stisknutí +
+- Oddělené kurzory pro filmy a seriály, bez opakování stejné stránky při návratu
+- Deduplikace plakátů včetně slučování jazyků a různých kvalit do jediného titulu
+- Oddělené remaky podle roku; kontrola reálné dostupnosti souborů
+- Zachování pozice ve vodorovné řadě při načtení dalších titulů
+
 [B]0.17.0 Rozšířené vyhledávání a filmové rozhraní[/B]
 - Větší filmový banner s plakátem, popisem a tlačítkem pro otevření filmu
 - Tmavé streamovací rozhraní s vysokými plakáty a bez přeskakování ze spodní řady
