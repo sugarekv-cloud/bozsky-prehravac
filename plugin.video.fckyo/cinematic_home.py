@@ -59,11 +59,14 @@ def _rgba_png(path, width, height, kind):
                 else:
                     color = (0,0,0,0)
             elif kind == 'focus':
-                color = (157,109,255,255)
+                color = (234,229,246,255)
             elif kind == 'chip':
-                color = (11,11,16,225)
+                color = (10,10,12,230)
+            elif kind == 'cardfade':
+                a = int(248 * (y/float(max(1,height-1)))**1.6)
+                color = (5,5,7,a)
             elif kind == 'nav_hover':
-                color = (34,31,42,244)
+                color = (35,35,40,244)
             elif kind == 'tile':
                 # Rounded graphite surface with a subtle violet edge/glow.
                 radius=8
@@ -104,10 +107,11 @@ def ensure_textures(profile):
     specs = {'background':(128,72), 'fade':(256,72),
              'focus':(2,2), 'button':(2,2),
              'gear':(96,96), 'gear_dark':(96,96),
-             'chip':(2,2),'nav_hover':(2,2),'tile':(128,72)}
+             'chip':(2,2),'nav_hover':(2,2),'tile':(128,72),
+             'cardfade':(128,84)}
     result = {}
     for kind,(w,h) in specs.items():
-        result[kind] = _rgba_png(os.path.join(folder,'stream_v7_'+kind+'.png'),w,h,kind)
+        result[kind] = _rgba_png(os.path.join(folder,'stream_v8_'+kind+'.png'),w,h,kind)
     return result
 
 
