@@ -121,7 +121,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
 
     def _update_hero(self):
         c=self._selected()
-        if not c and self.getFocusId()==108:
+        if not c and self.getFocusId() not in ROW_IDS:
+            # Keep the cinematic banner while focus moves to the top bar or
+            # sidebar, instead of flashing an empty hero background.
             c=self.featured_card
         if not c:
             self.featured_card=None
