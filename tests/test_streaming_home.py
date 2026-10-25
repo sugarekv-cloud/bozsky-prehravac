@@ -50,7 +50,7 @@ class StreamingHomeTests(unittest.TestCase):
             self.assertEqual(links[-1].text,str(cid))
             self.assertTrue(all(int(link.text)>=cid for link in links))
         bottom=self.root.find(".//control[@id='407']")
-        self.assertEqual(bottom.findtext('ondown'),'407')
+        self.assertEqual(bottom.findall('ondown')[-1].text,'407')
 
     def test_empty_rows_are_skipped_by_conditional_navigation(self):
         for cid in range(401,407):
