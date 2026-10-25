@@ -12,6 +12,17 @@ ROOT=os.path.abspath(os.path.join(os.path.dirname(__file__),'..'))
 PLUGIN=os.path.join(ROOT,'plugin.video.fckyo')
 sys.path.insert(0,PLUGIN)
 from cinema_service_v2 import CinemaService
+
+# Kodi modules are injected by the host at runtime, but not on CI.
+if 'xbmcgui' not in sys.modules:
+    ui=types.ModuleType('xbmcgui')
+    ui.WindowXMLDialog=type('WindowXMLDialog',(),{})
+    sys.modules['xbmcgui']=ui
+elif not hasattr(sys.modules['xbmcgui'],'WindowXMLDialog'):
+    sys.modules['xbmcgui'].WindowXMLDialog=type('WindowXMLDialog',(),{})
+if 'xbmc' not in sys.modules:
+    sys.modules['xbmc']=types.ModuleType('xbmc')
+
 from cinema_screen_v2 import CinemaScreen,TOP_ACTIONS
 
 
