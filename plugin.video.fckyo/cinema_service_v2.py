@@ -465,9 +465,7 @@ class CinemaService:
         if not self.token or self._background_started:
             return False
         if (self._snapshot_age is not None and self._snapshot_age<480
-                and self.home_cache is not None
-                and '_webshare_movies' in self.home_cache
-                and '_webshare_shows' in self.home_cache):
+                and self.home_cache is not None):
             return False
         self._background_started=True
         self._background_done.clear()
@@ -476,9 +474,9 @@ class CinemaService:
                 profile=os.path.dirname(self.cache_path) if self.cache_path else None
                 clone=CinemaService(self.token,self.fetch,self.availability,
                                     self.metadata,self.calendar,profile)
+                # One metadata/discovery pass only: no expensive popularity
+                # searches blocking the requested ČSFD-first experience.
                 home=clone.home(force=True)
-                home['_webshare_movies']=clone.most_watched_movies(18)
-                home['_webshare_shows']=clone.most_watched_shows(18)
                 if clone.cache_path and (home.get('_all_movies') or home.get('_all_shows')):
                     with io.open(clone.cache_path+'.tmp','w',encoding='utf8') as out:
                         json.dump({'saved':time.time(),'home':home},out,ensure_ascii=False)
