@@ -16,7 +16,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.24.0'
+VERSION='0.25.0'
 
 
 def tile(name,kind,**extra):
@@ -36,6 +36,13 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.catalog_limit=24
         self.genre_limits={'movie':24,'show':24}
         self.featured_card=None
+        self._updating_home=False
+        try:
+            # Tracked by the playback service: retain the original screen
+            # underneath fullscreen playback whenever Kodi permits it.
+            xbmcgui.Window(10000).setProperty('kivora_window_open','yes')
+        except (RuntimeError,AttributeError,TypeError):
+            pass
         for name,path in self.textures.items():
             self.setProperty('cinema_'+name,path)
         self.setProperty('cinema_brand',getattr(self,'brand_path',''))
@@ -635,11 +642,22 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             else:
                 self._refresh('seasons',card)
 
+    def _start_playback(self,url):
+        """Keep the film dialog alive below video, preserving scroll/focus."""
+        builtin=getattr(xbmc,'executebuiltin',None)
+        if callable(builtin):
+            builtin('PlayMedia(%s)'%url)
+        else:
+            # Compatible fallback for minimal Kodi stubs.
+            self.destination=url
+            self.is_play=True
+            self.close()
+
     def _play_saved(self,card):
         """Resume a real, previously played Webshare file at its stored time."""
         if not card.get('ident') or not card.get('name'):
             return
-        self.destination=self.make_url(
+        url=self.make_url(
             action='play',from_cinema='1',ident=card['ident'],name=card['name'],
             title=card.get('title') or '',raw_title=card.get('raw_title') or card.get('raw') or '',
             kind=card.get('kind') or 'movie',year=card.get('year') or '',
@@ -647,8 +665,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             original=card.get('original') or '',
             season=card.get('season') or '',episode=card.get('episode') or '',
             resume=str(card.get('position') or 0))
-        self.is_play=True
-        self.close()
+        self._start_playback(url)
 
     def onAction(self,action):
         self._apply_background_home()
@@ -765,7 +782,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             # Hand off title/episode information only after explicit file choice.
             # The Kodi playback service saves real progress after video starts.
             parent,season,episode=self.context
-            self.destination=self.make_url(
+            url=self.make_url(
                 action='play',from_cinema='1',
                 ident=c['ident'],name=c['raw'],
                 title=parent.get('title') or '',raw_title=parent.get('raw') or parent.get('title') or '',
@@ -776,8 +793,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 plot=parent.get('plot') or '',genre=parent.get('genre') or '',
                 quality=c.get('quality') or '',
                 season=str(season or ''),episode=str(episode or ''))
-            self.is_play=True
-            self.close()
+            self._start_playback(url)
 
 
 def launch(addon,profile,get_url,token,search_page,
@@ -812,5 +828,9 @@ def launch(addon,profile,get_url,token,search_page,
         win.doModal()
         return win.destination,win.is_play
     finally:
+        try:
+            xbmcgui.Window(10000).clearProperty('kivora_window_open')
+        except (RuntimeError,AttributeError,TypeError):
+            pass
         win.close()
         del win
