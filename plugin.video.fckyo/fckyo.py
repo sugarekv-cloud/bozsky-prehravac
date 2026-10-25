@@ -525,6 +525,18 @@ def play(params):
             link = link + '|' + urlencode(headers)
         listitem = xbmcgui.ListItem(label=params['name'],path=link)
         listitem.setProperty('mimetype', 'application/octet-stream')
+        if params.get('from_cinema')=='1':
+            # Only resolved, user-selected videos become potential watch items.
+            # Kodi service records real playback time after the player starts.
+            try:
+                from cinema_user_state import WatchStore
+                WatchStore(_profile).pending_play(params)
+                if params.get('kind') in ('movie','show'):
+                    listitem.setInfo('video', {
+                        'title':params.get('title') or params['name'],
+                        'mediatype':'movie' if params['kind']=='movie' else 'episode'})
+            except Exception:
+                traceback.print_exc()
         xbmcplugin.setResolvedUrl(_handle, True, listitem)
     else:
         popinfo(_addon.getLocalizedString(30107), icon=xbmcgui.NOTIFICATION_WARNING)
