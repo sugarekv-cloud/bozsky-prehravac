@@ -124,6 +124,37 @@ class TabRenderingTests(unittest.TestCase):
         self.assertEqual(win._nav_focus_target,102)
         self.assertEqual(len(rendered),1)
 
+    def test_header_never_displays_movie_banner_in_series(self):
+        win,rendered=self.window()
+        win.mode='shows'
+        win.featured_card=verified('movie','shawshank')
+        win.featured_card.update(title='Vykoupení z věznice Shawshank',
+                                 poster='movie-poster.jpg')
+        show=verified('show','series')
+        show.update(poster='series-poster.jpg')
+        win.rail_items=[[show]]+[[] for _ in range(12)]
+        win._selected=lambda:None
+        win.getFocusId=lambda:102
+        props={}
+        win.setProperty=lambda key,value:props.__setitem__(key,value)
+        win._update_hero()
+        self.assertEqual(props['hero_title'],'Series')
+        self.assertEqual(props['hero_poster'],'series-poster.jpg')
+        self.assertNotIn('Shawshank',props['hero_title'])
+
+    def test_no_series_art_never_preserves_movie_hero(self):
+        win,rendered=self.window(error=True)
+        win.mode='shows'
+        win.featured_card=verified('movie','shawshank')
+        win.rail_items=[[] for _ in range(13)]
+        win.getFocusId=lambda:102
+        win._selected=lambda:None
+        props={}
+        win.setProperty=lambda key,value:props.__setitem__(key,value)
+        win._update_hero()
+        self.assertEqual(props['hero_title'],'SERIÁLY')
+        self.assertEqual(props['hero_art'],'')
+
     def test_header_in_skin_has_real_series_button(self):
         skin=ET.parse(os.path.join(PLUGIN,'resources','skins','Default','1080i',
                                    'fckyo-cinema-v2.xml')).getroot()
