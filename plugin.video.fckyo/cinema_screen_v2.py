@@ -252,39 +252,83 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                                         '+  VŠECHNY SERIÁLY','catalog_open',
                                         catalog_kind=what,
                                         plot='Otevřít rozsáhlý katalog a načítat další tituly po dávkách.'))
-                if view=='movies':
+                other_rows=[]
+                if view in ('movies','shows'):
+                    what='movie' if view=='movies' else 'show'
+                    cached=self.service.home_fast()
+                    source='_webshare_movies' if what=='movie' else '_webshare_shows'
+                    popular=cached.get(source) or (
+                        self.service.most_watched_movies(24,self.quality,self.language)
+                        if what=='movie' else
+                        self.service.most_watched_shows(24,self.quality,self.language))
                     from cinema_dedupe import identity
-                    seen={identity(c) for c in row_one if c.get('kind')=='movie'}
-                    popular=self._filtered(self.service.most_watched_movies(
-                        24,self.quality,self.language),keep_order=True)
-                    row_two=[c for c in popular if identity(c) not in seen][:24]
-                    row_two.append(tile('+  ZOBRAZIT CELÝ ŽEBŘÍČEK',
-                        'most_watched',plot='Otevřít žebříček filmů. '
-                        'Další výsledky se načtou až při stisknutí +.'))
-                    heading='NEJSLEDOVANĚJŠÍ NA WEBSHARE'
+                    excluded={identity(c) for c in row_one
+                              if c.get('kind') in ('movie','show')}
+                    row_two=[c for c in self._filtered(popular,keep_order=True)
+                             if identity(c) not in excluded][:24]
+                    row_two.append(tile('+  CELÝ ŽEBŘÍČEK WEBSHARE',
+                        'most_watched',catalog_kind=what))
+                    heading='POPULÁRNÍ NA WEBSHARE · FILMY' if what=='movie' else 'POPULÁRNÍ NA WEBSHARE · SERIÁLY'
+                    from cinema_rankings import csfd_only
+                    records=cached.get('_all_movies') if what=='movie' else cached.get('_all_shows')
+                    csfd=csfd_only(records or [],what,limit=35)
+                    if csfd:
+                        csfd=list(csfd)+[tile('+  CELÝ ŽEBŘÍČEK ČSFD',
+                            'csfd_ranked',catalog_kind=what)]
+                    other_rows=[('NEJLÉPE HODNOCENÉ NA ČSFD · FILMY' if what=='movie'
+                                 else 'NEJLÉPE HODNOCENÉ NA ČSFD · SERIÁLY',csfd)]
                 else:
                     row_two=ordered[24:48]
-                    heading='DALŠÍ SERIÁLY' if view=='shows' else 'DALŠÍ PREMIÉRY'
-                other_rows=[]
-                if view=='movies':
-                    from cinema_rankings import csfd_only
-                    csfd=csfd_only(self.service.home().get('_all_movies') or [],'movie',limit=35)
-                    if csfd:
-                        other_rows=[('NEJLÉPE HODNOCENÉ NA ČSFD',csfd)]
+                    heading='DALŠÍ PREMIÉRY'
                 self._fill('FILMY NA WEBSHARE' if view=='movies' else
                            'SERIÁLY NA WEBSHARE' if view=='shows' else
                            'PREMIÉRY PODLE ČSFD',row_one,heading,row_two,
                            'ŘAZENÍ: '+self.sort+' · KVALITA: '+self.quality+
                            ' · JAZYK: '+self.language,extra_rows=other_rows)
             finally:load.close()
+        elif view=='genres':
+            from cinema_genres import GENRES
+            cards=[tile('🎭  '+name,'genre_open',genre_name=name,
+                        plot='Vyhledat ověřené filmy a seriály: '+name)
+                   for name in GENRES]
+            self._fill('VYBER ŽÁNR · FILMY',cards[:12],
+                       'VYBER ŽÁNR · SERIÁLY',cards[12:],
+                       'Žánry podle filmových metadat, jen ověřené soubory Webshare')
+        elif view=='genre_titles':
+            from cinema_genres import genre_cards
+            from cinema_dedupe import consolidate
+            genre=context or 'Komedie'
+            home=self.service.home_fast()
+            film_pool=list(home.get('_all_movies') or [])
+            show_pool=list(home.get('_all_shows') or [])
+            for kind,pool in (('movie',film_pool),('show',show_pool)):
+                stream=getattr(self.service,'_browse_streams',{}).get(kind)
+                if stream:
+                    pool.extend(stream['cards'])
+            movies=self._filtered(genre_cards(consolidate(film_pool),genre))
+            shows=self._filtered(genre_cards(consolidate(show_pool),genre))
+            for kind,cards in (('movie',movies),('show',shows)):
+                stream=getattr(self.service,'_browse_streams',{}).get(kind)
+                if not stream or not stream.get('done'):
+                    cards.append(tile('+  NAČÍST DALŠÍ '+(
+                        'FILMY' if kind=='movie' else 'SERIÁLY'),'genre_more',
+                        catalog_kind=kind,
+                        plot='Prověří další soubory Webshare a jejich žánry'))
+            self._fill(genre.upper()+' · FILMY',movies or
+                       [tile('ZATÍM BEZ OVĚŘENÝCH FILMŮ','none')],
+                       genre.upper()+' · SERIÁLY',shows or
+                       [tile('ZATÍM BEZ OVĚŘENÝCH SERIÁLŮ','none')],
+                       'Žánry podle ČSFD/Cinemeta · neověřené tituly skryty')
         elif view=='csfd_ranked':
             from cinema_rankings import csfd_only
-            home=self.service.home()
-            movies=csfd_only(home.get('_all_movies') or [],'movie',limit=80)
-            if not movies:
-                movies=[tile('ZATÍM BEZ OVĚŘENÉHO HODNOCENÍ ČSFD','none')]
-            self._fill('NEJLÉPE HODNOCENÉ FILMY · ČSFD',movies,'',[],
-                       'Pouze filmy ověřené na Webshare s hodnocením ze ČSFD')
+            kind=context if context in ('movie','show') else 'movie'
+            snapshot=self.service.home_fast()
+            key='_all_movies' if kind=='movie' else '_all_shows'
+            ranked=csfd_only(snapshot.get(key) or [],kind,limit=80)
+            self._fill('ČSFD · NEJLÉPE HODNOCENÉ '+(
+                       'FILMY' if kind=='movie' else 'SERIÁLY'),
+                       ranked or [tile('ZATÍM BEZ OVĚŘENÉHO HODNOCENÍ ČSFD','none')],
+                       '',[],'Jen skutečné hodnocení ČSFD a ověřené Webshare soubory')
         elif view=='favorites':
             store=getattr(self,'watch_store',None)
             favorites=store.favorite_cards() if store else []
@@ -313,21 +357,25 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                            'další stránky na požádání'%len(cards))
             finally:load.close()
         elif view=='most_watched':
-            load=self._loading('Načítám pořadí popularity z Webshare…')
+            kind=context if context in ('movie','show') else 'movie'
+            load=self._loading('Načítám popularitu z Webshare…')
             try:
-                ranked=self._filtered(self.service.most_watched_movies(
-                    self.popular_limit,self.quality,self.language),
-                    keep_order=True)[:self.popular_limit]
+                fetch=(self.service.most_watched_movies if kind=='movie' else
+                       self.service.most_watched_shows)
+                ranked=self._filtered(fetch(self.popular_limit,self.quality,self.language),
+                                      keep_order=True)[:self.popular_limit]
+                done=(self.service._most_watched_done if kind=='movie'
+                      else getattr(self.service,'_show_popularity',{}).get('done',False))
                 items=list(ranked)
-                if self.service.most_watched_has_more():
-                    items.append(tile('+  NAČÍST DALŠÍ FILMY','load_more',
-                        plot='Postupně načítat další ověřené filmy z Webshare.'))
+                if not done:
+                    items.append(tile('+  NAČÍST DALŠÍ','load_more',catalog_kind=kind))
                 if not items:
-                    items=[tile('ŽÁDNÉ DOSTUPNÉ FILMY','none')]
-                self._fill('NEJSLEDOVANĚJŠÍ NA WEBSHARE',items,'',[],
-                           '%d ověřených filmů · pořadí podle popularity '
-                           'vyhledávání Webshare, nikoli počtu zhlédnutí'%len(ranked))
-            finally:load.close()
+                    items=[tile('ŽÁDNÉ OVĚŘENÉ TITULY','none')]
+                self._fill('WEBSHARE · POPULÁRNÍ '+(
+                           'FILMY' if kind=='movie' else 'SERIÁLY'),items,'',[],
+                           '%d titulů · popularita souborů, ne počty zhlédnutí'%len(ranked))
+            finally:
+                load.close()
         elif view=='search':
             query=(context or '').strip()
             if not query:
