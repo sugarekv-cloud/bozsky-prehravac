@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="KIVORA" version="0.24.0" provider-name="KIVORA Community">
+<addon id="plugin.video.fckyo" name="KIVORA" version="0.25.0" provider-name="KIVORA Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -22,6 +22,14 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.25.0 Opravena domácí obrazovka, živé Tipy a návrat po přehrání[/B]
+- Po výběru souboru zůstává vlastní filmové okno aktivní pod videem; po Stop nebo dokončení se vrací stejná obrazovka a výběr
+- Přehrávací služba znovu neotevírá Kodi video knihovnu, když KIVORA stále běží; záložní návrat pro uzavřené dialogy zůstává
+- Domů převezme dokončené načtení katalogu hned při otevření; Tipy se aktualizují i ve své samostatné nabídce
+- První spuštění bez katalogu zobrazí použitelnou úvodní obrazovku, odkazy do knihovny a vyhledávání
+- Tlačítko Tipy dovoluje explicitně opakovat dokončené hledání po výpadku připojení
+- Technické ID i adresa repozitáře zůstávají beze změny; lze aktualizovat z Kodi bez nového ZIPu
+
 [B]0.24.0 KIVORA – nový moderní filmový svět[/B]
 - Nový název, původní technické ID plugin.video.fckyo i repozitář zůstávají kvůli bezproblémové aktualizaci
 - Kompletně překreslené logo a vlastní grafické PNG ikonky boční navigace místo chybějících znaků
