@@ -16,7 +16,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.25.0'
+VERSION='0.26.0'
 
 
 def tile(name,kind,**extra):
@@ -221,6 +221,12 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             # Instant cached paint, network-free on the UI thread.
             home=self.service.home_fast()
             self.service.start_home_refresh()
+            tips_snapshot=getattr(self.service,'tips_snapshot',None)
+            if callable(tips_snapshot):
+                home=tips_snapshot(home)
+            tips_bootstrap=getattr(self.service,'start_tips_refresh',None)
+            if callable(tips_bootstrap):
+                tips_bootstrap()
             store=getattr(self,'watch_store',None)
             films=store.continue_cards('movie') if store else []
             series=store.continue_cards('show') if store else []
@@ -288,7 +294,15 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             from cinema_recommendations import recommendations
             home=self.service.home_fast()
             self.service.start_home_refresh()
+            tips_snapshot=getattr(self.service,'tips_snapshot',None)
+            if callable(tips_snapshot):
+                home=tips_snapshot(home)
+            tips_bootstrap=getattr(self.service,'start_tips_refresh',None)
+            if callable(tips_bootstrap):
+                tips_bootstrap()
             personal,weekly=recommendations(home,getattr(self,'watch_store',None),limit=35)
+            personal=[dict(c,_tip='TIP PRO TEBE') for c in personal]
+            weekly=[dict(c,_tip='TIP TÝDNE') for c in weekly]
             if not personal:
                 personal=[tile('TIPY SE NAČÍTAJÍ · OBNOVIT','tips_retry',
                                plot='Doporučení z ověřených titulů se připravují.')]
@@ -593,7 +607,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         if current_mode not in ('home','recommendations') or getattr(self,'_updating_home',False):
             return
         updated=self.service.take_home_refresh()
-        if not updated:
+        take_tips=getattr(self.service,'take_tips_refresh',None)
+        tips_updated=take_tips() if callable(take_tips) else None
+        if not updated and not tips_updated:
             return
         focused=self.getFocusId()
         position=0
@@ -736,6 +752,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self._apply_background_home()
             if self.mode in ('home','recommendations'):
                 self.service.start_home_refresh(force=True)
+                new_tips=getattr(self.service,'start_tips_refresh',None)
+                if callable(new_tips):
+                    new_tips(force=True)
                 xbmcgui.Dialog().notification('KIVORA',
                     'Doporučení se aktualizují na pozadí')
         elif kind=='genre_open':
