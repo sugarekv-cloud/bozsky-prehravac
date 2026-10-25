@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="KIVORA" version="0.29.1" provider-name="KIVORA Community">
+<addon id="plugin.video.fckyo" name="KIVORA" version="0.30.0" provider-name="KIVORA Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -22,6 +22,17 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.30.0 Funkční úvodní stránka a ověřené Tipy · moderní TV karty[/B]
+- Domů zobrazuje skutečnou úvodní obrazovku hned z lokálního katalogu, nezávisle na výpadku ČSFD/Webshare a doporučovače
+- Tipy pro tebe ukazují reálné dostupné filmy a seriály, včetně dříve viděných nebo oblíbených jako záložní výběr
+- Starší cache bez _all_movies a _all_shows se zpracuje ze skutečně ověřených položek movies/shows
+- Na úvodu jsou tipy, pokračování ve sledování, top ČSFD filmy/seriály, novinky, filmový a seriálový výběr
+- Oprava stavu, kdy dokončený background worker zabránil dalšímu obnovení katalogu
+- Zachování předchozího neprázdného katalogu, pokud Webshare vrátí dočasně prázdný výsledek
+- Vylepšené filmové karty s plakátem a čitelným názvem vedle sebe; nový grafitovo-fialový gradient
+- Hlavní banner používá větší poster fallback v originálním poměru stran
+- Dříve opravené přepínání Filmy/Seriály a návrat z videa zachovány
+
 [B]0.29.1 Oprava filmového banneru při přepnutí Seriály[/B]
 - Při přechodu mezi Filmy a Seriály se spolu s katalogem vždy obnoví také velký obrázek a název vybraného titulu
 - Předchozí film se již nemůže zobrazovat jako hlavní banner seriálové sekce
