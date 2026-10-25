@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="FCKYO" version="0.20.0" provider-name="FCKYO Community">
+<addon id="plugin.video.fckyo" name="FCKYO" version="0.21.0" provider-name="FCKYO Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -22,6 +22,16 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.21.0 Moderní filmové rozhraní s doporučeními[/B]
+- Po ukončení filmu nebo epizody spuštěné z FCKYO se automaticky otevře domovská obrazovka doplňku
+- Nové originální logo FCKYO a vlastní ikona, vytvořené během publikace ZIP balíčku
+- DOMŮ, FILMY, SERIÁLY, HLEDAT, PREMIÉRY a ŽÁNRY: viditelné zaměření tlačítka i otevřené sekce
+- Nejlépe hodnocené filmy a seriály podle ČSFD přesunuty na začátek
+- Doporučení pro tebe z oblíbených žánrů, historie a skutečných dostupných souborů
+- Tipy týdne se pravidelně obměňují na základě ověřeného katalogu
+- Nejoblíbenější na Webshare z domovské stránky a filmových/seriálových řad odebráno
+- Rychlý start z lokální mezipaměti a průběžná aktualizace na pozadí
+
 [B]0.20.0 Rychlý úvod, populární seriály a žánry[/B]
 - Úvod se otevře z ověřené lokální mezipaměti bez čekání na Webshare/ČSFD
 - Síťový průzkum běží ve vlákně na pozadí, po dokončení se katalog obnoví při další akci v Kodi
