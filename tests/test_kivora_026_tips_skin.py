@@ -116,7 +116,7 @@ class MovieTipsPageTests(unittest.TestCase):
         home=source[source.index("        if view=='home':"):
                     source.index("        elif view=='recommendations':")]
         self.assertIn("self._home_catalogue()",home)
-        self.assertIn("tips_bootstrap()",home)
+        self.assertIn("self._schedule_home_discovery()",home)
         self.assertLess(home.index("('TIPY NA SLEDOVÁNÍ',personal)"),
                         home.index("('NEJLÉPE HODNOCENÉ FILMY · ČSFD'"))
 
