@@ -7,34 +7,35 @@
         <posy>0</posy>
     </coordinates>
     <controls>
-        <!-- Streaming-style dark theme with portrait covers and fixed vertical navigation. -->
+        <!-- KIVORA streaming-style home: cinematic artwork, multi-format rails and compact navigation. -->
         <control type="image">
             <left>0</left><top>0</top><width>1920</width><height>1080</height>
             <texture>$INFO[Window.Property(cinema_background)]</texture>
             <aspectratio>stretch</aspectratio>
         </control>
         <control type="image">
-            <left>785</left><top>104</top><width>1135</width><height>414</height>
+            <left>550</left><top>101</top><width>1370</width><height>530</height>
             <texture>$INFO[Window.Property(hero_art)]</texture>
             <aspectratio>scale</aspectratio>
             <colordiffuse>CCFFFFFF</colordiffuse>
             <visible>!String.IsEmpty(Window.Property(hero_art))</visible>
         </control>
         <control type="image">
-            <left>246</left><top>101</top><width>1674</width><height>421</height>
+            <left>212</left><top>100</top><width>1708</width><height>530</height>
             <texture>$INFO[Window.Property(cinema_fade)]</texture>
             <aspectratio>stretch</aspectratio>
         </control>
         <!-- Full-resolution movie poster fallback when no landscape art exists. -->
         <control type="image">
-            <left>1530</left><top>116</top><width>285</width><height>396</height>
+            <left>1090</left><top>103</top><width>830</width><height>525</height>
             <texture>$INFO[Window.Property(hero_poster)]</texture>
-            <aspectratio>keep</aspectratio>
+            <aspectratio>scale</aspectratio>
+            <colordiffuse>55FFFFFF</colordiffuse>
             <visible>String.IsEmpty(Window.Property(hero_art)) + !String.IsEmpty(Window.Property(hero_poster))</visible>
         </control>
         <!-- Visible build identity makes stale installations easy to diagnose. -->
         <control type="label">
-            <left>289</left><top>138</top><width>910</width><height>34</height>
+            <left>270</left><top>161</top><width>910</width><height>34</height>
             <font>font12</font><textcolor>FFBCA4F5</textcolor>
             <label>$INFO[Window.Property(section_label)]  ·  $INFO[Window.Property(app_version)]</label>
         </control>
@@ -102,9 +103,23 @@
             <textcolor>FFE7EAF0</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
-            <ondown condition="!String.IsEmpty(Window.Property(row1_heading))">401</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + !String.IsEmpty(Window.Property(row2_heading))">402</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + !String.IsEmpty(Window.Property(row3_heading))">403</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + !String.IsEmpty(Window.Property(row4_heading))">404</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + !String.IsEmpty(Window.Property(row5_heading))">405</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row6_heading))">406</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row7_heading))">407</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + !String.IsEmpty(Window.Property(row8_heading))">408</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + !String.IsEmpty(Window.Property(row9_heading))">409</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + !String.IsEmpty(Window.Property(row10_heading))">410</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + !String.IsEmpty(Window.Property(row11_heading))">411</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + !String.IsEmpty(Window.Property(row12_heading))">412</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + String.IsEmpty(Window.Property(row12_heading)) + !String.IsEmpty(Window.Property(row13_heading))">413</ondown><ondown>401</ondown><onleft>104</onleft><onright>107</onright>
+            <ondown condition="!String.IsEmpty(Window.Property(row1_heading))">401</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + !String.IsEmpty(Window.Property(row2_heading))">402</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + !String.IsEmpty(Window.Property(row3_heading))">403</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + !String.IsEmpty(Window.Property(row4_heading))">404</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + !String.IsEmpty(Window.Property(row5_heading))">405</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row6_heading))">406</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row7_heading))">407</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + !String.IsEmpty(Window.Property(row8_heading))">408</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + !String.IsEmpty(Window.Property(row9_heading))">409</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + !String.IsEmpty(Window.Property(row10_heading))">410</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + !String.IsEmpty(Window.Property(row11_heading))">411</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + !String.IsEmpty(Window.Property(row12_heading))">412</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + String.IsEmpty(Window.Property(row12_heading)) + !String.IsEmpty(Window.Property(row13_heading))">413</ondown><ondown>401</ondown><onleft>104</onleft><onright>109</onright>
         </control>
-        <!-- A single top-right settings control, reachable by remote control. -->
+        <control type="button" id="109">
+            <left>1423</left><top>27</top><width>156</width><height>61</height>
+            <label>BLUEY</label><font>font13</font>
+            <align>center</align><aligny>center</aligny>
+            <textcolor>FFE7EAF0</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
+            <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
+            <ondown condition="!String.IsEmpty(Window.Property(row1_heading))">401</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + !String.IsEmpty(Window.Property(row2_heading))">402</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + !String.IsEmpty(Window.Property(row3_heading))">403</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + !String.IsEmpty(Window.Property(row4_heading))">404</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + !String.IsEmpty(Window.Property(row5_heading))">405</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row6_heading))">406</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row7_heading))">407</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + !String.IsEmpty(Window.Property(row8_heading))">408</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + !String.IsEmpty(Window.Property(row9_heading))">409</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + !String.IsEmpty(Window.Property(row10_heading))">410</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + !String.IsEmpty(Window.Property(row11_heading))">411</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + !String.IsEmpty(Window.Property(row12_heading))">412</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + String.IsEmpty(Window.Property(row12_heading)) + !String.IsEmpty(Window.Property(row13_heading))">413</ondown><ondown>401</ondown><onleft>105</onleft><onright>107</onright>
+        </control>
+        <control type="image">
+            <left>1435</left><top>91</top><width>134</width><height>4</height>
+            <texture>$INFO[Window.Property(cinema_focus)]</texture>
+            <visible>Control.HasFocus(109) | String.IsEqual(Window.Property(nav_active),bluey)</visible>
+        </control>
+                <!-- A single top-right settings control, reachable by remote control. -->
         <control type="button" id="107">
             <left>1764</left><top>27</top><width>82</width><height>61</height>
             <description>Ozubené kolečko – nastavení a filtry</description>
@@ -113,7 +128,7 @@
             <textcolor>FFE7EAF0</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
-            <ondown condition="!String.IsEmpty(Window.Property(row1_heading))">401</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + !String.IsEmpty(Window.Property(row2_heading))">402</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + !String.IsEmpty(Window.Property(row3_heading))">403</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + !String.IsEmpty(Window.Property(row4_heading))">404</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + !String.IsEmpty(Window.Property(row5_heading))">405</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row6_heading))">406</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row7_heading))">407</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + !String.IsEmpty(Window.Property(row8_heading))">408</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + !String.IsEmpty(Window.Property(row9_heading))">409</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + !String.IsEmpty(Window.Property(row10_heading))">410</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + !String.IsEmpty(Window.Property(row11_heading))">411</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + !String.IsEmpty(Window.Property(row12_heading))">412</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + String.IsEmpty(Window.Property(row12_heading)) + !String.IsEmpty(Window.Property(row13_heading))">413</ondown><ondown>401</ondown><onleft>105</onleft><onright>106</onright>
+            <ondown condition="!String.IsEmpty(Window.Property(row1_heading))">401</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + !String.IsEmpty(Window.Property(row2_heading))">402</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + !String.IsEmpty(Window.Property(row3_heading))">403</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + !String.IsEmpty(Window.Property(row4_heading))">404</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + !String.IsEmpty(Window.Property(row5_heading))">405</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row6_heading))">406</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row7_heading))">407</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + !String.IsEmpty(Window.Property(row8_heading))">408</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + !String.IsEmpty(Window.Property(row9_heading))">409</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + !String.IsEmpty(Window.Property(row10_heading))">410</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + !String.IsEmpty(Window.Property(row11_heading))">411</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + !String.IsEmpty(Window.Property(row12_heading))">412</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + String.IsEmpty(Window.Property(row12_heading)) + !String.IsEmpty(Window.Property(row13_heading))">413</ondown><ondown>401</ondown><onleft>109</onleft><onright>106</onright>
         </control>
         <control type="image">
             <left>1785</left><top>37</top><width>42</width><height>42</height>
@@ -205,33 +220,33 @@
 
         <!-- Featured title changes as the user moves over posters. -->
         <control type="label">
-            <left>287</left><top>190</top><width>1150</width><height>82</height>
+            <left>268</left><top>220</top><width>1250</width><height>86</height>
             <font>font45_title</font><textcolor>FFFFFFFF</textcolor>
             <label>$INFO[Window.Property(hero_title)]</label>
             <scroll>false</scroll>
         </control>
         <control type="label">
-            <left>291</left><top>282</top><width>1050</width><height>43</height>
+            <left>273</left><top>319</top><width>1100</width><height>43</height>
             <font>font13</font><textcolor>FFD4B9FF</textcolor>
             <label>$INFO[Window.Property(hero_info)]</label>
             <scroll>true</scroll>
         </control>
         <control type="textbox">
-            <left>291</left><top>339</top><width>917</width><height>65</height>
+            <left>273</left><top>376</top><width>930</width><height>63</height>
             <font>font13</font><textcolor>FFD3D3D7</textcolor>
             <label>$INFO[Window.Property(hero_plot)]</label>
             <autoscroll time="1800" delay="1000" repeat="5000">true</autoscroll>
         </control>
         <control type="label">
-            <left>650</left><top>450</top><width>850</width><height>30</height>
+            <left>608</left><top>492</top><width>780</width><height>30</height>
             <font>font12</font><textcolor>FF8F8F98</textcolor>
             <label>OK = VYBRAT   ·   ŠIPKY = PROHLÍŽET   ·   ZPĚT = PŘEDCHOZÍ</label>
             <visible>String.IsEmpty(Window.Property(hero_action))</visible>
         </control>
         <!-- The featured movie remains selectable without opening a separate menu. -->
         <control type="button" id="108">
-            <left>291</left><top>437</top><width>335</width><height>63</height>
-            <font>font13</font><label>▶  OTEVŘÍT TITUL</label>
+            <left>273</left><top>468</top><width>310</width><height>62</height>
+            <font>font13</font><label>▶  PŘEHRÁT / DETAIL</label>
             <align>center</align><aligny>center</aligny>
             <textcolor>FFFFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
@@ -241,10 +256,10 @@
             <visible>String.IsEqual(Window.Property(hero_action),yes)</visible>
         </control>
 
-        <control type="image"><left>0</left><top>101</top><width>235</width><height>979</height><texture>$INFO[Window.Property(cinema_button)]</texture><colordiffuse>EB090B12</colordiffuse></control>
-        <control type="image"><left>233</left><top>101</top><width>2</width><height>979</height><texture>$INFO[Window.Property(cinema_focus)]</texture><colordiffuse>665C478E</colordiffuse></control>
+        <control type="image"><left>0</left><top>101</top><width>214</width><height>979</height><texture>$INFO[Window.Property(cinema_button)]</texture><colordiffuse>EB090B12</colordiffuse></control>
+        <control type="image"><left>212</left><top>101</top><width>2</width><height>979</height><texture>$INFO[Window.Property(cinema_focus)]</texture><colordiffuse>665C478E</colordiffuse></control>
         <control type="button" id="201">
-            <left>67</left><top>146</top><width>163</width><height>58</height>
+            <left>54</left><top>146</top><width>154</width><height>58</height>
             <font>font12</font><label>DOMŮ</label><align>left</align><aligny>center</aligny>
             <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
@@ -252,7 +267,7 @@
             <onup>106</onup><ondown>208</ondown><onright>401</onright>
         </control>
         <control type="image">
-            <left>29</left><top>161</top><width>33</width><height>33</height>
+            <left>20</left><top>161</top><width>33</width><height>33</height>
             <texture>$INFO[Window.Property(side_icon_201)]</texture>
             <aspectratio>keep</aspectratio>
         </control>
@@ -260,7 +275,7 @@
         <control type="image"><left>20</left><top>197</top><width>175</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture><visible>Control.HasFocus(201)</visible></control>
         <control type="button" id="202">
-            <left>67</left><top>294</top><width>163</width><height>58</height>
+            <left>54</left><top>294</top><width>154</width><height>58</height>
             <font>font12</font><label>ROZKOUKANÉ</label><align>left</align><aligny>center</aligny>
             <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
@@ -268,7 +283,7 @@
             <onup>208</onup><ondown>203</ondown><onright>401</onright>
         </control>
         <control type="image">
-            <left>29</left><top>309</top><width>33</width><height>33</height>
+            <left>20</left><top>309</top><width>33</width><height>33</height>
             <texture>$INFO[Window.Property(side_icon_202)]</texture>
             <aspectratio>keep</aspectratio>
         </control>
@@ -276,7 +291,7 @@
         <control type="image"><left>20</left><top>345</top><width>175</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture><visible>Control.HasFocus(202)</visible></control>
         <control type="button" id="203">
-            <left>67</left><top>368</top><width>163</width><height>58</height>
+            <left>54</left><top>368</top><width>154</width><height>58</height>
             <font>font12</font><label>OBLÍBENÉ</label><align>left</align><aligny>center</aligny>
             <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
@@ -284,7 +299,7 @@
             <onup>202</onup><ondown>204</ondown><onright>401</onright>
         </control>
         <control type="image">
-            <left>29</left><top>383</top><width>33</width><height>33</height>
+            <left>20</left><top>383</top><width>33</width><height>33</height>
             <texture>$INFO[Window.Property(side_icon_203)]</texture>
             <aspectratio>keep</aspectratio>
         </control>
@@ -292,7 +307,7 @@
         <control type="image"><left>20</left><top>419</top><width>175</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture><visible>Control.HasFocus(203)</visible></control>
         <control type="button" id="204">
-            <left>67</left><top>442</top><width>163</width><height>58</height>
+            <left>54</left><top>442</top><width>154</width><height>58</height>
             <font>font12</font><label>ŽÁNRY</label><align>left</align><aligny>center</aligny>
             <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
@@ -300,7 +315,7 @@
             <onup>203</onup><ondown>205</ondown><onright>401</onright>
         </control>
         <control type="image">
-            <left>29</left><top>457</top><width>33</width><height>33</height>
+            <left>20</left><top>457</top><width>33</width><height>33</height>
             <texture>$INFO[Window.Property(side_icon_204)]</texture>
             <aspectratio>keep</aspectratio>
         </control>
@@ -308,7 +323,7 @@
         <control type="image"><left>20</left><top>493</top><width>175</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture><visible>Control.HasFocus(204)</visible></control>
         <control type="button" id="205">
-            <left>67</left><top>516</top><width>163</width><height>58</height>
+            <left>54</left><top>516</top><width>154</width><height>58</height>
             <font>font12</font><label>TOP ČSFD</label><align>left</align><aligny>center</aligny>
             <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
@@ -316,7 +331,7 @@
             <onup>204</onup><ondown>206</ondown><onright>401</onright>
         </control>
         <control type="image">
-            <left>29</left><top>531</top><width>33</width><height>33</height>
+            <left>20</left><top>531</top><width>33</width><height>33</height>
             <texture>$INFO[Window.Property(side_icon_205)]</texture>
             <aspectratio>keep</aspectratio>
         </control>
@@ -324,7 +339,7 @@
         <control type="image"><left>20</left><top>567</top><width>175</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture><visible>Control.HasFocus(205)</visible></control>
         <control type="button" id="206">
-            <left>67</left><top>590</top><width>163</width><height>58</height>
+            <left>54</left><top>590</top><width>154</width><height>58</height>
             <font>font12</font><label>PREMIÉRY</label><align>left</align><aligny>center</aligny>
             <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
@@ -332,7 +347,7 @@
             <onup>205</onup><ondown>207</ondown><onright>401</onright>
         </control>
         <control type="image">
-            <left>29</left><top>605</top><width>33</width><height>33</height>
+            <left>20</left><top>605</top><width>33</width><height>33</height>
             <texture>$INFO[Window.Property(side_icon_206)]</texture>
             <aspectratio>keep</aspectratio>
         </control>
@@ -340,7 +355,7 @@
         <control type="image"><left>20</left><top>641</top><width>175</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture><visible>Control.HasFocus(206)</visible></control>
         <control type="button" id="207">
-            <left>67</left><top>664</top><width>163</width><height>58</height>
+            <left>54</left><top>664</top><width>154</width><height>58</height>
             <font>font12</font><label>NASTAVENÍ</label><align>left</align><aligny>center</aligny>
             <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
@@ -348,7 +363,7 @@
             <onup>206</onup><ondown>207</ondown><onright>401</onright>
         </control>
         <control type="image">
-            <left>29</left><top>679</top><width>33</width><height>33</height>
+            <left>20</left><top>679</top><width>33</width><height>33</height>
             <texture>$INFO[Window.Property(side_icon_207)]</texture>
             <aspectratio>keep</aspectratio>
         </control>
@@ -356,7 +371,7 @@
         <control type="image"><left>20</left><top>715</top><width>175</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture><visible>Control.HasFocus(207)</visible></control>
         <control type="button" id="208">
-            <left>67</left><top>220</top><width>163</width><height>58</height>
+            <left>54</left><top>220</top><width>154</width><height>58</height>
             <font>font12</font><label>TIPY PRO TEBE</label>
             <align>left</align><aligny>center</aligny>
             <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
@@ -365,7 +380,7 @@
             <onup>201</onup><ondown>202</ondown><onright>401</onright>
         </control>
         <control type="image">
-            <left>29</left><top>235</top><width>33</width><height>33</height>
+            <left>20</left><top>235</top><width>33</width><height>33</height>
             <texture>$INFO[Window.Property(side_icon_208)]</texture>
             <aspectratio>keep</aspectratio>
         </control>
@@ -376,9 +391,9 @@
         </control>
         <!-- Netflix-inspired full-poster horizontal rails. -->
         <control type="grouplist" id="610">
-            <left>263</left><top>535</top><width>1615</width><height>485</height>
+            <left>248</left><top>554</top><width>1650</width><height>473</height>
             <orientation>vertical</orientation>
-            <itemgap>26</itemgap>
+            <itemgap>18</itemgap>
             <scrolltime>290</scrolltime>
             <defaultcontrol>401</defaultcontrol>
             <control type="group">
@@ -2476,7 +2491,7 @@
             </control>
         </control>
         <control type="label">
-            <left>82</left><top>1033</top><width>1760</width><height>37</height>
+            <left>255</left><top>1034</top><width>1530</width><height>34</height>
             <font>font12</font><textcolor>FF8B8B91</textcolor>
             <label>$INFO[Window.Property(ui_status)]</label>
             <scroll>true</scroll>
