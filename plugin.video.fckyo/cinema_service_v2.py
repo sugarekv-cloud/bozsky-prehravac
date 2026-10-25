@@ -70,6 +70,20 @@ class CinemaService:
         self._tips_done=threading.Event()
         self._tips_result=None
         self._tips_last_try=0
+        self._bluey_cards=[]
+        self._bluey_loading=False
+        self._bluey_done=threading.Event()
+        self._bluey_last_checked=0
+        self._bluey_path=os.path.join(profile,'bluey-series-v1.json') if profile else None
+        if self._bluey_path:
+            try:
+                with io.open(self._bluey_path,'r',encoding='utf8') as stream:
+                    saved=json.load(stream)
+                if isinstance(saved,dict):
+                    self._bluey_cards=saved.get('cards') or []
+                    self._bluey_last_checked=float(saved.get('saved') or 0)
+            except (OSError,ValueError,TypeError):
+                pass
         if self.tips_path:
             try:
                 with io.open(self.tips_path,'r',encoding='utf8') as file:
@@ -548,6 +562,65 @@ class CinemaService:
             return result
         self.last_diagnostics='Webshare nevrátil dostupné tituly; zachován předchozí katalog'
         return None
+
+    @staticmethod
+    def _is_bluey_show(card):
+        """Avoid similarly named movies and incorrect Webshare search matches."""
+        if not isinstance(card,dict) or card.get('kind')!='show':
+            return False
+        from cinema_search_v3 import normalize
+        fields=[card.get(k) or '' for k in ('title','raw','original')]
+        return any(normalize(v).split(' ')[0]=='bluey'
+                   for v in fields if normalize(v)) and bool(card.get('files'))
+
+    def bluey_cards(self, home=None):
+        """Known, availability-verified Bluey groups; entirely offline and fast."""
+        from cinema_dedupe import consolidate
+        base=home if isinstance(home,dict) else self.home_fast()
+        source=list(self._bluey_cards)
+        if isinstance(base,dict):
+            source.extend(base.get('_all_shows') or [])
+            source.extend(base.get('shows') or [])
+        return consolidate([c for c in source if self._is_bluey_show(c)])
+
+    def start_bluey_refresh(self, force=False):
+        """Bluey discovery without blocking Kodi navigation or file playback."""
+        if not self.token or self._bluey_loading:
+            return False
+        if not force and self._bluey_last_checked and time.time()-self._bluey_last_checked<6*3600:
+            return False
+        self._bluey_loading=True
+        self._bluey_done.clear()
+
+        def worker():
+            try:
+                found=self.search('Bluey',kind='show')
+                valid=self.bluey_cards({'_all_shows':found})
+                if valid:
+                    self._bluey_cards=valid
+                self._bluey_last_checked=time.time()
+                if self._bluey_path:
+                    tmp=self._bluey_path+'.tmp'
+                    with io.open(tmp,'w',encoding='utf8') as stream:
+                        json.dump({'saved':self._bluey_last_checked,
+                                   'cards':self._bluey_cards},stream,ensure_ascii=False)
+                    os.replace(tmp,self._bluey_path)
+            except Exception:
+                import traceback
+                traceback.print_exc()
+            finally:
+                self._bluey_loading=False
+                self._bluey_done.set()
+
+        threading.Thread(target=worker,name='kivora-bluey-search',daemon=True).start()
+        return True
+
+    def take_bluey_refresh(self):
+        """Return completion even if no episodes were found: empty is not stale."""
+        if not self._bluey_done.is_set():
+            return None
+        self._bluey_done.clear()
+        return list(self._bluey_cards)
 
     def tips_snapshot(self, home=None):
         """Merge real verified film cards from home + persisted independent tips.
