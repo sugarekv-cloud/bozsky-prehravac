@@ -81,7 +81,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         for index,(heading,cards) in enumerate(rows[:len(ROW_IDS)]):
             self.setProperty('row%d_heading'%(index+1),heading if cards else '')
         self.setProperty('ui_status',status or
-            ('Božský přehrávač +VERSION+' · pouze tituly dostupné na Webshare'))
+            ('Božský přehrávač '+VERSION+' · pouze tituly dostupné na Webshare'))
         for i,control_id in enumerate(ROW_IDS):
             lst=self.getControl(control_id)
             lst.reset()
