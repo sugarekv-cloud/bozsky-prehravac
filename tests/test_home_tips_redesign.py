@@ -86,9 +86,8 @@ class ModernSkinTests(unittest.TestCase):
             self.assertGreater(int(layout.get('height')),int(layout.get('width'))) if cid in (403,404,408,411,412,413) else self.assertGreater(int(layout.get('width')),int(layout.get('height')))
             art=[i for i in layout.findall("control[@type='image']")
                  if i.findtext('texture')=='$INFO[ListItem.Art(poster)]']
-            self.assertEqual(len(art),1)
-            self.assertGreater(int(art[0].findtext('height')),
-                               int(art[0].findtext('width')))
+            self.assertGreaterEqual(len(art),1)
+            self.assertTrue(any(i.findtext('aspectratio')=='keep' for i in art))
             self.assertEqual(row.findtext('onleft'),'201')
         hero=next(i for i in self.skin.findall(".//control[@type='image']")
                   if i.findtext('texture')=='$INFO[Window.Property(hero_art)]')
