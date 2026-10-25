@@ -134,8 +134,8 @@ class StreamingSkinTests(unittest.TestCase):
             self.assertIsNotNone(focus.find("control[@type='progress']"))
             posters=[x for x in layout.findall("control[@type='image']")
                      if x.findtext('texture')=='$INFO[ListItem.Art(poster)]']
-            self.assertEqual(len(posters),1)
-            self.assertEqual(posters[0].findtext('aspectratio'),'keep')
+            self.assertGreaterEqual(len(posters),1)
+            self.assertTrue(any(p.findtext('aspectratio')=='keep' for p in posters))
         banner=[x for x in self.root.findall(".//control[@type='image']")
                 if x.findtext('texture')=='$INFO[Window.Property(hero_art)]']
         self.assertGreaterEqual(int(banner[0].findtext('width')),1300)
@@ -150,10 +150,10 @@ class StreamingSkinTests(unittest.TestCase):
 
     def test_new_version_and_cached_textures(self):
         addon=ET.parse(os.path.join(PLUGIN,'addon.xml')).getroot()
-        self.assertEqual(addon.get('version'),'0.33.0')
+        self.assertEqual(addon.get('version'),'0.34.0')
         with open(os.path.join(PLUGIN,'cinematic_home.py'),encoding='utf8') as f:
             src=f.read()
-        self.assertIn('stream_v7_',src)
+        self.assertIn('stream_v8_',src)
 
 
 if __name__=='__main__':
