@@ -158,7 +158,14 @@
                     <textcolor>FFF4C577</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>BEZ PLAKÁTU</label>
-                    <visible>String.IsEmpty(ListItem.Art(poster))</visible>
+                    <visible>String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>18</left><top>46</top><width>165</width><height>102</height>
+                    <font>font40_title</font><textcolor>FFF4C577</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>+</label>
+                    <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
                     <left>10</left><top>3</top><width>180</width><height>177</height>
@@ -191,7 +198,14 @@
                     <textcolor>FFF4C577</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>BEZ PLAKÁTU</label>
-                    <visible>String.IsEmpty(ListItem.Art(poster))</visible>
+                    <visible>String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>18</left><top>46</top><width>165</width><height>102</height>
+                    <font>font40_title</font><textcolor>FFF4C577</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>+</label>
+                    <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
                     <left>10</left><top>5</top><width>180</width><height>175</height>
@@ -233,7 +247,14 @@
                     <textcolor>FFF4C577</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>BEZ PLAKÁTU</label>
-                    <visible>String.IsEmpty(ListItem.Art(poster))</visible>
+                    <visible>String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>18</left><top>46</top><width>165</width><height>102</height>
+                    <font>font40_title</font><textcolor>FFF4C577</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>+</label>
+                    <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
                     <left>10</left><top>3</top><width>180</width><height>177</height>
@@ -266,7 +287,14 @@
                     <textcolor>FFF4C577</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>BEZ PLAKÁTU</label>
-                    <visible>String.IsEmpty(ListItem.Art(poster))</visible>
+                    <visible>String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
+                </control>
+                <control type="label">
+                    <left>18</left><top>46</top><width>165</width><height>102</height>
+                    <font>font40_title</font><textcolor>FFF4C577</textcolor>
+                    <align>center</align><aligny>center</aligny>
+                    <label>+</label>
+                    <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
                     <left>10</left><top>5</top><width>180</width><height>175</height>
