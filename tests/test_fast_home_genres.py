@@ -170,8 +170,8 @@ class TvNavigationTests(unittest.TestCase):
         start=self.screen_code.index("        if view=='home':")
         end=self.screen_code.index("        elif view in ('movies'",start)
         method=self.screen_code[start:end]
-        self.assertIn('home_fast()',method)
-        self.assertIn('start_home_refresh()',method)
+        self.assertIn('self._home_catalogue()',method)
+        self.assertIn('self._schedule_home_discovery()',method)
         self.assertNotIn('most_watched_movies(',method)
         self.assertNotIn('self._loading(',method)
         self.assertIn("NEJLÉPE HODNOCENÉ SERIÁLY · ČSFD",method)
