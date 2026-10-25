@@ -36,6 +36,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.featured_card=None
         for name,path in self.textures.items():
             self.setProperty('cinema_'+name,path)
+        self.setProperty('cinema_brand',getattr(self,'brand_path',''))
         self.setProperty('app_version','v'+VERSION)
         self.setProperty('section_label','ÚVOD')
         self.setProperty('ui_status','Šipky = pohyb, OK = výběr, Zpět = předchozí obrazovka')
@@ -734,6 +735,7 @@ def launch(addon,profile,get_url,token,search_page,
     win.addon=addon
     win.revalidate_callback=revalidate_callback
     win.textures=ensure_textures(profile)
+    win.brand_path=os.path.join(addon.getAddonInfo('path'),'resources','brand.png')
     win.make_url=get_url
     win.destination=None
     win.is_play=False
