@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build FCKYO brand PNGs for Kodi using only Pillow (build-time only).
+"""Build KIVORA brand PNGs for Kodi using only Pillow (build-time only).
 
 Inspired by the independently generated cinematic mock-up: red play symbol,
 bold modern lettering and dark graphite icon. No fonts are bundled.
@@ -9,7 +9,7 @@ from PIL import Image,ImageDraw,ImageFont,ImageFilter
 
 ROOT=Path(__file__).resolve().parent.parent
 MEDIA=ROOT/'plugin.video.fckyo'/'resources'
-RED=(242,28,63)
+RED=(154,108,255)
 WHITE=(249,250,252)
 
 
@@ -34,12 +34,12 @@ def play_symbol(draw,box,highlight=True):
     draw.line(pts+[pts[0]],fill=RED,width=max(8,int(w*.105)),joint='curve')
     if highlight:
         draw.line([(x+.15*w,y+.08*h),(x+.81*w,y+.46*h)],
-                  fill=(255,104,113),width=max(3,int(w*.035)))
+                  fill=(203,168,255),width=max(3,int(w*.035)))
 
 
 def make_brand():
     MEDIA.mkdir(parents=True,exist_ok=True)
-    width,height=800,215
+    width,height=1050,215
     # Render 2x then downsample so the Kodi branding stays sharp.
     im=Image.new('RGBA',(width,height),(0,0,0,0))
     glow=Image.new('RGBA',im.size,(0,0,0,0))
@@ -51,9 +51,9 @@ def make_brand():
     d=ImageDraw.Draw(im)
     play_symbol(d,(32,24,175,165))
     big=font(135)
-    d.text((238,17),'FCKYO',font=big,fill=WHITE,stroke_width=1,
+    d.text((238,17),'KIVORA',font=big,fill=WHITE,stroke_width=1,
            stroke_fill=(242,244,249))
-    d.rounded_rectangle((240,177,745,183),radius=3,fill=(220,29,58,242))
+    d.rounded_rectangle((240,177,745,183),radius=3,fill=(154,108,255,242))
     im.save(MEDIA/'brand.png',optimize=True)
 
     icon=Image.new('RGBA',(512,512),(9,10,15,255))
@@ -67,7 +67,7 @@ def make_brand():
     d.rounded_rectangle((7,7,504,504),radius=102,outline=(87,27,44),width=12)
     # Painted-tooled chevron: deliberately recognizable at Kodi tile size.
     play_symbol(d,(89,76,337,340),True)
-    d.text((133,415),'FCKYO',font=font(53),fill=WHITE)
+    d.text((133,415),'KIVORA',font=font(53),fill=WHITE)
     icon.save(MEDIA/'icon.png',optimize=True)
     return MEDIA/'brand.png',MEDIA/'icon.png'
 
