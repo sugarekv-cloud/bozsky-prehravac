@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="FCKYO" version="0.19.0" provider-name="FCKYO Community">
+<addon id="plugin.video.fckyo" name="FCKYO" version="0.20.0" provider-name="FCKYO Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -22,6 +22,15 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.20.0 Rychlý úvod, populární seriály a žánry[/B]
+- Úvod se otevře z ověřené lokální mezipaměti bez čekání na Webshare/ČSFD
+- Síťový průzkum běží ve vlákně na pozadí, po dokončení se katalog obnoví při další akci v Kodi
+- Popularita Webshare a hodnocení ČSFD jsou oddělené pro filmy i seriály
+- Záložka ŽÁNRY s 24 kategoriemi (komedie, horor, sci-fi, krimi, drama a další)
+- Žánrový katalog filmů i seriálů lze doplňovat po dávkách přes +
+- Rozšíření z 11 na 13 filmových řad se zachováním polohy a ovládání
+- Starší ověřená mezipaměť zůstává viditelná, zatímco se stahují aktualizace
+
 [B]0.19.0 Netflix-styl, oddělené žebříčky a historie přehrávání[/B]
 - Jeden výrazný rámeček pouze u aktivního plakátu; plakáty zvětšené
 - Nejsledovanější na Webshare podle popularity souborů, nikoliv neověřených počtů zhlédnutí
