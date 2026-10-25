@@ -168,7 +168,7 @@ class WindowContracts(unittest.TestCase):
         ids={e.attrib.get('id') for e in tree.findall('.//control')}
         self.assertTrue({'401','402','101','102','103','104','107'}<=ids)
         self.assertIn('105',ids)  # New native genre tab
-        self.assertFalse({'106'} & ids)
+        self.assertTrue({'106','201','202','203','204','205','206','207'}<=ids)
         gear=tree.find(".//control[@id='107']")
         self.assertGreaterEqual(int(gear.findtext('left')),1700)
         self.assertEqual(gear.findtext('onleft'),'105')
