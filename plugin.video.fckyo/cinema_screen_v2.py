@@ -260,7 +260,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                                 catalog_kind=kind))
         else:
             primary=[tile('ŽEBŘÍČEK ČSFD SE PŘIPRAVUJE','none')]
-        browse_button=tile('+ OBJEVIT DALŠÍ '+prefix,'catalog_open',
+        browse_button=tile('+  OBJEVIT DALŠÍ SERIÁLY' if kind=='show'
+                           else '+  OBJEVIT DALŠÍ FILMY','catalog_open',
                            catalog_kind=kind,
                            plot='Otevře knihovnu ověřených souborů Webshare.')
         discovered=[browse_button]+items[:35]
