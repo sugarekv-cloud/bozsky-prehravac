@@ -151,7 +151,7 @@ class HomeWorkerLifecycleTests(unittest.TestCase):
 
 
 class NewTVCardVisualTests(unittest.TestCase):
-    def test_each_rail_has_wide_backdrop_plus_editorial_poster_title(self):
+    def test_each_rail_uses_large_full_height_posters_and_titles(self):
         skin=ET.parse(os.path.join(PLUGIN,'resources','skins','Default',
                                    '1080i','fckyo-cinema-v2.xml')).getroot()
         for rid in range(401,414):
@@ -162,8 +162,8 @@ class NewTVCardVisualTests(unittest.TestCase):
                            if c.findtext('texture')=='$INFO[ListItem.Art(poster)]']
                 self.assertEqual(len(portraits),1)
                 self.assertEqual(portraits[0].findtext('aspectratio'),'keep')
-                self.assertEqual(portraits[0].findtext('width'),'142')
-                titles=[c for c in layout.findall("control[@type='textbox']")
+                self.assertEqual(portraits[0].findtext('width'),'244')
+                titles=[c for c in layout.findall("control[@type='label']")
                         if c.findtext('label')=='$INFO[ListItem.Label]']
                 self.assertEqual(len(titles),1)
                 self.assertGreaterEqual(int(titles[0].findtext('width')),150)
@@ -174,7 +174,7 @@ class NewTVCardVisualTests(unittest.TestCase):
         hero=[c for c in skin.findall(".//control[@type='image']")
               if c.findtext('texture')=='$INFO[Window.Property(hero_poster)]']
         self.assertEqual(len(hero),1)
-        self.assertEqual(hero[0].findtext('width'),'378')
+        self.assertEqual(hero[0].findtext('width'),'285')
         self.assertEqual(hero[0].findtext('aspectratio'),'keep')
 
 
