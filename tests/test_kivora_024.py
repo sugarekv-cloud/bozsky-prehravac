@@ -57,8 +57,8 @@ class KivoraDesignTests(unittest.TestCase):
 
     def test_upgrade_preserves_kodi_technical_identifier(self):
         self.assertEqual(self.addon.get('id'),'plugin.video.fckyo')
-        self.assertEqual(self.addon.get('name'),'KIVORA')
-        self.assertEqual(self.addon.get('version'),'0.34.0')
+        self.assertEqual(self.addon.get('name'),'Božský přehrávač')
+        self.assertEqual(self.addon.get('version'),'0.35.0')
 
     def test_all_sidebar_entries_have_graphic_icon_files(self):
         for cid in range(201,209):
@@ -92,7 +92,7 @@ class KivoraDesignTests(unittest.TestCase):
             build=f.read()
         self.assertIn("REPO_ID='repository.bozskyprehravac'",build)
         self.assertIn("PLUGIN_ID='plugin.video.fckyo'",build)
-        self.assertIn("REPO_NAME='KIVORA repozitář'",build)
+        self.assertIn("REPO_NAME='Božský přehrávač – repozitář'",build)
 
 
 if __name__=='__main__':
