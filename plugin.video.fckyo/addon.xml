@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="KIVORA" version="0.25.0" provider-name="KIVORA Community">
+<addon id="plugin.video.fckyo" name="KIVORA" version="0.26.0" provider-name="KIVORA Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -22,6 +22,15 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.26.0 Filmový redesign a skutečné tipy ke sledování[/B]
+- Přepracované televizní rozhraní: filmový banner s korektním širokoúhlým obrázkem, nezvětšuje rozmazané svislé plakáty
+- Větší filmové karty, zachovaný poměr plakátů, čitelná navigace, tmavomodrá barevná paleta a fialové zvýraznění
+- TIPY PRO TEBE jsou nově na druhé pozici levého menu a obsahují skutečně ověřené dostupné filmy či seriály
+- Doporučení načítají vlastní ověřovaný katalog filmů a seriálů na pozadí, jeho výsledky se ukládají mezi spuštěními
+- Domů, stránka Tipy a katalog filmů/seriálů používají nová doporučení i po dokončení asynchronního načítání
+- Ruční opakování načítání Tipů; bez dostupných dat aplikace nevymýšlí neověřené plakáty
+- Přehlednější filmové informace a ověřené hodnoty ČSFD bez nevhodně dlouhého seznamu technických značek
+
 [B]0.25.0 Opravena domácí obrazovka, živé Tipy a návrat po přehrání[/B]
 - Po výběru souboru zůstává vlastní filmové okno aktivní pod videem; po Stop nebo dokončení se vrací stejná obrazovka a výběr
 - Přehrávací služba znovu neotevírá Kodi video knihovnu, když KIVORA stále běží; záložní návrat pro uzavřené dialogy zůstává
