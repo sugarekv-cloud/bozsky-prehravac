@@ -62,17 +62,6 @@ def recommendations(home, watch_store=None, limit=18, week=None):
         scored.append((score,rating,normalize(card.get('title') or ''),card))
     scored.sort(key=lambda item:(-item[0],-item[1],item[2]))
     personalized=[c for _,_,_,c in scored[:limit]]
-    # A small real-world Webshare library may contain only previously seen
-    # films. Still show genuine available movies rather than an empty Tips tab.
-    # We only use these as fallback, never invent or claim new file availability.
-    if len(personalized)<limit:
-        selected={identity(c) for c in personalized}
-        reusable=[c for c in candidates if identity(c) not in selected]
-        reusable.sort(key=lambda c:(
-            not bool(c.get('poster') or c.get('fanart')),
-            -float(c.get('rating') or 0) if str(c.get('rating') or '').replace('.','',1).isdigit() else 0,
-            normalize(c.get('title') or '')))
-        personalized.extend(reusable[:max(0,limit-len(personalized))])
     if week is None:
         today=date.today()
         week=today.isocalendar().year*100+today.isocalendar().week
@@ -82,9 +71,6 @@ def recommendations(home, watch_store=None, limit=18, week=None):
     used={identity(c) for c in rated}
     rated+= [c for c in candidates if identity(c) not in used]
     rated=[c for c in consolidate(rated) if identity(c) not in already]
-    if not rated:
-        # Offer rewatchable verified media, not a fake weekly chart.
-        rated=list(candidates)
     if not rated:
         return personalized,[]
     offset=(int(week)*7)%len(rated)
