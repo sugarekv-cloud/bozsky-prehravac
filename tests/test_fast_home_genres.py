@@ -164,7 +164,7 @@ class TvNavigationTests(unittest.TestCase):
             self.assertGreater(len(downs),12)
             self.assertTrue(any(link.text=='413' for link in downs))
         gear=self.skin.find(".//control[@id='107']")
-        self.assertEqual(gear.findtext('onleft'),'105')
+        self.assertEqual(gear.findtext('onleft'),'109')
 
     def test_home_screen_has_no_blocking_dialog_or_webshare_call(self):
         start=self.screen_code.index("        if view=='home':")
