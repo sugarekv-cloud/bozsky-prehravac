@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="FCKYO" version="0.21.0" provider-name="FCKYO Community">
+<addon id="plugin.video.fckyo" name="FCKYO" version="0.22.0" provider-name="FCKYO Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -22,6 +22,14 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.22.0 Opravené Domů a viditelné Tipy; filmové rozhraní 2.0[/B]
+- Funkční horní tlačítko DOMŮ a plnohodnotná boční nabídka s přístupem k rozkoukaným, oblíbeným, žánrům a ČSFD
+- Tipy na sledování nyní hned v první řadě; během aktualizace zobrazují stav načítání, nikoli prázdnou obrazovku
+- Starší ověřená mezipaměť bez úplného seznamu titulů může také nabídnout doporučení
+- Kompletně přepracované širokoúhlé filmové karty, přednostně s fanart obrázky
+- Velký filmový banner, větší kontrast, červené zaměření a štítky doporučení / ČSFD
+- Zachované přehrávání, hledání, záložky, postupné načítání i lokální rozkoukanost
+
 [B]0.21.0 Moderní filmové rozhraní s doporučeními[/B]
 - Po ukončení filmu nebo epizody spuštěné z FCKYO se automaticky otevře domovská obrazovka doplňku
 - Nové originální logo FCKYO a vlastní ikona, vytvořené během publikace ZIP balíčku
