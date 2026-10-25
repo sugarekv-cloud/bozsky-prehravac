@@ -10,7 +10,7 @@
     </extension>
     <extension point="xbmc.service" library="service.py" start="startup" />
     <extension point="xbmc.addon.metadata">
-        <summary>KIVORA – filmy, seriály, kalendář premiér a Webshare</summary>
+        <summary>KIVORA – moderní filmová knihovna pro Kodi</summary>
         <disclaimer lang="en_GB">The plugin does not provide any content, it is only a simulation of the browser of a publicly available web site. I am not responsible for the content provided by this site.</disclaimer>
         <disclaimer lang="sk_SK">Plugin neposkytuje žiaden obsah, je to len simulácia prehliadača verejne dostupnej web stránky. Nie som zodpovedný za obsah, ktorý táto stránka poskytuje.</disclaimer>
         <disclaimer lang="cs_CZ">Plugin neposkytuje žádný obsah, je to jen simulace prohlížeče veřejně dostupné web stránky. Nejsem zodpovědný za obsah, který tato stránka poskytuje.</disclaimer>
@@ -22,6 +22,17 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.24.0 KIVORA – nový moderní filmový svět[/B]
+- Nový název, původní technické ID plugin.video.fckyo i repozitář zůstávají kvůli bezproblémové aktualizaci
+- Kompletně překreslené logo a vlastní grafické PNG ikonky boční navigace místo chybějících znaků
+- Samostatné tlačítko TIPY, doporučení jsou stále dostupná také na hlavní stránce
+- Z domovské stránky i starých odkazů odstraněny žebříčky popularity Webshare
+- Žebříčky ČSFD jen u titulů s dostupným souborem Webshare a skutečným hodnocením ČSFD
+- Rozšířené dávky ověřování filmů a seriálů během aktualizace katalogu
+- Odkaz OBJEVIT DALŠÍ FILMY/SERIÁLY přímo na začátku katalogové řady
+- Přesnější hledání v českých i původních názvech z uloženého ověřeného katalogu
+- Instalační ZIP repozitáře a přímý návod pro TV zůstávají na původní GitHub Pages adrese
+
 [B]0.23.0 Automatické pokračování seriálů[/B]
 - Po přirozeném dokončení epizody FCKYO automaticky najde a spustí další číslovaný dostupný díl
 - Rozlišuje Kodi onPlayBackEnded od ručního zastavení, po Stop se vrací zpět do FCKYO
