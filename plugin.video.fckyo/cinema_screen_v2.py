@@ -16,7 +16,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.23.0'
+VERSION='0.24.0'
 
 
 def tile(name,kind,**extra):
@@ -42,7 +42,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.setProperty('app_version','v'+VERSION)
         self.setProperty('section_label','ÚVOD')
         self.setProperty('ui_status','Šipky = pohyb, OK = výběr, Zpět = předchozí obrazovka')
-        self.setProperty('hero_title','FCKYO')
+        self.setProperty('hero_title','KIVORA')
         self.setProperty('hero_info','Katalog ověřených souborů Webshare')
         self.setProperty('hero_plot','Nové filmy podle českých kinopremiér a jejich dostupnosti.')
         self.setProperty('hero_art','')
@@ -58,7 +58,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
 
     def _loading(self,text):
         d=xbmcgui.DialogProgress()
-        d.create('FCKYO',text)
+        d.create('KIVORA',text)
         return d
 
     def _fill(self,title1,cards1,title2,cards2,status='',extra_rows=()):
@@ -69,7 +69,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         for index,(heading,cards) in enumerate(rows[:len(ROW_IDS)]):
             self.setProperty('row%d_heading'%(index+1),heading if cards else '')
         self.setProperty('ui_status',status or
-            ('FCKYO '+VERSION+' · pouze tituly dostupné na Webshare'))
+            ('KIVORA '+VERSION+' · pouze tituly dostupné na Webshare'))
         for i,control_id in enumerate(ROW_IDS):
             lst=self.getControl(control_id)
             lst.reset()
@@ -127,7 +127,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             c=self.featured_card
         if not c:
             self.featured_card=None
-            self.setProperty('hero_title','FCKYO')
+            self.setProperty('hero_title','KIVORA')
             self.setProperty('hero_info','FILMY · SERIÁLY · HLEDÁNÍ')
             self.setProperty('hero_plot','Vyber kategorii nebo titul.')
             self.setProperty('hero_art','')
@@ -500,12 +500,12 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self._screen('home')
         except Exception:
             traceback.print_exc()
-            xbmcgui.Dialog().notification('FCKYO',
+            xbmcgui.Dialog().notification('KIVORA',
                 'Nastavení bylo zavřeno, zkus otevřít přehrávač znovu.',
                 xbmcgui.NOTIFICATION_WARNING)
 
     def _gear_menu(self):
-        selected=xbmcgui.Dialog().select('⚙  Nastavení FCKYO',[
+        selected=xbmcgui.Dialog().select('⚙  Nastavení KIVORA',[
             'Nastavení doplňku a přihlášení Webshare',
             'Filtry a řazení katalogu',
             'Načíst další tituly a aktualizovat Webshare',
@@ -534,7 +534,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             enabled=self.addon.getSetting('autoplay_next_episode')!='false'
             self.addon.setSetting('autoplay_next_episode',
                                   'false' if enabled else 'true')
-            xbmcgui.Dialog().notification('FCKYO',
+            xbmcgui.Dialog().notification('KIVORA',
                 'Automatické další díly vypnuty' if enabled
                 else 'Automatické další díly zapnuty')
 
@@ -619,7 +619,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         selected=xbmcgui.Dialog().select(card.get('title') or 'Film',actions)
         if selected==0:
             enabled=store.toggle_favorite(card)
-            xbmcgui.Dialog().notification('FCKYO',
+            xbmcgui.Dialog().notification('KIVORA',
                 'Přidáno do oblíbených' if enabled else 'Odebráno z oblíbených')
             self._screen(self.mode,self.context)
         elif selected==1:
@@ -705,7 +705,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self._apply_background_home()
             if self.mode=='home':
                 self.service.start_home_refresh()
-                xbmcgui.Dialog().notification('FCKYO',
+                xbmcgui.Dialog().notification('KIVORA',
                     'Doporučení se aktualizují na pozadí')
         elif kind=='genre_open':
             self.genre_limits={'movie':24,'show':24}
