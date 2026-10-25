@@ -577,10 +577,13 @@ class CinemaService:
             year_match=bool(requested_year and
                             str(card.get('file_year') or card.get('year') or '')
                             ==requested_year)
+            try:
+                rating=float(card.get('rating') or 0)
+            except (ValueError,TypeError):
+                rating=0
             return (0 if specific else 1,0 if exact else 1,
                     0 if year_match else 1,
-                    -(card.get('rating') or 0),
-                    displayed,str(card.get('year') or ''))
+                    -rating,displayed,str(card.get('year') or ''))
         combined.sort(key=rank)
         self.search_cache[key]=combined
         return [c for c in combined if kind=='all' or c['kind']==kind]
