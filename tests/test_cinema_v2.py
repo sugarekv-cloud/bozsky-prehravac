@@ -171,7 +171,7 @@ class WindowContracts(unittest.TestCase):
         self.assertTrue({'106','201','202','203','204','205','206','207'}<=ids)
         gear=tree.find(".//control[@id='107']")
         self.assertGreaterEqual(int(gear.findtext('left')),1700)
-        self.assertEqual(gear.findtext('onleft'),'105')
+        self.assertEqual(gear.findtext('onleft'),'109')
         with open(path,encoding='utf8') as xml:
             content=xml.read()
         self.assertIn('app_version',content)
