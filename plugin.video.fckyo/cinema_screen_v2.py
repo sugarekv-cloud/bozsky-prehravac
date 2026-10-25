@@ -31,6 +31,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.context=None
         self.rail_items=[[] for _ in ROW_IDS]
         self.popular_limit=24
+        self.catalog_limit=24
         self.featured_card=None
         for name,path in self.textures.items():
             self.setProperty('cinema_'+name,path)
@@ -80,7 +81,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 if art:
                     item.setArt(art)
                 item.setProperty('has_poster','yes' if c.get('poster') else '')
-                item.setProperty('is_more','yes' if c.get('kind') in ('most_watched','load_more') else '')
+                item.setProperty('is_more','yes' if c.get('kind') in ('most_watched','load_more','catalog_open','catalog_more') else '')
                 item.setProperty('quality',str(c.get('quality') or ''))
                 item.setProperty('year',str(c.get('year') or ''))
                 li.append(item)
@@ -169,7 +170,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             'home':'DOMŮ','movies':'FILMY','shows':'SERIÁLY','premieres':'PREMIÉRY',
             'search':'VYHLEDÁVÁNÍ','seasons':'SÉRIE','episodes':'EPIZODY',
             'files':'VÝBĚR KVALITY',
-             'most_watched':'NEJSLEDOVANĚJŠÍ'}.get(view,'KATALOG'))
+             'most_watched':'NEJSLEDOVANĚJŠÍ',
+              'catalog_all':'ÚPLNÝ KATALOG'}.get(view,'KATALOG'))
         if not self.service.token:
             self._fill('PŘIHLÁŠENÍ K WEBSHARE',[
                 tile('NASTAVIT ÚČET WEBSHARE','settings',
@@ -217,6 +219,12 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 if not ordered:
                     ordered=[tile('VYHLEDAT NÁZEV','search')]
                 row_one=ordered[:24]
+                if view in ('movies','shows'):
+                    what='movie' if view=='movies' else 'show'
+                    row_one.append(tile('+  VŠECHNY FILMY' if what=='movie' else
+                                        '+  VŠECHNY SERIÁLY','catalog_open',
+                                        catalog_kind=what,
+                                        plot='Otevřít rozsáhlý katalog a načítat další tituly po dávkách.'))
                 if view=='movies':
                     from cinema_dedupe import identity
                     seen={identity(c) for c in row_one if c.get('kind')=='movie'}
@@ -235,6 +243,27 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                            'PREMIÉRY PODLE ČSFD',row_one,heading,row_two,
                            'ŘAZENÍ: '+self.sort+' · KVALITA: '+self.quality+
                            ' · JAZYK: '+self.language)
+            finally:load.close()
+        elif view=='catalog_all':
+            kind=context if context in ('movie','show') else 'movie'
+            load=self._loading('Načítám další ověřené filmy…' if kind=='movie'
+                               else 'Načítám další ověřené seriály…')
+            try:
+                cards,more=self.service.full_catalog(
+                    kind,self.catalog_limit,self.sort,self.quality,self.language)
+                cards=self._filtered(cards)
+                items=list(cards)
+                if more:
+                    items.append(tile('+  NAČÍST DALŠÍ FILMY' if kind=='movie'
+                                      else '+  NAČÍST DALŠÍ SERIÁLY',
+                                      'catalog_more',catalog_kind=kind,
+                                      plot='Další stránka Webshare se načte až po potvrzení.'))
+                if not items:
+                    items=[tile('NIC DALŠÍHO NENALEZENO','none')]
+                self._fill('VŠECHNY FILMY · WEBSHARE' if kind=='movie' else
+                           'VŠECHNY SERIÁLY · WEBSHARE',items,'',[],
+                           '%d ověřených titulů · dostupné soubory · '
+                           'další stránky na požádání'%len(cards))
             finally:load.close()
         elif view=='most_watched':
             load=self._loading('Načítám pořadí popularity z Webshare…')
@@ -449,6 +478,28 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             if kind=='most_watched':
                 self.popular_limit=24
             self._refresh(kind)
+        elif kind=='catalog_open':
+            self.catalog_limit=24
+            self._refresh('catalog_all',c.get('catalog_kind') or 'movie')
+        elif kind=='catalog_more':
+            # After a new batch retain selection near the previous last movie,
+            # not at the start of this long horizontal poster strip.
+            from cinema_dedupe import identity
+            previous=next((c for c in reversed(self.rail_items[0])
+                           if c.get('kind') in ('movie','show')),None)
+            marker=identity(previous) if previous else None
+            self.catalog_limit+=24
+            self._screen('catalog_all',self.context)
+            try:
+                if marker:
+                    index=next((i for i,item in enumerate(self.rail_items[0])
+                                if item.get('kind') in ('movie','show')
+                                and identity(item)==marker),None)
+                    if index is not None:
+                        self.getControl(401).selectItem(index)
+                self._update_hero()
+            except (RuntimeError,AttributeError):
+                pass
         elif kind=='load_more':
             previous=len(self.rail_items[0])-1
             self.popular_limit+=24
