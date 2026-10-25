@@ -79,17 +79,24 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 art={}
                 if c.get('poster'):
                     art['poster']=c['poster']
-                    art['thumb']=c['poster']
                 if c.get('fanart'):
                     art['fanart']=c['fanart']
+                if c.get('fanart') or c.get('poster'):
+                    art['thumb']=c.get('fanart') or c.get('poster')
                 if art:
                     item.setArt(art)
                 item.setProperty('has_poster','yes' if c.get('poster') else '')
-                item.setProperty('is_more','yes' if c.get('kind') in ('most_watched','load_more','catalog_open','catalog_more','csfd_ranked') else '')
+                item.setProperty('is_more','yes' if c.get('kind') in ('most_watched','load_more','catalog_open','catalog_more','csfd_ranked','tips_retry') else '')
                 item.setProperty('quality',str(c.get('quality') or ''))
                 item.setProperty('year',str(c.get('year') or ''))
                 item.setProperty('progress',str(c.get('progress') or '0'))
                 item.setProperty('is_resume','yes' if c.get('_continue') else '')
+                source=str(c.get('rating_source') or '').casefold()
+                try:
+                    label='ČSFD %d %%'%round(float(c.get('rating'))) if source in ('čsfd','csfd','czdb') else ''
+                except (ValueError,TypeError):
+                    label=''
+                item.setProperty('rating_label',str(c.get('_tip') or label))
                 li.append(item)
             if li:
                 lst.addItems(li)
@@ -224,6 +231,10 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 shows=[tile('SERIÁLY · OTEVŘÍT KATALOG','shows')]
             # Keep recommendations visible even during the first asynchronous
             # catalogue refresh, when no verified titles are cached yet.
+            if personal:
+                personal=[dict(c,_tip='TIP PRO TEBE') for c in personal]
+            if weekly:
+                weekly=[dict(c,_tip='TIP TÝDNE') for c in weekly]
             if not personal:
                 personal=list(weekly)
             if not personal:
