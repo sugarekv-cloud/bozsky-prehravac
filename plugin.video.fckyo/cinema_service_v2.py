@@ -61,6 +61,7 @@ class CinemaService:
         self._background_done=threading.Event()
         self._background_started=False
         self._background_result=None
+        self._home_last_try=0
         self._snapshot_age=None
         self.tips_path=os.path.join(profile,'cinema-v2-verified-tips.json') if profile else None
         self._tips_cards=[]
@@ -492,14 +493,18 @@ class CinemaService:
         """Refresh Webshare outside the GUI; explicit retry may restart a finished worker."""
         if not self.token:
             return False
-        if force and self._background_started and self._background_done.is_set():
+        if self._background_started and self._background_done.is_set():
+            # Completed workers must never lock Home/Tipy for the entire Kodi
+            # session. Consume the data, then throttle further network work.
             self.take_home_refresh()
-            self._background_started=False
         if self._background_started:
             return False
-        if (not force and self._snapshot_age is not None and self._snapshot_age<480
-                and self.home_cache is not None):
+        if (not force and
+            (time.time()-self._home_last_try<300 or
+             (self._snapshot_age is not None and self._snapshot_age<480
+              and self.home_cache is not None))):
             return False
+        self._home_last_try=time.time()
         self._background_started=True
         self._background_done.clear()
         def worker():
@@ -528,15 +533,21 @@ class CinemaService:
         if not self._background_done.is_set():
             return None
         self._background_done.clear()
+        self._background_started=False
         result=self._background_result
         self._background_result=None
-        if result:
+        real=(result.get('_all_movies') or result.get('_all_shows') or
+              result.get('movies') or result.get('shows')) if isinstance(result,dict) else []
+        old=(self.home_cache or {}) if isinstance(self.home_cache,dict) else {}
+        had_old=bool(old.get('_all_movies') or old.get('_all_shows') or
+                     old.get('movies') or old.get('shows'))
+        if real or (result and not had_old):
             self.home_cache=result
             self._snapshot_age=0
             self.last_diagnostics='Katalog aktualizován na pozadí'
-        else:
-            self.last_diagnostics='Katalog se nepodařilo obnovit – opakuj pokus v nabídce Tipy'
-        return result
+            return result
+        self.last_diagnostics='Webshare nevrátil dostupné tituly; zachován předchozí katalog'
+        return None
 
     def tips_snapshot(self, home=None):
         """Merge real verified film cards from home + persisted independent tips.
