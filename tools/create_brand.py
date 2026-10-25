@@ -39,7 +39,7 @@ def play_symbol(draw,box,highlight=True):
 
 def make_brand():
     MEDIA.mkdir(parents=True,exist_ok=True)
-    width,height=1120,215
+    width,height=800,215
     # Render 2x then downsample so the Kodi branding stays sharp.
     im=Image.new('RGBA',(width,height),(0,0,0,0))
     glow=Image.new('RGBA',im.size,(0,0,0,0))
