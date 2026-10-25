@@ -63,7 +63,23 @@ def _rgba_png(path, width, height, kind):
             elif kind == 'nav_hover':
                 color = (43,35,72,235)
             elif kind == 'tile':
-                color = (21,24,41,255)
+                # Rounded graphite surface with a subtle violet edge/glow.
+                radius=8
+                dx=max(radius-x,0,x-(width-radius-1))
+                dy=max(radius-y,0,y-(height-radius-1))
+                outside=(dx*dx+dy*dy)>radius*radius
+                if outside:
+                    color=(0,0,0,0)
+                else:
+                    top=1-y/float(max(1,height-1))
+                    edge=(x<=1 or x>=width-2 or y<=1 or y>=height-2)
+                    accent=max(0,1-math.hypot(x-width*.74,y-height*.20)/
+                                        float(max(1,width)))
+                    color=(int(19+12*top+10*accent),
+                           int(22+7*top+5*accent),
+                           int(37+16*top+25*accent),255)
+                    if edge:
+                        color=(63,55,91,230)
             else:
                 color = (28,30,48,255)
             raw.extend(color)
@@ -86,10 +102,10 @@ def ensure_textures(profile):
     specs = {'background':(128,72), 'fade':(256,72),
              'focus':(2,2), 'button':(2,2),
              'gear':(96,96), 'gear_dark':(96,96),
-             'chip':(2,2),'nav_hover':(2,2),'tile':(2,2)}
+             'chip':(2,2),'nav_hover':(2,2),'tile':(128,72)}
     result = {}
     for kind,(w,h) in specs.items():
-        result[kind] = _rgba_png(os.path.join(folder,'stream_v4_'+kind+'.png'),w,h,kind)
+        result[kind] = _rgba_png(os.path.join(folder,'stream_v5_'+kind+'.png'),w,h,kind)
     return result
 
 
