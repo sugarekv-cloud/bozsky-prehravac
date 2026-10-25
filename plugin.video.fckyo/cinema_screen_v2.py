@@ -16,7 +16,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.34.0'
+VERSION='0.35.0'
 
 
 def tile(name,kind,**extra):
@@ -53,7 +53,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.setProperty('app_version','v'+VERSION)
         self.setProperty('section_label','ÚVOD')
         self.setProperty('ui_status','Šipky = pohyb, OK = výběr, Zpět = předchozí obrazovka')
-        self.setProperty('hero_title','KIVORA')
+        self.setProperty('hero_title','Božský přehrávač')
         self.setProperty('hero_info','Katalog ověřených souborů Webshare')
         self.setProperty('hero_plot','Nové filmy podle českých kinopremiér a jejich dostupnosti.')
         self.setProperty('hero_art','')
@@ -70,7 +70,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
 
     def _loading(self,text):
         d=xbmcgui.DialogProgress()
-        d.create('KIVORA',text)
+        d.create('Božský přehrávač',text)
         return d
 
     def _fill(self,title1,cards1,title2,cards2,status='',extra_rows=()):
@@ -81,7 +81,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         for index,(heading,cards) in enumerate(rows[:len(ROW_IDS)]):
             self.setProperty('row%d_heading'%(index+1),heading if cards else '')
         self.setProperty('ui_status',status or
-            ('KIVORA '+VERSION+' · pouze tituly dostupné na Webshare'))
+            ('Božský přehrávač +VERSION+' · pouze tituly dostupné na Webshare'))
         for i,control_id in enumerate(ROW_IDS):
             lst=self.getControl(control_id)
             lst.reset()
@@ -163,7 +163,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         if not c:
             self.featured_card=None
             self.setProperty('hero_title',{'shows':'SERIÁLY','movies':'FILMY',
-                                          'premieres':'PREMIÉRY'}.get(mode,'KIVORA'))
+                                          'premieres':'PREMIÉRY'}.get(mode,'Božský přehrávač'))
             self.setProperty('hero_info','TVŮJ FILMOVÝ SVĚT · FILMY · SERIÁLY')
             self.setProperty('hero_plot','Objev film nebo seriál, vyber žánr nebo otevři Tipy.')
             self.setProperty('hero_art','')
@@ -213,7 +213,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
     def _catalog_problem(stage,exc):
         """Errors remain visible in the Kodi log, not silently stale on TV."""
         try:
-            xbmc.log('KIVORA catalogue %s: %s: %s'%(stage,
+            xbmc.log('Božský přehrávač catalogue %s: %s: %s'%(stage,
                      type(exc).__name__,str(exc)),xbmc.LOGERROR)
         except (AttributeError,RuntimeError):
             pass
@@ -694,12 +694,12 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self._screen('home')
         except Exception:
             traceback.print_exc()
-            xbmcgui.Dialog().notification('KIVORA',
+            xbmcgui.Dialog().notification('Božský přehrávač',
                 'Nastavení bylo zavřeno, zkus otevřít přehrávač znovu.',
                 xbmcgui.NOTIFICATION_WARNING)
 
     def _gear_menu(self):
-        selected=xbmcgui.Dialog().select('⚙  Nastavení KIVORA',[
+        selected=xbmcgui.Dialog().select('⚙  Nastavení Božského přehrávače',[
             'Nastavení doplňku a přihlášení Webshare',
             'Filtry a řazení katalogu',
             'Načíst další tituly a aktualizovat Webshare',
@@ -728,7 +728,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             enabled=self.addon.getSetting('autoplay_next_episode')!='false'
             self.addon.setSetting('autoplay_next_episode',
                                   'false' if enabled else 'true')
-            xbmcgui.Dialog().notification('KIVORA',
+            xbmcgui.Dialog().notification('Božský přehrávač',
                 'Automatické další díly vypnuty' if enabled
                 else 'Automatické další díly zapnuty')
 
@@ -834,7 +834,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         selected=xbmcgui.Dialog().select(card.get('title') or 'Film',actions)
         if selected==0:
             enabled=store.toggle_favorite(card)
-            xbmcgui.Dialog().notification('KIVORA',
+            xbmcgui.Dialog().notification('Božský přehrávač',
                 'Přidáno do oblíbených' if enabled else 'Odebráno z oblíbených')
             self._screen(self.mode,self.context)
         elif selected==1:
@@ -960,7 +960,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 new_tips=getattr(self.service,'start_tips_refresh',None)
                 if callable(new_tips):
                     new_tips(force=True)
-                xbmcgui.Dialog().notification('KIVORA',
+                xbmcgui.Dialog().notification('Božský přehrávač',
                     'Doporučení se aktualizují na pozadí')
         elif kind=='genre_open':
             self.genre_limits={'movie':24,'show':24}
