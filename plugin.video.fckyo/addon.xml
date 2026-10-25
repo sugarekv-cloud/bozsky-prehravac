@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="KIVORA" version="0.34.0" provider-name="KIVORA Community">
+<addon id="plugin.video.fckyo" name="Božský přehrávač" version="0.35.0" provider-name="Božský přehrávač Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -10,7 +10,7 @@
     </extension>
     <extension point="xbmc.service" library="service.py" start="startup" />
     <extension point="xbmc.addon.metadata">
-        <summary>KIVORA – moderní filmová knihovna pro Kodi</summary>
+        <summary>Božský přehrávač – filmy a seriály v Kodi</summary>
         <disclaimer lang="en_GB">The plugin does not provide any content, it is only a simulation of the browser of a publicly available web site. I am not responsible for the content provided by this site.</disclaimer>
         <disclaimer lang="sk_SK">Plugin neposkytuje žiaden obsah, je to len simulácia prehliadača verejne dostupnej web stránky. Nie som zodpovedný za obsah, ktorý táto stránka poskytuje.</disclaimer>
         <disclaimer lang="cs_CZ">Plugin neposkytuje žádný obsah, je to jen simulace prohlížeče veřejně dostupné web stránky. Nejsem zodpovědný za obsah, který tato stránka poskytuje.</disclaimer>
@@ -22,6 +22,12 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.35.0 Návrat názvu Božský přehrávač a nové božské logo[/B]
+- Aplikace se v Kodi i v repozitáři znovu jmenuje Božský přehrávač
+- Nové originální logo s portrétem mytologického boha v antickém stylu, zlatým nápisem a odpovídající ikonou doplňku
+- Zachováno technické ID plugin.video.fckyo, automatické aktualizace, nastavení, historie i Webshare přihlášení
+- Domů, Bluey, Žánry, Tipy, další epizody a přehrávání beze změny
+
 [B]0.34.0 Nově postavená filmová obrazovka[/B]
 - Nový celoplošný filmový banner přes 83 % šířky televizoru, prolnutí do filmových řad a čisté detaily
 - Film má-li wide fanart, zobrazí se jako dominantní pozadí; při samotném plakátu vzniká tmavý filmový výřez místo oddělené plakátové karty
