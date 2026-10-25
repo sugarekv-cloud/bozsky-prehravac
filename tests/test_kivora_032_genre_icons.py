@@ -59,6 +59,7 @@ class GenreArtworkTests(unittest.TestCase):
         win.addon=types.SimpleNamespace(
             getAddonInfo=lambda name:'/tmp/kivora-addon')
         win.setProperty=lambda *a:None
+        win.service=types.SimpleNamespace(token='test')
         displays=[]
         win._fill=lambda *args,**kwargs:displays.append(args)
         win._screen('genres')
