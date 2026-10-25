@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ET
 HERE=Path(__file__).resolve().parent
 PLUGIN_ID='plugin.video.fckyo'
 REPO_ID='repository.bozskyprehravac'
-REPO_NAME='FCKYO repozitář'
+REPO_NAME='KIVORA repozitář'
 GITHUB_REPO='bozsky-prehravac'
 
 def zip_folder(path, target):
@@ -48,7 +48,7 @@ def main():
     shutil.copy2(plugin/'resources/icon.png',out/PLUGIN_ID/'icon.png')
     # Generate the Kodi repository addon with a real, owner-specific Pages URL.
     repoxml=f'''<?xml version="1.0" encoding="UTF-8"?>
-<addon id="{REPO_ID}" name="{REPO_NAME}" version="1.0.0" provider-name="FCKYO – komunitní repozitář">
+<addon id="{REPO_ID}" name="{REPO_NAME}" version="1.0.0" provider-name="KIVORA – komunitní repozitář">
   <requires><import addon="xbmc.addon" version="12.0.0"/></requires>
   <extension point="xbmc.addon.repository">
     <dir>
@@ -59,8 +59,8 @@ def main():
     </dir>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="cs_CZ">Aktualizace doplňku FCKYO</summary>
-    <description lang="cs_CZ">Neoficiální aktualizace doplňku FCKYO pro Kodi.</description>
+    <summary lang="cs_CZ">Aktualizace doplňku KIVORA</summary>
+    <description lang="cs_CZ">Neoficiální aktualizace doplňku KIVORA pro Kodi.</description>
     <platform>all</platform>
   </extension>
 </addon>
@@ -79,8 +79,8 @@ def main():
     xmlbytes=b'<?xml version="1.0" encoding="UTF-8"?>\n'+ET.tostring(addons,encoding='utf-8')
     (out/'addons.xml').write_bytes(xmlbytes)
     (out/'addons.xml.md5').write_text(hashlib.md5(xmlbytes).hexdigest(),encoding='ascii')
-    (out/'index.html').write_text(f'''<!doctype html><html lang="cs"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>FCKYO – Kodi repozitář</title>
-<style>body{{font:18px system-ui;background:#0c1420;color:#f2e6d2;max-width:800px;margin:5em auto;padding:1em}}a{{color:#ffcc66}}h1{{font-size:2.2em}}</style><h1>FCKYO</h1><p>Neoficiální doplněk Kodi s kalendářem filmových premiér a vyhledáváním přes Webshare.</p><p><a href="{html.escape(repo_file.name)}">Instalovat FCKYO repozitář do Kodi</a></p><p><a href="{PLUGIN_ID}/{PLUGIN_ID}-{version}.zip">Stáhnout FCKYO {version} (ruční aktualizace)</a></p><p>Pokud Kodi nenabízí aktualizaci: Doplňky → Moje doplňky → Video doplňky → FCKYO → Verze / Aktualizovat → zvolit FCKYO repozitář. Doplňky původně instalované ručně ze ZIPu mohou mít aktualizace připnuté k původnímu zdroji. Samotný ZIP lze použít nouzově, ale automatické aktualizace pak nemusí fungovat.</p><p>Následně v Kodi: Nastavení → Doplňky → Instalovat ze ZIP → Instalovat z repozitáře → FCKYO repozitář.</p><small>Komunitní doplněk FCKYO · Licence AGPL-3.0 · Žádná videa nejsou součástí doplňku.</small></html>''',encoding='utf-8')
+    (out/'index.html').write_text(f'''<!doctype html><html lang="cs"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>KIVORA – Kodi repozitář</title>
+<style>body{{font:18px system-ui;background:#0c1420;color:#f2e6d2;max-width:800px;margin:5em auto;padding:1em}}a{{color:#ffcc66}}h1{{font-size:2.2em}}</style><h1>KIVORA</h1><p>Neoficiální doplněk Kodi s kalendářem filmových premiér a vyhledáváním přes Webshare.</p><p><a href="{html.escape(repo_file.name)}">Instalovat KIVORA repozitář do Kodi</a></p><p><a href="{PLUGIN_ID}/{PLUGIN_ID}-{version}.zip">Stáhnout KIVORA {version} (ruční aktualizace)</a></p><p>Pokud Kodi nenabízí aktualizaci: Doplňky → Moje doplňky → Video doplňky → KIVORA → Verze / Aktualizovat → zvolit KIVORA repozitář. Doplňky původně instalované ručně ze ZIPu mohou mít aktualizace připnuté k původnímu zdroji. Samotný ZIP lze použít nouzově, ale automatické aktualizace pak nemusí fungovat.</p><p>Následně v Kodi: Nastavení → Doplňky → Instalovat ze ZIP → Instalovat z repozitáře → KIVORA repozitář.</p><small>Komunitní doplněk KIVORA · Licence AGPL-3.0 · Žádná videa nejsou součástí doplňku.</small></html>''',encoding='utf-8')
     ET.parse(out/'addons.xml')
     ET.parse(out/REPO_ID/'addon.xml')
     with zipfile.ZipFile(repo_file) as z:
