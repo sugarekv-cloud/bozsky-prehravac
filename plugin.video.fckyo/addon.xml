@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="KIVORA" version="0.29.0" provider-name="KIVORA Community">
+<addon id="plugin.video.fckyo" name="KIVORA" version="0.29.1" provider-name="KIVORA Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -22,6 +22,11 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.29.1 Oprava filmového banneru při přepnutí Seriály[/B]
+- Při přechodu mezi Filmy a Seriály se spolu s katalogem vždy obnoví také velký obrázek a název vybraného titulu
+- Předchozí film se již nemůže zobrazovat jako hlavní banner seriálové sekce
+- Prázdný seriálový katalog ukazuje nadpis Seriály místo cizího filmu
+
 [B]0.29.0 Pevné přepínání záložek bez starého obsahu[/B]
 - Opraveno přepnutí SERIÁLY po FILMY: již nesmí zůstat vidět starý filmový žebříček, ani když selže načtení seriálů
 - Primární sekce Filmy, Seriály a Premiéry se vykreslují vždy i při chybě katalogu; zobrazují odpovídající stav a možnost otevřít knihovnu
