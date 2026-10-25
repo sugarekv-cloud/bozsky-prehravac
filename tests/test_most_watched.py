@@ -62,7 +62,7 @@ class PopularityTests(unittest.TestCase):
     def test_more_tile_and_skin(self):
         with open(os.path.join(PLUGIN,'cinema_screen_v2.py'),encoding='utf8') as f:
             code=f.read()
-        self.assertIn("heading='NEJSLEDOVANĚJŠÍ NA WEBSHARE'",code)
+        self.assertIn("heading='POPULÁRNÍ NA WEBSHARE · FILMY'",code)
         self.assertIn("kind=='load_more'",code)
         self.assertIn("self.popular_limit+=24",code)
         root=ET.parse(os.path.join(PLUGIN,'resources','skins','Default',
