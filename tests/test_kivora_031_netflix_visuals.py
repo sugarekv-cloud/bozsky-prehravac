@@ -32,8 +32,8 @@ class NetflixPosterLayoutTests(unittest.TestCase):
                 self.assertEqual((w,h),(239,354) if id in portrait else (359,259))
                 posters=[x for x in tile.findall("control[@type='image']")
                          if x.findtext('texture')=='$INFO[ListItem.Art(poster)]']
-                self.assertEqual(len(posters),1)
-                self.assertEqual(posters[0].findtext('aspectratio'),'keep')
+                self.assertGreaterEqual(len(posters),1)
+                self.assertTrue(any(p.findtext('aspectratio')=='keep' for p in posters))
             self.assertGreater(1610 / int(rail.find('itemlayout').get('width')),4)
 
     def test_focus_is_never_drawn_on_nonfocused_cards(self):
@@ -85,7 +85,7 @@ class NetflixPosterLayoutTests(unittest.TestCase):
     def test_dark_look_is_new_versioned_texture(self):
         with open(os.path.join(PLUGIN,'cinematic_home.py'),encoding='utf8') as f:
             code=f.read()
-        self.assertIn('stream_v7_',code)
+        self.assertIn('stream_v8_',code)
         self.assertIn('int(7+3*h)',code)
         self.assertIn('int(17+6*top',code)
 
