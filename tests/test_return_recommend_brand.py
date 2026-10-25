@@ -144,7 +144,7 @@ class BrandAndNavigationTests(unittest.TestCase):
         self.assertIn('resources/icon.png',builder)
 
     def test_top_nav_has_clear_active_and_focus_indicators(self):
-        for num in (100,101,102,103,104,105):
+        for num in (106,101,102,103,104,105):
             self.assertIsNotNone(self.skin.find(".//control[@id='%d']"%num))
             matches=[i for i in self.skin.findall(".//control[@type='image']")
                      if 'Control.HasFocus(%d)'%num in (i.findtext('visible') or '')]
@@ -158,7 +158,7 @@ class BrandAndNavigationTests(unittest.TestCase):
         self.assertNotIn('POPULÁRNÍ NA WEBSHARE',segment)
         self.assertIn('NEJLÉPE HODNOCENÉ FILMY · ČSFD',segment)
         self.assertIn('NEJLÉPE HODNOCENÉ SERIÁLY · ČSFD',segment)
-        self.assertIn('TIPY PRO TEBE',segment)
+        self.assertIn('TIPY NA SLEDOVÁNÍ',segment)
 
 
 if __name__=='__main__':
