@@ -162,7 +162,7 @@ class NewTVCardVisualTests(unittest.TestCase):
                            if c.findtext('texture')=='$INFO[ListItem.Art(poster)]']
                 self.assertEqual(len(portraits),1)
                 self.assertEqual(portraits[0].findtext('aspectratio'),'keep')
-                self.assertEqual(portraits[0].findtext('width'),'244')
+                self.assertEqual(portraits[0].findtext('width'),'222' if rid in (403,404,408,411,412,413) else '140')
                 titles=[c for c in layout.findall("control[@type='label']")
                         if c.findtext('label')=='$INFO[ListItem.Label]']
                 self.assertEqual(len(titles),1)
@@ -174,8 +174,8 @@ class NewTVCardVisualTests(unittest.TestCase):
         hero=[c for c in skin.findall(".//control[@type='image']")
               if c.findtext('texture')=='$INFO[Window.Property(hero_poster)]']
         self.assertEqual(len(hero),1)
-        self.assertEqual(hero[0].findtext('width'),'285')
-        self.assertEqual(hero[0].findtext('aspectratio'),'keep')
+        self.assertEqual(hero[0].findtext('width'),'830')
+        self.assertEqual(hero[0].findtext('aspectratio'),'scale')
 
 
 if __name__=='__main__':
