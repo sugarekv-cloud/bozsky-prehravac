@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="KIVORA" version="0.31.0" provider-name="KIVORA Community">
+<addon id="plugin.video.fckyo" name="KIVORA" version="0.32.0" provider-name="KIVORA Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -22,6 +22,14 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.32.0 Nové obrázkové ikony všech filmových žánrů[/B]
+- Místo textových karet s emoji se v žánrech zobrazuje 24 vlastních obrázků
+- Komedie, Horor, Akční, Sci-Fi, Drama, Romantický, Krimi, Dokumentární a všechny ostatní kategorie mají odpovídající grafickou ikonu
+- Temná kina / fialový neón sjednocený s vzhledem KIVORA a plakáty na výšku
+- Ikony se generují ve vysokém rozlišení jako PNG přímo do instalačního ZIPu; fungují na televizoru bez připojení k obrázkovému serveru
+- Žánry jsou stále klikatelnými kartami a otevírají stejné filtrování skutečně dostupných filmů a seriálů
+- Přehrávání, Webshare, ČSFD, vyhledávání, Domů a Tipy zůstávají beze změny
+
 [B]0.31.0 Nový Netflix-inspirovaný televizní vzhled[/B]
 - Všechny filmové a seriálové řady používají velké svislé plakáty v původním poměru stran, šest titulů přes šířku
 - Výrazný 16:9 filmový banner se širším obrázkem, tmavým přechodem pro čitelný text a vysokým plakátem, pokud chybí fanart
