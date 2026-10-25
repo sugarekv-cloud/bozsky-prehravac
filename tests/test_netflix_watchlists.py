@@ -134,13 +134,17 @@ class NetflixSkinTests(unittest.TestCase):
                           'fckyo-cinema-v2.xml')
         cls.root=ET.parse(path).getroot()
 
-    def test_full_height_poster_art_on_all_rows(self):
+    def test_wide_and_portrait_cinema_rails_all_stay_navigable(self):
         for id in range(401,412):
             listcontrol=self.root.find(".//control[@id='%d']"%id)
             self.assertIsNotNone(listcontrol)
             item=listcontrol.find('itemlayout')
-            self.assertGreaterEqual(int(item.get('width')),260)
-            self.assertGreaterEqual(int(item.get('height')),390)
+            if id in (403,404,408,411):
+                self.assertEqual(item.get('width'),'239')
+                self.assertEqual(item.get('height'),'354')
+            else:
+                self.assertEqual(item.get('width'),'359')
+                self.assertEqual(item.get('height'),'259')
             self.assertTrue(listcontrol.findall('ondown'))
             self.assertEqual(listcontrol.findall('ondown')[-1].text,str(id))
 
@@ -165,7 +169,7 @@ class NetflixSkinTests(unittest.TestCase):
         service=root.find("./extension[@point='xbmc.service']")
         self.assertIsNotNone(service)
         self.assertEqual(service.get('library'),'service.py')
-        self.assertEqual(root.get('version'),'0.32.0')
+        self.assertEqual(root.get('version'),'0.33.0')
 
 
 if __name__=='__main__':
