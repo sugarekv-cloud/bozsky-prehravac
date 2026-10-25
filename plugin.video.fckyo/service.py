@@ -12,7 +12,7 @@ from cinema_user_state import WatchStore
 
 
 class WatchTracker:
-    def __init__(self,profile,player=None,store=None):
+    def __init__(self,profile,player=None,store=None,return_to_addon=None):
         self.player=player or xbmc.Player()
         self.store=store or WatchStore(profile)
         self.active=None
@@ -20,6 +20,15 @@ class WatchTracker:
         self.last_position=0
         self.total=0
         self.seeked=False
+        self.return_to_addon=(return_to_addon if return_to_addon is not None
+                              else self._return_to_addon)
+
+    @staticmethod
+    def _return_to_addon():
+        """Open the plugin window after our video exits, not Kodi's root."""
+        builtin=getattr(xbmc,'executebuiltin',None)
+        if builtin:
+            builtin('ActivateWindow(Videos,plugin://plugin.video.fckyo/?action=cinematic_home,return)')
 
     def tick(self):
         playing=self.player.isPlayingVideo()
@@ -49,6 +58,12 @@ class WatchTracker:
                                                   self.last_position/self.total>=0.94))
             self.active=None
             self.seeked=False
+            # Only videos launched from FCKYO create an active session.
+            # Clear it before navigation: never reopen the add-on repeatedly.
+            try:
+                self.return_to_addon()
+            except (RuntimeError,AttributeError):
+                pass
         self.was_playing=playing
 
     def run(self,monitor=None):
