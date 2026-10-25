@@ -37,6 +37,9 @@ def main():
     out.mkdir(parents=True)
     (out/'.nojekyll').write_text('',encoding='utf-8')
     plugin=HERE/PLUGIN_ID
+    # Render the original logo into every published addon/repository ZIP.
+    from tools.create_brand import make_brand
+    make_brand()
     plugxml=ET.parse(plugin/'addon.xml').getroot()
     version=plugxml.get('version')
     assert plugxml.get('id')==PLUGIN_ID and version
