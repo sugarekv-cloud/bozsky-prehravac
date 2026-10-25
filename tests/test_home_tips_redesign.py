@@ -55,11 +55,11 @@ class HomeAndTipsTests(unittest.TestCase):
         self.assertEqual(len(captured),1)
         args,options=captured[0]
         self.assertEqual(args[0],'TIPY NA SLEDOVÁNÍ')
-        self.assertEqual(args[1][0]['kind'],'tips_retry')
-        self.assertEqual(args[2],'NEJLÉPE HODNOCENÉ FILMY · ČSFD')
+        self.assertEqual(args[1][0]['kind'],'movies')
+        self.assertEqual(args[2],'POKRAČOVAT VE SLEDOVÁNÍ')
         self.assertIn('TIPY NA TENTO TÝDEN',
                       [name for name,cards in options['extra_rows']])
-        self.assertEqual(len(options['extra_rows']),11)
+        self.assertEqual(len(options['extra_rows']),10)
 
     def test_recommendations_support_previous_cache_format(self):
         from cinema_recommendations import recommendations
