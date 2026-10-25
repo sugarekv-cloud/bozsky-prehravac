@@ -91,7 +91,7 @@ class ImmediateTopNavigationTests(unittest.TestCase):
             def addItems(self,items):pass
         win.getControl=lambda cid:ListControl()
         win.setFocusId=lambda cid:calls.append(cid)
-        win._fill('FIRST',[{'title':'Open','kind':'none'}],'SECOND',[])
+        win._fill('FIRST',[],'SECOND',[])
         self.assertEqual(calls,[102])
         self.assertIsNone(win._nav_focus_target)
 
