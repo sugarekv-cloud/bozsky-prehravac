@@ -12,7 +12,7 @@ TOP_ACTIONS={
     106:'home',101:'movies',102:'shows',103:'search',104:'premieres',
     105:'genres',107:'settings',
     201:'home',202:'continue',203:'favorites',204:'genres',
-    205:'csfd_ranked',206:'premieres',207:'settings'
+    205:'csfd_ranked',206:'premieres',207:'settings',208:'recommendations'
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
@@ -39,6 +39,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         for name,path in self.textures.items():
             self.setProperty('cinema_'+name,path)
         self.setProperty('cinema_brand',getattr(self,'brand_path',''))
+        for cid,icon_path in getattr(self,'icon_paths',{}).items():
+            self.setProperty('side_icon_'+str(cid),icon_path)
         self.setProperty('app_version','v'+VERSION)
         self.setProperty('section_label','ÚVOD')
         self.setProperty('ui_status','Šipky = pohyb, OK = výběr, Zpět = předchozí obrazovka')
@@ -195,7 +197,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
               'genres':'ŽÁNRY','genre_titles':'ŽÁNROVÝ KATALOG',
               'catalog_all':'ÚPLNÝ KATALOG',
               'csfd_ranked':'NEJLEPŠÍ DLE ČSFD',
-              'favorites':'OBLÍBENÉ'}.get(view,'KATALOG'))
+              'favorites':'OBLÍBENÉ','recommendations':'TIPY NA SLEDOVÁNÍ'}.get(view,'KATALOG'))
         if not self.service.token:
             self._fill('PŘIHLÁŠENÍ K WEBSHARE',[
                 tile('NASTAVIT ÚČET WEBSHARE','settings',
@@ -256,7 +258,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 ('TIPY NA TENTO TÝDEN',weekly),
                 ('PREMIÉRY A NOVINKY',latest),
                 ('FILMY PRO VEČER',home.get('movies') or []),
-                ('SERIÁLY NA WEBSHARE',shows),
+                ('OBLÍBENÉ SERIÁLY',shows),
                 ('MOJE OBLÍBENÉ',favorites),
                 ('FILMOVÉ HITY A KLASIKY',home.get('classics') or []),
                 ('NEJLEPŠÍ FILMY ROKU %s · ČSFD'%year,
@@ -268,6 +270,19 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                        self.service.last_diagnostics+
                        ' · Žebříčky a tipy z ověřených titulů ČSFD',
                        extra_rows=rows[2:])
+        elif view=='recommendations':
+            from cinema_recommendations import recommendations
+            home=self.service.home_fast()
+            self.service.start_home_refresh()
+            personal,weekly=recommendations(home,getattr(self,'watch_store',None),limit=35)
+            if not personal:
+                personal=[tile('TIPY SE NAČÍTAJÍ · OBNOVIT','tips_retry',
+                               plot='Doporučení z ověřených titulů se připravují.')]
+            if not weekly:
+                weekly=[tile('TIPY TÝDNE SE NAČÍTAJÍ · OBNOVIT','tips_retry')]
+            self._fill('DOPORUČUJEME PRO TEBE',personal,
+                       'TIPY NA TENTO TÝDEN',weekly,
+                       'Tipy podle dostupných titulů, hodnocení a historie sledování.')
         elif view in ('movies','shows','premieres'):
             load=self._loading('Řadím dostupné tituly…')
             try:
@@ -287,12 +302,11 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                     if top:
                         row_one.append(tile('+  CELÝ ŽEBŘÍČEK ČSFD',
                                             'csfd_ranked',catalog_kind=kind))
-                    row_two=list(ordered[:24])
-                    row_two.append(tile('+  VŠECHNY FILMY' if kind=='movie'
-                                        else '+  VŠECHNY SERIÁLY','catalog_open',
-                                        catalog_kind=kind,
-                                        plot='Načítat další ověřené filmy a seriály po dávkách'))
-                    heading='FILMY NA WEBSHARE' if kind=='movie' else 'SERIÁLY NA WEBSHARE'
+                    row_two=[tile('+  OBJEVIT DALŠÍ FILMY' if kind=='movie'
+                                  else '+  OBJEVIT DALŠÍ SERIÁLY','catalog_open',
+                                  catalog_kind=kind,
+                                  plot='Rozšiřovat katalog dostupných titulů.')]+list(ordered[:35])
+                    heading='PROCHÁZET FILMY' if kind=='movie' else 'PROCHÁZET SERIÁLY'
                     first_heading=('NEJLÉPE HODNOCENÉ FILMY · ČSFD' if kind=='movie'
                                    else 'NEJLÉPE HODNOCENÉ SERIÁLY · ČSFD')
                 else:
@@ -376,8 +390,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                                       plot='Další stránka Webshare se načte až po potvrzení.'))
                 if not items:
                     items=[tile('NIC DALŠÍHO NENALEZENO','none')]
-                self._fill('VŠECHNY FILMY · WEBSHARE' if kind=='movie' else
-                           'VŠECHNY SERIÁLY · WEBSHARE',items,'',[],
+                self._fill('FILMOVÁ KNIHOVNA' if kind=='movie' else
+                           'KNIHOVNA SERIÁLŮ',items,'',[],
                            '%d ověřených titulů · dostupné soubory · '
                            'další stránky na požádání'%len(cards))
             finally:load.close()
@@ -703,7 +717,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 self._refresh(kind)
         elif kind=='tips_retry':
             self._apply_background_home()
-            if self.mode=='home':
+            if self.mode in ('home','recommendations'):
                 self.service.start_home_refresh()
                 xbmcgui.Dialog().notification('KIVORA',
                     'Doporučení se aktualizují na pozadí')
@@ -797,6 +811,10 @@ def launch(addon,profile,get_url,token,search_page,
     win.revalidate_callback=revalidate_callback
     win.textures=ensure_textures(profile)
     win.brand_path=os.path.join(addon.getAddonInfo('path'),'resources','brand.png')
+    names={201:'home',202:'continue',203:'favorite',204:'genres',
+           205:'csfd',206:'premieres',207:'settings',208:'tips'}
+    win.icon_paths={cid:os.path.join(addon.getAddonInfo('path'),'resources',
+                    'icons',name+'.png') for cid,name in names.items()}
     win.make_url=get_url
     win.destination=None
     win.is_play=False
