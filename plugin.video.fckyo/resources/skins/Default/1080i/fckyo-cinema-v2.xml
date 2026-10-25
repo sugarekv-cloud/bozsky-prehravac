@@ -14,13 +14,13 @@
             <aspectratio>stretch</aspectratio>
         </control>
         <control type="image">
-            <left>700</left><top>97</top><width>1220</width><height>260</height>
+            <left>650</left><top>99</top><width>1270</width><height>297</height>
             <texture>$INFO[Window.Property(hero_art)]</texture>
             <aspectratio>scale</aspectratio>
             <visible>!String.IsEmpty(Window.Property(hero_art))</visible>
         </control>
         <control type="image">
-            <left>520</left><top>97</top><width>1400</width><height>262</height>
+            <left>490</left><top>99</top><width>1430</width><height>300</height>
             <texture>$INFO[Window.Property(cinema_fade)]</texture>
             <aspectratio>stretch</aspectratio>
         </control>
@@ -104,32 +104,45 @@
 
         <!-- Featured title changes as the user moves over posters. -->
         <control type="label">
-            <left>80</left><top>145</top><width>1000</width><height>60</height>
+            <left>80</left><top>154</top><width>1055</width><height>64</height>
             <font>font45_title</font><textcolor>FFF9F9FA</textcolor>
             <label>$INFO[Window.Property(hero_title)]</label>
             <scroll>true</scroll>
         </control>
         <control type="label">
-            <left>83</left><top>211</top><width>1070</width><height>39</height>
+            <left>83</left><top>222</top><width>1050</width><height>35</height>
             <font>font13</font><textcolor>FFF05068</textcolor>
             <label>$INFO[Window.Property(hero_info)]</label>
             <scroll>true</scroll>
         </control>
         <control type="textbox">
-            <left>83</left><top>255</top><width>1065</width><height>72</height>
+            <left>83</left><top>265</top><width>1035</width><height>68</height>
             <font>font13</font><textcolor>FFD3D3D7</textcolor>
             <label>$INFO[Window.Property(hero_plot)]</label>
             <autoscroll time="1800" delay="1000" repeat="5000">true</autoscroll>
         </control>
         <control type="label">
-            <left>83</left><top>331</top><width>1210</width><height>29</height>
+            <left>83</left><top>355</top><width>1210</width><height>29</height>
             <font>font12</font><textcolor>FF8F8F98</textcolor>
             <label>OK = VYBRAT   ·   ŠIPKY = PROHLÍŽET   ·   ZPĚT = PŘEDCHOZÍ</label>
+            <visible>String.IsEmpty(Window.Property(hero_action))</visible>
+        </control>
+        <!-- The featured movie remains selectable without opening a separate menu. -->
+        <control type="button" id="108">
+            <left>83</left><top>341</top><width>261</width><height>48</height>
+            <font>font13</font><label>▶   ZOBRAZIT TITUL</label>
+            <align>center</align><aligny>center</aligny>
+            <textcolor>FFFFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <texturefocus>$INFO[Window.Property(cinema_focus)]</texturefocus>
+            <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
+            <onup>101</onup><ondown>401</ondown>
+            <onleft>103</onleft><onright>401</onright>
+            <visible>String.IsEqual(Window.Property(hero_action),yes)</visible>
         </control>
 
         <!-- Vertical carousel: multiple horizontal poster rails, scrollable by remote. -->
         <control type="grouplist" id="610">
-            <left>80</left><top>377</top><width>1760</width><height>645</height>
+            <left>80</left><top>405</top><width>1760</width><height>616</height>
             <orientation>vertical</orientation>
             <itemgap>13</itemgap>
             <scrolltime>230</scrolltime>
@@ -149,7 +162,7 @@
         <control type="list" id="401">
             <left>0</left><top>45</top><width>1760</width><height>307</height>
             <orientation>horizontal</orientation>
-            <onup>101</onup><ondown condition="!String.IsEmpty(Window.Property(row2_heading))">402</ondown><ondown condition="String.IsEmpty(Window.Property(row2_heading)) + !String.IsEmpty(Window.Property(row3_heading))">403</ondown><ondown condition="String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + !String.IsEmpty(Window.Property(row4_heading))">404</ondown><ondown condition="String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + !String.IsEmpty(Window.Property(row5_heading))">405</ondown><ondown condition="String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row6_heading))">406</ondown><ondown condition="String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row7_heading))">407</ondown><ondown>401</ondown>
+            <onup>108</onup><ondown condition="!String.IsEmpty(Window.Property(row2_heading))">402</ondown><ondown condition="String.IsEmpty(Window.Property(row2_heading)) + !String.IsEmpty(Window.Property(row3_heading))">403</ondown><ondown condition="String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + !String.IsEmpty(Window.Property(row4_heading))">404</ondown><ondown condition="String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + !String.IsEmpty(Window.Property(row5_heading))">405</ondown><ondown condition="String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row6_heading))">406</ondown><ondown condition="String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row7_heading))">407</ondown><ondown>401</ondown>
             <itemlayout width="210" height="305">
                 <control type="image">
                     <left>13</left><top>4</top><width>184</width><height>250</height>
