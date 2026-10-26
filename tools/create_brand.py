@@ -9,7 +9,7 @@ from PIL import Image,ImageDraw,ImageFont,ImageFilter
 
 ROOT=Path(__file__).resolve().parent.parent
 MEDIA=ROOT/'plugin.video.fckyo'/'resources'
-RED=(154,108,255)
+RED=(229,9,20)
 WHITE=(249,250,252)
 
 
@@ -34,7 +34,7 @@ def play_symbol(draw,box,highlight=True):
     draw.line(pts+[pts[0]],fill=RED,width=max(8,int(w*.105)),joint='curve')
     if highlight:
         draw.line([(x+.15*w,y+.08*h),(x+.81*w,y+.46*h)],
-                  fill=(203,168,255),width=max(3,int(w*.035)))
+                  fill=(255,121,117),width=max(3,int(w*.035)))
 
 
 def make_menu_icons():
