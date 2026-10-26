@@ -30,6 +30,17 @@ jobs:
         run: |
           python -m compileall -q plugin.video.fckyo
           python -m unittest discover -s tests -v
+      - name: Repeat Cinema TV regression checks 100 times
+        shell: bash
+        run: |
+          for round in $(seq 1 100); do
+            if ! python -m unittest discover -s tests -p 'test_cinema_036_tv.py' -q > /tmp/cinema-036-check.log 2>&1; then
+              echo "Cinema regression run ${round}/100 FAILED"
+              cat /tmp/cinema-036-check.log
+              exit 1
+            fi
+          done
+          echo "Cinema TV design checks: 100/100 passed"
       - name: Build Kodi repository
         run: python build_repo.py --owner sugarekv-cloud --output site
       - name: Upload GitHub Pages artifact
