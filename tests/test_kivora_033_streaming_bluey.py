@@ -153,7 +153,7 @@ class StreamingSkinTests(unittest.TestCase):
         self.assertEqual(addon.get('version'),'0.36.0')
         with open(os.path.join(PLUGIN,'cinematic_home.py'),encoding='utf8') as f:
             src=f.read()
-        self.assertIn('stream_v8_',src)
+        self.assertIn('stream_v9_',src)
 
 
 if __name__=='__main__':
