@@ -1,0 +1,32 @@
+name: Validate Cinema TV 0.36
+on:
+  push:
+    branches: [design/036-cinema-tv]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install requests pillow
+      - name: Compile Kodi Python and run entire suite
+        run: |
+          python -m compileall -q plugin.video.fckyo
+          python -m unittest discover -s tests -v
+      - name: Repeat visual and navigation regression 100 times
+        shell: bash
+        run: |
+          for round in $(seq 1 100); do
+            if ! python -m unittest discover -s tests -p 'test_cinema_036_tv.py' -q > /tmp/cinema-test.log 2>&1; then
+              echo "Cinema TV regression failed on pass ${round}"
+              cat /tmp/cinema-test.log
+              exit 1
+            fi
+          done
+          echo "Cinema TV 100/100 validation rounds successful"
+      - name: Verify installable repository packages
+        run: python build_repo.py --owner sugarekv-cloud --output site
