@@ -1,0 +1,95 @@
+name: Kodi Cinema – 100 complete QA rounds
+
+on:
+  push:
+    branches: [qa/cinema-100-full-audit]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  full-suites:
+    name: Complete QA rounds ${{ matrix.shard }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Use Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install graphics and HTTP test dependencies
+        run: python -m pip install pillow requests
+      - name: Compile entire Kodi addon
+        run: python -m compileall -q plugin.video.fckyo
+      - name: Complete entire test suite 10 times (one hundred total)
+        run: python tools/cinema_100_audit.py --shard ${{ matrix.shard }} --iterations 10
+      - name: Preserve exact results even on failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cinema-audit-${{ matrix.shard }}
+          path: audit-results/shard-*.json
+          if-no-files-found: warn
+
+  results-and-zip:
+    name: Verify 100 run results + installable ZIP
+    needs: full-suites
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install pillow requests
+      - name: Download all ten audit reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: cinema-audit-*
+          path: audit-results
+          merge-multiple: true
+      - name: Require exactly 100 successful COMPLETE suites
+        run: |
+          python - <<'PY'
+          import json, pathlib
+          paths=sorted(pathlib.Path('audit-results').glob('shard-*.json'))
+          assert len(paths)==10, 'Missing audit shard reports'
+          reports=[json.loads(p.read_text(encoding='utf8')) for p in paths]
+          all_runs=[r for report in reports for r in report['runs']]
+          assert len(all_runs)==100, 'Must execute 100 full suite rounds'
+          assert sorted(r['run'] for r in all_runs)==list(range(1,101))
+          assert all(r['passed'] and r['test_cases']>=260 for r in all_runs)
+          total=sum(r['test_cases'] for r in all_runs)
+          print(f'100/100 full test suites PASS; {total} test case executions')
+          pathlib.Path('audit-results/summary.json').write_text(
+             json.dumps({'full_suite_rounds':100, 'successful':100,
+                         'case_executions':total,
+                         'real_android_tv_runtime_tested':False},indent=2))
+          PY
+      - name: Build and inspect official installable ZIP
+        run: |
+          python build_repo.py --owner sugarekv-cloud --output site
+          python - <<'PY'
+          import pathlib, zipfile
+          path=pathlib.Path('site/plugin.video.fckyo/plugin.video.fckyo-0.36.0.zip')
+          assert path.is_file() and path.stat().st_size>100000
+          with zipfile.ZipFile(path) as z:
+              assert z.testzip() is None
+              for name in ('addon.xml','cinema_screen_v2.py','cinematic_home.py',
+                          'resources/skins/Default/1080i/fckyo-cinema-v2.xml'):
+                  assert 'plugin.video.fckyo/'+name in z.namelist()
+          print(f'VALID ZIP: {path} ({path.stat().st_size} bytes)')
+          PY
+      - name: Save consolidated evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: cinema-100-full-qa-evidence
+          path: audit-results/
