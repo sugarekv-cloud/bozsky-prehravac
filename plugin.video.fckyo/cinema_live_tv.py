@@ -36,6 +36,22 @@ CHANNELS=(
         'url':'https://ocko-live-dash.ssl.cdn.cra.cz/cra_live2/ocko_gold.stream.1.smil/playlist.m3u8',
         'website':'https://ocko.tv/zive',
     },
+    {
+        'id':'polar',
+        'title':'TV POLAR',
+        'group':'REGIONÁLNÍ',
+        'plot':'Moravskoslezské regionální zpravodajství a publicistika. Živé vysílání.',
+        'url':'https://stream.polar.cz/polar/polarlive-1/playlist.m3u8',
+        'website':'https://polar.cz/jak-naladit',
+    },
+    {
+        'id':'prahatv',
+        'title':'PRAHA TV',
+        'group':'REGIONÁLNÍ',
+        'plot':'Regionální pořady, informace a zprávy z Prahy a okolí.',
+        'url':'https://stream.polar.cz/prahatv/prahatvlive-1/playlist.m3u8',
+        'website':'https://prahatv.eu/',
+    },
 )
 CT_ADDON_ID='plugin.video.ivysilani.cz'
 CT_PLUGIN_URL='plugin://plugin.video.ivysilani.cz/'
@@ -56,6 +72,7 @@ def playable_url(ident):
     parsed=urlparse(address)
     if parsed.scheme!='https' or parsed.hostname not in (
         'ocko-live-dash.ssl.cdn.cra.cz','ocko-live.ssl.cdn.cra.cz',
+        'stream.polar.cz',
     ):
         return ''
     if not parsed.path.endswith('.m3u8'):
