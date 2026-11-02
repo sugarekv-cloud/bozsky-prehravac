@@ -103,7 +103,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                     item.setArt(art)
                 item.setProperty('has_poster','yes' if c.get('poster') else '')
                 item.setProperty('has_fanart','yes' if item_fanart else '')
-                item.setProperty('is_more','yes' if c.get('kind') in ('most_watched','load_more','catalog_open','catalog_more','csfd_ranked','tips_retry') else '')
+                item.setProperty('is_more','yes' if c.get('kind') in ('most_watched','load_more','catalog_open','catalog_more','search_more','csfd_ranked','tips_retry') else '')
                 item.setProperty('quality',str(c.get('quality') or ''))
                 item.setProperty('year',str(c.get('year') or ''))
                 item.setProperty('progress',str(c.get('progress') or '0'))
@@ -609,7 +609,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self._screen('catalog_all',context if context in ('movie','show')
                          else 'movie')
         elif view=='search':
-            query=(context or '').strip()
+            more=isinstance(context,tuple) and len(context)>1 and context[1] is True
+            query=(context[0] if isinstance(context,tuple) else context or '').strip()
             if not query:
                 query=xbmcgui.Dialog().input('Hledat film nebo seriál')
             if not query or not query.strip():
@@ -622,7 +623,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             try:
                 from cinema_service_v2 import WebshareSearchUnavailable
                 try:
-                    found=self.service.search(query)
+                    found=(self.service.search(query,more=True) if more else
+                           self.service.search(query))
                 except WebshareSearchUnavailable as exc:
                     self._fill('VYHLEDÁVÁNÍ NENÍ DOSTUPNÉ',[
                         tile('OPAKOVAT HLEDÁNÍ: '+query,'search_retry',search_text=query),
@@ -634,6 +636,10 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 self.context=query
                 if not movies and not shows:
                     movies=[tile('ZKUSIT JINÝ NÁZEV','search')]
+                has_more=getattr(self.service,'search_has_more',lambda *a:False)
+                if has_more(query):
+                    movies=list(movies)+[tile('+ NAČÍST DALŠÍ STRÁNKY WEBSHARE',
+                                            'search_more',search_text=query)]
                 self._fill('FILMY: '+query.upper(),movies,
                            'SERIÁLY: '+query.upper(),shows,
                            '%d filmů · %d seriálů · pouze dostupné na Webshare' %
@@ -984,6 +990,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self._screen('bluey',stack=False)
         elif kind=='search_retry':
             self._refresh('search',c.get('search_text') or '')
+        elif kind=='search_more':
+            self._refresh('search',(c.get('search_text') or '',True))
         elif kind=='tips_retry':
             self._apply_background_home()
             if self.mode in ('home','recommendations'):
