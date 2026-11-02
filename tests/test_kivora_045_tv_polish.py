@@ -75,7 +75,7 @@ class TvPolishTests(unittest.TestCase):
             images=focussed.findall("control[@type='image']")
             highlights=[x for x in images if x.findtext('texture') ==
                         '$INFO[Window.Property(cinema_focus)]' and
-                        x.findtext('height')=='4']
+                        x.findtext('height')=='3']
             self.assertTrue(highlights,row_id)
             self.assertEqual(highlights[-1].findtext('visible'),
                              'Control.HasFocus(%s)'%row_id)
@@ -101,8 +101,8 @@ class TvPolishTests(unittest.TestCase):
             row=self.root.find(".//control[@id='%s']"%row_id)
             item=row.find('itemlayout')
             labels=item.findall("control[@type='label']")
-            self.assertTrue(any('hide_caption' in (x.findtext('visible') or '')
-                      for x in labels),row_id)
+            self.assertTrue(any(x.findtext('label')=='$INFO[ListItem.Label]' and
+                        x.findtext('top')=='169' for x in labels),row_id)
 
     def test_brand_generator_has_new_monogram(self):
         source=(ROOT/'tools/create_brand.py').read_text(encoding='utf-8')
