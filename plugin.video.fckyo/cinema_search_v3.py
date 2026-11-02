@@ -6,6 +6,7 @@ the search response contains a matching Webshare video file that passes the
 existing availability checker.
 """
 import re
+from difflib import SequenceMatcher
 from novinky_catalogue import normalize, parse_video_name
 from smartsearch import variants
 
@@ -213,6 +214,66 @@ def query_plan(query, metadata=None, limit=18):
             if len(result)>=limit:
                 return result[:limit]
     return result[:limit]
+
+
+def episode_query_plan(query, season, episode, metadata=None, limit=18):
+    """Try an exact episode Webshare filename search before broad title pages.
+
+    This uses the official Webshare filename search, not an assumed
+    episode-index API. The ordinary title variants remain as fallbacks.
+    """
+    base=query_plan(query,metadata,limit=limit)
+    if not base or season is None or episode is None:
+        return base
+    tag='S%02dE%02d'%(int(season),int(episode))
+    alt='%dx%02d'%(int(season),int(episode))
+    targeted=[]
+    for title in base[:3]:
+        targeted.append(title+' '+tag)
+    for title in base[:2]:
+        targeted.append(title+'.'+tag)
+        targeted.append(title+' '+alt)
+    return list(dict.fromkeys(targeted+base))[:limit]
+
+
+def search_suggestions(query, remote=None, home=None, limit=5):
+    """Suggest corrected TITLE searches, never invented playable releases.
+
+    Remote Webshare /suggest results are input hints, not availability
+    evidence. Revalidate every selected suggestion through normal search.
+    """
+    requested=normalize(query)
+    if len(requested)<4:
+        return []
+    pool=[]
+    for title,original,year in MOVIE_SEEDS+SHOW_SEEDS:
+        pool.extend((title,original))
+    if isinstance(home,dict):
+        for item in (home.get('_all_movies') or [])+(home.get('_all_shows') or []):
+            if isinstance(item,dict) and item.get('ident') and item.get('files'):
+                pool.extend(str(item.get(k) or '') for k in ('title','raw','original'))
+    for raw in (remote or [])[:25]:
+        if isinstance(raw,dict):
+            raw=raw.get('value') or raw.get('name') or ''
+        raw=str(raw or '').strip()
+        if not raw:
+            continue
+        parsed=parse_video_name(raw)
+        pool.append(parsed['title'] if parsed else raw)
+    unique={}
+    for item in pool:
+        title=re.sub(r'[\[\]<>\r\n\t]', ' ',str(item or '')).strip()[:90]
+        key=normalize(title)
+        if not key or key==requested or len(key)<4:
+            continue
+        score=SequenceMatcher(None,requested,key).ratio()
+        # Very short incomplete names need a stronger prefix match.
+        if key.startswith(requested+' ') and len(requested)>=5:
+            score=max(score,0.82)
+        if score>=0.75 and (key not in unique or score>unique[key][0]):
+            unique[key]=(score,title)
+    return [item[1] for item in sorted(unique.values(),
+            key=lambda pair:(-pair[0],len(pair[1]),pair[1].casefold()))[:limit]]
 
 
 def is_title_match(parsed, names, kind=None, year=None):
