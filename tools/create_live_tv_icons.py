@@ -9,6 +9,8 @@ NAMES=(
     ('ocko','ÓČKO','HUDEBNÍ TELEVIZE'),
     ('ocko_expres','ÓČKO','EXPRES'),
     ('ocko_star','ÓČKO','STAR'),
+    ('polar','TV POLAR','REGIONÁLNÍ'),
+    ('prahatv','PRAHA TV','REGIONÁLNÍ'),
 )
 
 
