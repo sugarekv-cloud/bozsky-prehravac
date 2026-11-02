@@ -140,7 +140,7 @@ def parse_entry(entry):
     # Keep text from the film synopsis, not an HTML fragment.
     if description:
         description = re.sub(r'<[^>]+>', ' ', description)
-        description = re.sub(r'\\s+', ' ', description).strip()
+        description = re.sub(r'\s+', ' ', description).strip()
     if len(description) > 1600:
         description = description[:1597]+'...'
     rating = _rating(_get(entry, 'rating', 'csfd_rating', 'rating_percent', 'rating_percentage', 'hodnoceni', 'hodnocení', 'score', 'percent'))
