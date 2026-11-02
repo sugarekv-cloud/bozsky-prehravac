@@ -34,6 +34,7 @@ class WatchTracker:
                                else self._autoplay_enabled)
         self.active=None
         self.was_playing=False
+        self.return_profile=profile
         self.last_position=0
         self.total=0
         self.seeked=False
@@ -126,6 +127,16 @@ class WatchTracker:
                     self.return_to_addon()
             except Exception:
                 self.return_to_addon()
+        elif self.was_playing:
+            # Direct broadcaster HLS has no Webshare watch-state.
+            # Resume the TV shelf only if this live stream was opened by
+            # KIVORA; unrelated Kodi videos are not intercepted.
+            try:
+                from cinema_navigation import has_live_tv_return
+                if has_live_tv_return(self.return_profile):
+                    self.return_to_addon()
+            except (ImportError,OSError,ValueError,TypeError):
+                pass
         self.was_playing=playing
 
     def run(self,monitor=None):
