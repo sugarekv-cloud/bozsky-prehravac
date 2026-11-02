@@ -88,9 +88,31 @@ class TabRenderingTests(unittest.TestCase):
         win._screen('shows')
         fields,_=rendered[0]
         self.assertIn('SERIÁLY',fields[0])
-        self.assertEqual(fields[1][0]['kind'],'none')
+        self.assertEqual(fields[1][0]['kind'],'catalog_open')
         self.assertEqual(fields[3][0]['kind'],'catalog_open')
         self.assertEqual(fields[3][0]['catalog_kind'],'show')
+
+    def test_missing_csfd_ratings_never_show_dead_placeholder(self):
+        movie=verified('movie','film')
+        movie.update(rating=None,rating_source='')
+        win,rendered=self.window({
+            '_all_movies':[movie],'_all_shows':[],'_all_premieres':[]})
+        win._screen('movies')
+        first=rendered[0][0]
+        self.assertEqual(first[0],'OVĚŘENÉ FILMY · WEB SHARE')
+        self.assertEqual(first[1][0]['ident'],'film')
+        self.assertNotIn('ČSFD',first[0])
+
+    def test_actual_imdb_rating_has_imdb_label_not_csfd(self):
+        movie=verified('movie','imdb')
+        movie.update(rating=87,rating_source='IMDb')
+        win,rendered=self.window({
+            '_all_movies':[movie],'_all_shows':[],'_all_premieres':[]})
+        win._screen('movies')
+        first=rendered[0][0]
+        self.assertIn('IMDb',first[0])
+        self.assertNotIn('ČSFD',first[0])
+        self.assertEqual(first[1][0]['ident'],'imdb')
 
     def test_film_tab_preserves_only_film_cards(self):
         win,rendered=self.window()
