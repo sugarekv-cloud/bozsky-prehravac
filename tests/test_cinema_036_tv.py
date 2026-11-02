@@ -116,8 +116,8 @@ class CinemaTV036Tests(unittest.TestCase):
 
     def test_new_palette_and_refreshable_texture_cache(self):
         code = (PLUGIN / 'cinematic_home.py').read_text(encoding='utf8')
-        self.assertIn("stream_v9_", code)
-        self.assertIn("color = (229,9,20,255)", code)
+        self.assertIn("stream_v10_", code)
+        self.assertIn("color = (201,170,113,255)", code)
         self.assertIn("kind == 'cta_focus'", code)
         self.assertIn("'cta':(2,2)", code)
         brand = (ROOT / 'tools/create_brand.py').read_text(encoding='utf8')
