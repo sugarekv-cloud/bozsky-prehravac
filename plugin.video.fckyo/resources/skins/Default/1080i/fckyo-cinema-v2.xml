@@ -36,7 +36,7 @@
         <control type="label">
             <left>137</left><top>147</top><width>920</width><height>30</height>
             <font>font12</font><textcolor>FFC7AD7D</textcolor>
-            <label>$INFO[Window.Property(section_label)]  ·  $INFO[Window.Property(app_version)]</label>
+            <label>$INFO[Window.Property(section_label)]  ·  $INFO[Window.Property(app_version)]  ·  PROFIL: $INFO[Window.Property(active_profile_name)]</label>
         </control>
         <!-- Bespoke wide PNG brand, not a plain text label. -->
         <control type="image">
@@ -603,7 +603,7 @@
                     <width>326</width><height>25</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 
             </itemlayout>
@@ -688,7 +688,7 @@
                     <width>326</width><height>25</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
                     <left>9</left><top>203</top><width>340</width><height>2</height>
@@ -805,7 +805,7 @@
                     <width>326</width><height>25</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 
             </itemlayout>
@@ -890,7 +890,7 @@
                     <width>326</width><height>25</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
                     <left>9</left><top>203</top><width>340</width><height>2</height>
@@ -998,7 +998,7 @@
                     <width>218</width><height>23</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 
             </itemlayout>
@@ -1074,7 +1074,7 @@
                     <width>218</width><height>23</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
                     <left>9</left><top>304</top><width>218</width><height>2</height>
@@ -1182,7 +1182,7 @@
                     <width>218</width><height>23</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 
             </itemlayout>
@@ -1258,7 +1258,7 @@
                     <width>218</width><height>23</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
                     <left>9</left><top>304</top><width>218</width><height>2</height>
@@ -1375,7 +1375,7 @@
                     <width>326</width><height>25</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 
             </itemlayout>
@@ -1460,7 +1460,7 @@
                     <width>326</width><height>25</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
                     <left>9</left><top>203</top><width>340</width><height>2</height>
@@ -1577,7 +1577,7 @@
                     <width>326</width><height>25</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 
             </itemlayout>
@@ -1662,7 +1662,7 @@
                     <width>326</width><height>25</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
                     <left>9</left><top>203</top><width>340</width><height>2</height>
@@ -1779,7 +1779,7 @@
                     <width>326</width><height>25</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 
             </itemlayout>
@@ -1864,7 +1864,7 @@
                     <width>326</width><height>25</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
                     <left>9</left><top>203</top><width>340</width><height>2</height>
@@ -1972,7 +1972,7 @@
                     <width>218</width><height>23</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 
             </itemlayout>
@@ -2048,7 +2048,7 @@
                     <width>218</width><height>23</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
                     <left>9</left><top>304</top><width>218</width><height>2</height>
@@ -2165,7 +2165,7 @@
                     <width>326</width><height>25</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 
             </itemlayout>
@@ -2250,7 +2250,7 @@
                     <width>326</width><height>25</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
                     <left>9</left><top>203</top><width>340</width><height>2</height>
@@ -2367,7 +2367,7 @@
                     <width>326</width><height>25</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 
             </itemlayout>
@@ -2452,7 +2452,7 @@
                     <width>326</width><height>25</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
                     <left>9</left><top>203</top><width>340</width><height>2</height>
@@ -2560,7 +2560,7 @@
                     <width>218</width><height>23</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 
             </itemlayout>
@@ -2636,7 +2636,7 @@
                     <width>218</width><height>23</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
                     <left>9</left><top>304</top><width>218</width><height>2</height>
@@ -2744,7 +2744,7 @@
                     <width>218</width><height>23</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 
             </itemlayout>
@@ -2820,7 +2820,7 @@
                     <width>218</width><height>23</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
                     <left>9</left><top>304</top><width>218</width><height>2</height>
@@ -2928,7 +2928,7 @@
                     <width>218</width><height>23</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 
             </itemlayout>
@@ -3004,7 +3004,7 @@
                     <width>218</width><height>23</height>
                     <font>font12</font><textcolor>FFCED2CF</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
-                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes) + !String.IsEqual(ListItem.Property(hide_caption),yes)</visible>
+                    <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
                     <left>9</left><top>304</top><width>218</width><height>2</height>
