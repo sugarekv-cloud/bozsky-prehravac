@@ -70,6 +70,11 @@ class SearchV4Tests(unittest.TestCase):
             def lookup(self,*args,**kwargs):return None
         svc.artwork=Art()
         result=svc.search('Zelená míle')
+        for _ in range(4):
+            if any(c['ident']=='hit' for c in result):
+                break
+            self.assertTrue(svc.search_has_more('Zelená míle'))
+            result=svc.search('Zelená míle',more=True)
         self.assertTrue(any(c['ident']=='hit' for c in result))
         self.assertIn(('The Green Mile',100),calls)
 
