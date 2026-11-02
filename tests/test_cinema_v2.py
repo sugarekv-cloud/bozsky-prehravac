@@ -160,7 +160,7 @@ class DataLayer(unittest.TestCase):
                         ws('czultra','Mystery.Film.2025.2160p.CZ.mkv'),
                         ws('czsubs','Mystery.Film.2025.2160p.CZSUB.mkv')]
         self.assertEqual([f['ident'] for f in choose_files(movie_versions)],
-                         ['czultra','czfullhd','foreign4k','czsubs'])
+                         ['czfullhd','czultra','czsubs','foreign4k'])
         episodes=[ws('en4k','Show.S01E02.2160p.EN.mkv'),
                   ws('cz1080','Show.S01E02.1080p.CZ.mkv'),
                   ws('cz720','Show.S01E02.720p.CZ.mkv')]
