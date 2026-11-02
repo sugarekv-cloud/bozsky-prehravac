@@ -55,23 +55,19 @@ class FullScreenStreamingUI(unittest.TestCase):
             self.assertTrue(found,'No floating label for %s'%cid)
 
     def test_wide_artwork_rows_have_natural_poster_fallback_and_gradient(self):
-        portrait={403,404,408,411,412,413}
+        # The requested Netflix library uses full-bleed 16:9 artwork on every shelf.
         for cid in range(401,414):
             rail=self.root.find(".//control[@id='%d']"%cid)
             self.assertGreaterEqual(int(rail.findtext('width')),1750)
             for slot in ('itemlayout','focusedlayout'):
                 lay=rail.find(slot)
-                posters=[img for img in lay.findall("control[@type='image']")
-                         if img.findtext('texture')=='$INFO[ListItem.Art(poster)]']
-                self.assertGreaterEqual(len(posters),1)
-                self.assertTrue(any(img.findtext('aspectratio')=='keep' for img in posters))
-                if cid not in portrait:
-                    self.assertTrue(any(img.findtext('texture')==
-                         '$INFO[Window.Property(cinema_cardfade)]'
-                         for img in lay.findall("control[@type='image']")))
-                    self.assertGreater(int(lay.get('width')),int(lay.get('height')))
-                else:
-                    self.assertGreater(int(lay.get('height')),int(lay.get('width')))
+                self.assertEqual((int(lay.get('width')),int(lay.get('height'))),
+                                 (292,218))
+                for art in ('fanart','poster'):
+                    images=[img for img in lay.findall("control[@type='image']")
+                            if img.findtext('texture')=='$INFO[ListItem.Art(%s)]'%art]
+                    self.assertEqual(len(images),1)
+                    self.assertEqual(images[0].findtext('aspectratio'),'scale')
                 self.assertIsNotNone(lay.find("control[@type='progress']"))
 
     def test_top_navigation_and_play_detail_stay_clickable(self):
