@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window>
+    <defaultcontrol always="true">301</defaultcontrol>
+    <coordinates><system>1</system><posx>0</posx><posy>0</posy></coordinates>
+    <controls>
+        <!-- KIVORA Cinema 2.0: lightweight fullscreen detail window, no embedded player. -->
+        <control type="image">
+            <left>0</left><top>0</top><width>1920</width><height>1080</height>
+            <texture>$INFO[Window.Property(detail_background)]</texture>
+            <aspectratio>stretch</aspectratio>
+        </control>
+        <control type="image">
+            <left>570</left><top>0</top><width>1350</width><height>720</height>
+            <texture>$INFO[Window.Property(detail_art)]</texture>
+            <aspectratio>scale</aspectratio>
+            <visible>!String.IsEmpty(Window.Property(detail_art))</visible>
+        </control>
+        <control type="image">
+            <left>90</left><top>40</top><width>1740</width><height>820</height>
+            <texture>$INFO[Window.Property(detail_fade)]</texture>
+            <aspectratio>stretch</aspectratio>
+        </control>
+        <control type="label">
+            <left>135</left><top>78</top><width>1510</width><height>35</height>
+            <label>KIVORA  /  DETAIL TITULU</label>
+            <font>font13</font><textcolor>FFDDB36A</textcolor>
+        </control>
+        <control type="label">
+            <left>132</left><top>164</top><width>1130</width><height>90</height>
+            <label>$INFO[Window.Property(detail_title)]</label>
+            <font>font45_title</font><textcolor>FFFFFFFF</textcolor>
+            <scroll>false</scroll>
+        </control>
+        <control type="label">
+            <left>136</left><top>270</top><width>1150</width><height>39</height>
+            <label>$INFO[Window.Property(detail_meta)]</label>
+            <font>font13</font><textcolor>FFF3DEB9</textcolor>
+        </control>
+        <control type="textbox">
+            <left>136</left><top>355</top><width>990</width><height>288</height>
+            <label>$INFO[Window.Property(detail_plot)]</label>
+            <font>font13</font><textcolor>FFE1E0DC</textcolor>
+            <autoscroll time="4000" delay="9000" repeat="14000">false</autoscroll>
+        </control>
+        <control type="label">
+            <left>136</left><top>695</top><width>1100</width><height>36</height>
+            <label>$INFO[Window.Property(detail_quality)]</label>
+            <font>font13</font><textcolor>FFC9AA71</textcolor>
+        </control>
+        <control type="image">
+            <left>1258</left><top>460</top><width>390</width><height>520</height>
+            <texture>$INFO[Window.Property(detail_poster)]</texture>
+            <aspectratio>keep</aspectratio>
+            <visible>!String.IsEmpty(Window.Property(detail_poster))</visible>
+        </control>
+        <control type="button" id="301">
+            <left>136</left><top>793</top><width>285</width><height>66</height>
+            <label>$INFO[Window.Property(detail_primary)]</label>
+            <font>font13</font><align>center</align><aligny>center</aligny>
+            <textcolor>FFFFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <texturefocus>$INFO[Window.Property(detail_cta_focus)]</texturefocus>
+            <texturenofocus>$INFO[Window.Property(detail_cta)]</texturenofocus>
+            <onright>302</onright><onleft>304</onleft><onup>301</onup><ondown>301</ondown>
+        </control>
+        <control type="button" id="302">
+            <left>435</left><top>793</top><width>196</width><height>66</height>
+            <label>TRAILER</label><font>font13</font>
+            <align>center</align><aligny>center</aligny>
+            <textcolor>FFE5E3DD</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <texturefocus>$INFO[Window.Property(detail_cta_focus)]</texturefocus>
+            <texturenofocus>$INFO[Window.Property(detail_button)]</texturenofocus>
+            <onright>303</onright><onleft>301</onleft><onup>302</onup><ondown>302</ondown>
+        </control>
+        <control type="button" id="303">
+            <left>645</left><top>793</top><width>238</width><height>66</height>
+            <label>+ OBLÍBENÉ</label><font>font13</font>
+            <align>center</align><aligny>center</aligny>
+            <textcolor>FFE5E3DD</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <texturefocus>$INFO[Window.Property(detail_cta_focus)]</texturefocus>
+            <texturenofocus>$INFO[Window.Property(detail_button)]</texturenofocus>
+            <onright>304</onright><onleft>302</onleft><onup>303</onup><ondown>303</ondown>
+        </control>
+        <control type="button" id="304">
+            <left>897</left><top>793</top><width>162</width><height>66</height>
+            <label>ZPĚT</label><font>font13</font>
+            <align>center</align><aligny>center</aligny>
+            <textcolor>FFE5E3DD</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <texturefocus>$INFO[Window.Property(detail_cta_focus)]</texturefocus>
+            <texturenofocus>$INFO[Window.Property(detail_button)]</texturenofocus>
+            <onright>301</onright><onleft>303</onleft><onup>304</onup><ondown>304</ondown>
+        </control>
+        <control type="label">
+            <left>136</left><top>926</top><width>1040</width><height>35</height>
+            <label>ŠIPKY  NAVIGACE    ·    OK  VÝBĚR    ·    ZPĚT  NÁVRAT</label>
+            <font>font12</font><textcolor>FF959B9F</textcolor>
+        </control>
+    </controls>
+</window>
