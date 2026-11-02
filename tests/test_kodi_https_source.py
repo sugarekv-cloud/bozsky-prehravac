@@ -35,7 +35,7 @@ class KodiHttpListingTests(unittest.TestCase):
         page=build_repo.website_index(
             "repository.bozskyprehravac-1.0.0.zip",
             "0.35.0","https://sugarekv-cloud.github.io/bozsky-prehravac/")
-        self.assertIn("Božský přehrávač",page)
+        self.assertIn("KIVORA",page)
         self.assertIn("Instalovat ze ZIP",page)
 
     def test_old_descriptive_anchor_would_fail_kodi_directory_parser(self):
