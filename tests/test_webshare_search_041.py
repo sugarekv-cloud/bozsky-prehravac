@@ -58,7 +58,7 @@ class SearchQualityTests(unittest.TestCase):
         self.assertEqual(len(rows),1)
         self.assertEqual([f['ident'] for f in rows[0]['files']],['e2'])
         self.assertTrue(any(q=='Stranger Things' for q,_,_ in self.fetches))
-        self.assertTrue(all('S01E02' not in q for q,_,_ in self.fetches))
+        self.assertTrue(any('S01E02' in q for q,_,_ in self.fetches))
 
     def test_episode_dot_alt_notation(self):
         files=[media('1','Mystery.Show.2x01.1080p.mkv'),
