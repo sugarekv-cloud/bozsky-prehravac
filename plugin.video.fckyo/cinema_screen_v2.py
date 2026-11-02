@@ -140,7 +140,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         return d
 
     def _fill(self,title1,cards1,title2,cards2,status='',extra_rows=()):
-        rows=[(title1,cards1),(title2,cards2)]+list(extra_rows)
+        from cinema_content_filter import filter_cards
+        rows=[(heading,filter_cards(cards)) for heading,cards in
+              [(title1,cards1),(title2,cards2)]+list(extra_rows)]
         while len(rows)<len(ROW_IDS):
             rows.append(('',[]))
         self.rail_items=[cards or [] for heading,cards in rows[:len(ROW_IDS)]]
@@ -170,7 +172,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 item.setProperty('has_fanart','yes' if item_fanart else '')
                 item.setProperty('is_more','yes' if c.get('kind') in ('most_watched','load_more','catalog_open','catalog_more','search_more','csfd_ranked','tips_retry') else '')
                 item.setProperty('quality',str(c.get('quality') or ''))
-                item.setProperty('year',str(c.get('year') or ''))
+                item.setProperty('year',str(c.get('year') or c.get('file_year') or ''))
+                item.setProperty('hide_caption','yes' if c.get('_hide_caption') else '')
                 item.setProperty('progress',str(c.get('progress') or '0'))
                 item.setProperty('is_resume','yes' if c.get('_continue') else '')
                 source=str(c.get('rating_source') or '').casefold()
@@ -181,7 +184,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 # Zero means unknown; never advertise a fabricated ČSFD 0%.
                 if label and label.startswith('ČSFD 0 %'):
                     label=''
-                item.setProperty('rating_label',str(c.get('_tip') or label))
+                item.setProperty('rating_label',label)
                 li.append(item)
             if li:
                 lst.addItems(li)
@@ -349,7 +352,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                     good.append(c)
                     seen.add(identity(c))
                 if len(good)>=limit:break
-            return [dict(c,_tip=tag) for c in consolidate(good)[:limit]]
+            return [dict(c,_tip=tag,_hide_caption=True)
+                    for c in consolidate(good)[:limit]]
         return fill(chosen,'TIP PRO TEBE'),fill(weekly,'TIP TÝDNE')
 
     def _schedule_home_discovery(self):
@@ -439,7 +443,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         from cinema_catalog_v2 import sort_cards,choose_files
         from cinema_genres import genre_matches
         selected=[]
-        for c in cards:
+        from cinema_content_filter import filter_cards
+        for c in filter_cards(cards):
             if c.get('kind') not in ('movie','show'):
                 selected.append(c)
                 continue
