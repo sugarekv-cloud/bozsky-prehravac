@@ -83,11 +83,11 @@ class ModernSkinTests(unittest.TestCase):
         for cid in range(401,414):
             row=self.skin.find(".//control[@id='%d']"%cid)
             layout=row.find('itemlayout')
-            self.assertGreater(int(layout.get('height')),int(layout.get('width'))) if cid in (403,404,408,411,412,413) else self.assertGreater(int(layout.get('width')),int(layout.get('height')))
+            self.assertGreater(int(layout.get('width')),int(layout.get('height')))
             art=[i for i in layout.findall("control[@type='image']")
                  if i.findtext('texture')=='$INFO[ListItem.Art(poster)]']
             self.assertGreaterEqual(len(art),1)
-            self.assertTrue(any(i.findtext('aspectratio')=='keep' for i in art))
+            self.assertTrue(any(i.findtext('aspectratio')=='scale' for i in art))
             self.assertEqual(row.findtext('onleft'),'201')
         hero=next(i for i in self.skin.findall(".//control[@type='image']")
                   if i.findtext('texture')=='$INFO[Window.Property(hero_art)]')
