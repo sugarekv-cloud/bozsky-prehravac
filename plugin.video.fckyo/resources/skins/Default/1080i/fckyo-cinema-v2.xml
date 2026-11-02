@@ -145,42 +145,42 @@
 
         <!-- Persistent current-section line and vivid remote-focus marker. -->
         <control type="image">
-            <left>563</left><top>86</top><width>96</width><height>5</height>
+            <left>563</left><top>87</top><width>96</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
             <colordiffuse>FFC9AA71</colordiffuse>
             <visible>Control.HasFocus(106) | String.IsEqual(Window.Property(nav_active),home)</visible>
         </control>
 
         <control type="image">
-            <left>682</left><top>86</top><width>114</width><height>5</height>
+            <left>682</left><top>87</top><width>114</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
             <colordiffuse>FFC9AA71</colordiffuse>
             <visible>Control.HasFocus(101) | String.IsEqual(Window.Property(nav_active),movies)</visible>
         </control>
 
         <control type="image">
-            <left>816</left><top>86</top><width>121</width><height>5</height>
+            <left>816</left><top>87</top><width>121</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
             <colordiffuse>FFC9AA71</colordiffuse>
             <visible>Control.HasFocus(102) | String.IsEqual(Window.Property(nav_active),shows)</visible>
         </control>
 
         <control type="image">
-            <left>957</left><top>86</top><width>125</width><height>5</height>
+            <left>957</left><top>87</top><width>125</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
             <colordiffuse>FFC9AA71</colordiffuse>
             <visible>Control.HasFocus(103) | String.IsEqual(Window.Property(nav_active),search)</visible>
         </control>
 
         <control type="image">
-            <left>1102</left><top>86</top><width>146</width><height>5</height>
+            <left>1102</left><top>87</top><width>146</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
             <colordiffuse>FFC9AA71</colordiffuse>
             <visible>Control.HasFocus(104) | String.IsEqual(Window.Property(nav_active),premieres)</visible>
         </control>
 
         <control type="image">
-            <left>1272</left><top>86</top><width>132</width><height>5</height>
+            <left>1272</left><top>87</top><width>132</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
             <colordiffuse>FFC9AA71</colordiffuse>
             <visible>Control.HasFocus(105) | String.IsEqual(Window.Property(nav_active),genres)</visible>
