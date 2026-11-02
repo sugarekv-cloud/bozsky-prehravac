@@ -205,7 +205,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             pass
         self._update_hero()
         # Never block Android TV while looking up missing Czech synopses.
-        warm=getattr(self.service,'start_csfd_description_refresh',None)
+        warm=getattr(getattr(self,'service',None),'start_csfd_description_refresh',None)
         if callable(warm):
             visible=[card for row in self.rail_items[:5] for card in row[:8]]
             try:
@@ -243,7 +243,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         if not isinstance(card,dict):
             return ''
         from cinema_csfd_plot import csfd_plot
-        getter=getattr(self.service,'_cached_description',None)
+        getter=getattr(getattr(self,'service',None),'_cached_description',None)
         if callable(getter):
             try:
                 result=getter(card.get('raw') or card.get('title') or '',
