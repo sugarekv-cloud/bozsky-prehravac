@@ -66,6 +66,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.setProperty('hero_art','')
         self.setProperty('hero_poster','')
         self.setProperty('hero_action','')
+        self.setProperty('hero_media_action','')
         try:
             from cinema_navigation import consume
             saved=consume(getattr(self,'return_profile',None))
@@ -273,6 +274,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         if c and wanted and c.get('kind')!=wanted:
             c=None
         if c and mode=='live_tv' and c.get('kind') in ('tv_channel','tv_addon'):
+            self._set_hero_property('hero_media_action','')
             self.featured_card=c
             self._set_hero_property('hero_action','yes')
             self._set_hero_property('hero_title',c.get('title') or 'ŽIVÁ TV')
@@ -296,13 +298,16 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self._set_hero_property('hero_art','')
             self._set_hero_property('hero_poster','')
             self._set_hero_property('hero_action','')
+            self._set_hero_property('hero_media_action','')
             return
         if c.get('kind') in ('movie','show'):
             self.featured_card=c
             self._set_hero_property('hero_action','yes')
+            self._set_hero_property('hero_media_action','yes')
         else:
             self.featured_card=None
             self._set_hero_property('hero_action','')
+            self._set_hero_property('hero_media_action','')
         self._set_hero_property('hero_title',str(c.get('title') or ''))
         genre=str(c.get('genre') or '').split(',')[:2]
         text=[str(c.get('year') or ''),', '.join(x.strip() for x in genre if x.strip())]
@@ -1336,6 +1341,20 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self._update_hero()
 
     def onClick(self,control_id):
+        if control_id==112:
+            chosen=getattr(self,'featured_card',None)
+            if chosen and chosen.get('kind') in ('movie','show'):
+                self._open_trailer_search(chosen)
+            return
+        if control_id==113:
+            chosen=getattr(self,'featured_card',None)
+            store=getattr(self,'watch_store',None)
+            if chosen and store and chosen.get('kind') in ('movie','show'):
+                enabled=store.toggle_favorite(chosen)
+                xbmcgui.Dialog().notification('KIVORA',
+                    'Přidáno do oblíbených' if enabled else 'Odebráno z oblíbených')
+                self._update_hero()
+            return
         if control_id==110:
             selected=self.featured_card
             if selected:
