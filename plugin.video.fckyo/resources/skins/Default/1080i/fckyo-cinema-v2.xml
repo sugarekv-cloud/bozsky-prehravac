@@ -15,7 +15,7 @@
         </control>
         <!-- Uninterrupted theatrical backdrop, with dark left-hand reading area. -->
         <control type="image">
-            <left>460</left><top>96</top><width>1460</width><height>430</height>
+            <left>400</left><top>96</top><width>1520</width><height>430</height>
             <texture>$INFO[Window.Property(hero_art)]</texture>
             <aspectratio>scale</aspectratio>
             <visible>!String.IsEmpty(Window.Property(hero_art))</visible>
@@ -201,7 +201,7 @@
             <scroll>true</scroll>
         </control>
         <control type="textbox">
-            <left>137</left><top>341</top><width>775</width><height>69</height>
+            <left>137</left><top>329</top><width>775</width><height>91</height>
             <font>font13</font><textcolor>FFBEC2C3</textcolor>
             <label>$INFO[Window.Property(hero_plot)]</label>
             <autoscroll time="4000" delay="8000" repeat="10000">false</autoscroll>
