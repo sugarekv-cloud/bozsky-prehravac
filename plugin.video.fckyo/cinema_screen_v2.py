@@ -335,23 +335,31 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                        'DALŠÍ PREMIÉRY',items[24:48],
                        'Premiéry z ověřeného katalogu Webshare')
             return
-        from cinema_rankings import csfd_only
+        from cinema_rankings import honest_ranked_shelf
         key='_all_shows' if view=='shows' else '_all_movies'
+        pool=home.get(key) or []
         try:
-            ranked=csfd_only(home.get(key) or [],kind,limit=40)
+            rating_source,ranked=honest_ranked_shelf(pool,kind,limit=40)
         except Exception as exc:
-            self._catalog_problem('csfd '+view,exc)
-            ranked=[]
+            self._catalog_problem('ratings '+view,exc)
+            rating_source,ranked='KATALOG WEBSHARE',[]
         prefix='SERIÁLY' if kind=='show' else 'FILMY'
-        headline='NEJLÉPE HODNOCENÉ '+prefix+' · ČSFD'
-        ranked=[c for c in ranked if isinstance(c,dict)
-                and c.get('kind')==kind and c.get('ident') and c.get('files')]
-        primary=ranked[:24]
-        if primary:
+        headline=('NEJLÉPE HODNOCENÉ '+prefix+' · '+rating_source
+                  if rating_source!='KATALOG WEBSHARE' else
+                  'OVĚŘENÉ '+prefix+' · WEB SHARE')
+        primary=[c for c in ranked[:24] if c.get('kind')==kind and
+                 c.get('ident') and c.get('files')]
+        if rating_source=='ČSFD' and primary:
             primary.append(tile('+ CELÝ ŽEBŘÍČEK ČSFD','csfd_ranked',
                                 catalog_kind=kind))
-        else:
-            primary=[tile('ŽEBŘÍČEK ČSFD SE PŘIPRAVUJE','none')]
+        if not primary:
+            # Do not show an inert giant placeholder in the first shelf.
+            # The card remains honest: no unverified rating is advertised.
+            primary=[c for c in items[:24] if c.get('ident') and c.get('files')]
+            headline='OVĚŘENÉ '+prefix+' · WEBSHARE'
+        if not primary:
+            primary=[tile('PROCHÁZET STRÁNKY WEBSHARE','catalog_open',
+                          catalog_kind=kind)]
         browse_button=tile('+  OBJEVIT DALŠÍ SERIÁLY' if kind=='show'
                            else '+  OBJEVIT DALŠÍ FILMY','catalog_open',
                            catalog_kind=kind,
@@ -419,11 +427,11 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             except Exception as exc:
                 self._catalog_problem('watch lists',exc)
                 films,series,favorites=[],[],[]
-            from cinema_rankings import csfd_only
+            from cinema_rankings import honest_ranked_shelf
             all_movies=home.get('_all_movies') or []
             all_shows=home.get('_all_shows') or []
-            csfd_movies=csfd_only(all_movies,'movie',limit=30)
-            csfd_shows=csfd_only(all_shows,'show',limit=30)
+            movies_source,csfd_movies=honest_ranked_shelf(all_movies,'movie',limit=30)
+            shows_source,csfd_shows=honest_ranked_shelf(all_shows,'show',limit=30)
             personal,weekly=self._home_tips(home,store,limit=24)
             # Show real films as soon as any verified movie is indexed.
             if not personal:
@@ -433,10 +441,10 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                     tile('OBNOVIT TIPY A KATALOG','tips_retry')]
             if not weekly:
                 weekly=list(personal)
-            if csfd_movies:
+            if movies_source=='ČSFD' and csfd_movies:
                 csfd_movies=list(csfd_movies)+[tile('+  CELÝ ŽEBŘÍČEK ČSFD',
                     'csfd_ranked',catalog_kind='movie')]
-            if csfd_shows:
+            if shows_source=='ČSFD' and csfd_shows:
                 csfd_shows=list(csfd_shows)+[tile('+  SERIÁLY NA ČSFD',
                     'csfd_ranked',catalog_kind='show')]
             latest=home.get('premieres') or all_movies[:18]
@@ -445,9 +453,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             rows=[
                 ('TIPY NA SLEDOVÁNÍ',personal),
                 ('POKRAČOVAT VE SLEDOVÁNÍ',films+series),
-                ('NEJLÉPE HODNOCENÉ FILMY · ČSFD',csfd_movies or [
+                ('NEJLÉPE HODNOCENÉ FILMY · '+movies_source,csfd_movies or [
                     tile('OTEVŘÍT FILMOVOU KNIHOVNU','movies')]),
-                ('NEJLÉPE HODNOCENÉ SERIÁLY · ČSFD',csfd_shows or [
+                ('NEJLÉPE HODNOCENÉ SERIÁLY · '+shows_source,csfd_shows or [
                     tile('OTEVŘÍT KATALOG SERIÁLŮ','shows')]),
                 ('NOVÉ FILMY',latest or [tile('PROCHÁZET FILMY','movies')]),
                 ('VYBER SI SERIÁL',shows or [tile('PROCHÁZET SERIÁLY','shows')]),
@@ -455,10 +463,10 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 ('MOJE OBLÍBENÉ',favorites),
                 ('FILMY PRO VEČER',all_movies[:24]),
                 ('SERIÁLY PRO VEČER',all_shows[:24]),
-                ('NEJLEPŠÍ FILMY ROKU %s · ČSFD'%year,
-                    csfd_only(all_movies,'movie',year=year,limit=20)),
-                ('NEJLEPŠÍ SERIÁLY ROKU %s · ČSFD'%year,
-                    csfd_only(all_shows,'show',year=year,limit=20)),
+                ('NEJLEPŠÍ FILMY ROKU %s · DOSTUPNÉ'%year,
+                    honest_ranked_shelf(all_movies,'movie',year=year,limit=20)[1]),
+                ('NEJLEPŠÍ SERIÁLY ROKU %s · DOSTUPNÉ'%year,
+                    honest_ranked_shelf(all_shows,'show',year=year,limit=20)[1]),
             ]
             self._fill(rows[0][0],rows[0][1],rows[1][0],rows[1][1],
                        'DOMŮ  ·  tipy a ověřené filmy z Webshare',
