@@ -21,7 +21,7 @@
         </control>
         <!-- Uninterrupted theatrical backdrop, with dark left-hand reading area. -->
         <control type="image">
-            <left>450</left><top>96</top><width>1470</width><height>436</height>
+            <left>400</left><top>96</top><width>1520</width><height>436</height>
             <texture>$INFO[Window.Property(hero_art)]</texture>
             <aspectratio>scale</aspectratio>
             <visible>!String.IsEmpty(Window.Property(hero_art))</visible>
