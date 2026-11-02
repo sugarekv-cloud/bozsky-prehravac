@@ -19,7 +19,7 @@ from cinema_dedupe import (consolidate, unify_sections, unique_home_rails,
                            identity)
 from cinema_search_v3 import (MOVIE_SEEDS, SHOW_SEEDS, candidate_names,
                               query_plan, matching_files, seed_batch, localized_title,
-                               title_and_year)
+                               search_intent)
 
 
 class WebshareSearchUnavailable(Exception):
@@ -46,6 +46,7 @@ class CinemaService:
         from cinema_artwork import Artwork
         self.artwork=Artwork(profile, budget=12)
         self.search_cache={}
+        self.search_cache_time={}
         self.series_cache={}
         self.last_diagnostics=''
         self.hits_path=os.path.join(profile,'cinema-v3-hits.json') if profile else None
@@ -947,11 +948,17 @@ class CinemaService:
         term=(query or '').strip()
         if not term:
             return []
-        title,requested_year=title_and_year(term)
-        key=normalize(term)
+        title,requested_year,requested_season,requested_episode=search_intent(term)
+        if not title:
+            return []
+        # The same text can be searched in movie, show or all categories.
+        # Cached movie-only results must never hide valid series episodes.
+        key=(normalize(term),kind)
         if key in self.search_cache:
-            cards=self.search_cache[key]
-            return [c for c in cards if kind=='all' or c['kind']==kind]
+            if time.time()-self.search_cache_time.get(key,0)<300:
+                return list(self.search_cache[key])
+            self.search_cache.pop(key,None)
+            self.search_cache_time.pop(key,None)
         md=self.metadata.lookup(title,requested_year) if self.metadata else None
         from cinema_search_v3 import cached_title_aliases
         names=candidate_names(title,md)
@@ -978,7 +985,15 @@ class CinemaService:
             if page is None:
                 failed+=1
                 continue
-            valid=matching_files(page,names,kind=None,year=requested_year)
+            valid=matching_files(page,names,
+                                 kind=kind if kind in ('movie','show') else None,
+                                 year=requested_year)
+            if requested_episode is not None:
+                valid=[f for f in valid if
+                       (lambda p: p and p.get('kind')=='episode' and
+                        p.get('season')==requested_season and
+                        p.get('episode')==requested_episode)(
+                            parse_video_name(f.get('name') or ''))]
             if requested_year:
                 # Explicitly selecting a release year must not silently
                 # attach an undated remake to another movie.
@@ -1038,7 +1053,8 @@ class CinemaService:
                     -rating,displayed,str(card.get('year') or ''))
         combined.sort(key=rank)
         if combined:
-            self.search_cache[key]=combined
+            self.search_cache[key]=list(combined)
+            self.search_cache_time[key]=time.time()
         return [c for c in combined if kind=='all' or c['kind']==kind]
 
     def files(self, card, quality='all', language='all'):
