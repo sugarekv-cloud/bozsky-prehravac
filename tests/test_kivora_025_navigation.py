@@ -150,5 +150,29 @@ class KodiPlaybackAndHomeTests(unittest.TestCase):
             self.assertTrue(service.start_home_refresh(force=True))
             self.assertTrue(service._background_started)
 
+    def test_playback_after_profile_switch_uses_new_watch_store(self):
+        import tempfile
+        import service
+        from cinema_profiles import add_profile
+        from cinema_user_state import WatchStore
+        with tempfile.TemporaryDirectory() as root:
+            old_store=WatchStore(root)
+            add_profile(root,'Druhý profil')
+            active_store=WatchStore(root)
+            active_store.pending_play({'kind':'movie','title':'Pokus',
+                                       'ident':'321','name':'film.mkv'})
+            class Player:
+                def isPlayingVideo(self): return True
+                def getTotalTime(self): return 120
+                def getTime(self): return 45
+                def seekTime(self,value): pass
+            tracker=service.WatchTracker(root,player=Player(),
+                store=old_store,return_to_addon=lambda:None)
+            tracker.tick()
+            self.assertEqual(tracker.store.path,active_store.path)
+            self.assertEqual(tracker.active['ident'],'321')
+            self.assertEqual(len(WatchStore(root).continue_cards()),1)
+
+
 
 if __name__=='__main__':unittest.main()
