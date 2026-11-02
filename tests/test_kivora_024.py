@@ -37,7 +37,8 @@ class KivoraSearchTests(unittest.TestCase):
             source=f.read()
         self.assertIn('cached_title_aliases(title,self.home_fast())',source)
         self.assertIn('verified_groups(candidates,self.availability',source)
-        self.assertIn('max_pages=2 if index<2 else 1',source)
+        self.assertIn("self.search_scan[key]=state",source)
+        self.assertIn("state['offsets'][index]=next_offset",source)
 
     def test_discovery_is_larger_not_unbounded(self):
         from cinema_service_v2 import CinemaService
@@ -82,7 +83,7 @@ class KivoraDesignTests(unittest.TestCase):
         home=self.screen[home_start:home_end]
         self.assertNotIn('POPULÁRNÍ NA WEBSHARE',home)
         self.assertNotIn('NEJSLEDOVANĚJŠÍ NA WEBSHARE',home)
-        self.assertIn('NEJLÉPE HODNOCENÉ FILMY · ČSFD',home)
+        self.assertIn('honest_ranked_shelf(all_movies',home)
         self.assertIn('TIPY NA SLEDOVÁNÍ',home)
         self.assertIn('OBJEVIT DALŠÍ FILMY',self.screen)
         self.assertIn('PROCHÁZET SERIÁLY',self.screen)
