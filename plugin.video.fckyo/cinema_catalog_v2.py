@@ -64,6 +64,8 @@ def add_metadata(groups_list, client, maximum=12):
 def card(group, tag=''):
     from cinematic_catalog import webshare_image_url
     meta=group.get('metadata') or {}
+    from cinema_csfd_plot import csfd_plot
+    description=csfd_plot(meta)
     best=group['best']
     return {
         'title':meta.get('title') or group['title'],
@@ -71,9 +73,10 @@ def card(group, tag=''):
         'file_year':group.get('year') or '',
         'poster':meta.get('poster') or webshare_image_url(best.get('img')),
         'fanart':meta.get('fanart') or '',
-        'plot':meta.get('plot') or '',
+        # Cinemeta plot is not labelled as ČSFD: never use it here.
+        'plot':description, 'plot_source':'ČSFD/CZDB' if description else '',
         'genre':', '.join(meta.get('genres') or []),
-        'rating':meta.get('rating'), 'rating_source':meta.get('rating_source') or 'ČSFD',
+        'rating':meta.get('rating'), 'rating_source':meta.get('rating_source') or '',
         'quality':file_label(best),
         'kind':group['kind'], 'tag':tag,'ident':best['ident'],
         'files':group['files'], 'original':meta.get('original') or '',
