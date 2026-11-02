@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="KIVORA" version="0.38.0" provider-name="KIVORA Community">
+<addon id="plugin.video.fckyo" name="KIVORA" version="0.39.0" provider-name="KIVORA Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -22,14 +22,22 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
-[B]0.38.0 KIVORA Atelier – nadčasové televizní rozhraní[/B]
+[B]0.39.0 KIVORA Cinema – přepracovaná kompozice televizní obrazovky[/B]
+- Hlavní film má samostatnou velkou obrazovou plochu a přehledné ovládání
+- Filmové řady začínají výše; banner už nezabírá většinu obrazovky
+- Duplicitní boční nabídka je skrytá a objeví se při přechodu doleva
+- Výraznější, typograficky čistší značka KIVORA se zachovaným symbolem boha
+- Zachované sekce, Webshare, vyhledávání, jazykové preference i přehrávání
+
+
+[B]0.39.0 KIVORA Atelier – nadčasové televizní rozhraní[/B]
 - Nová grafitová barevnost, teplá slonová kost a decentní bronzové zvýraznění
 - Čitelnější titulky, filmové fotografie, plakáty a ovládací tlačítka
 - Zklidněné rozhraní, nové textury a nové ikony 24 žánrů
 - Zachovány všechny navigační prvky a výběr Webshare souborů i přehrávání
 
 
-[B]0.38.0 Jazykové pořadí: český dabing → CZ zvuk → CZ titulky → ostatní[/B]
+[B]0.39.0 Jazykové pořadí: český dabing → CZ zvuk → CZ titulky → ostatní[/B]
 - Rozlišuje explicitní označení dabingu, obecnou značku CZ a CZSUB/CZ.Subs/CZ.Titulky
 - V každé jazykové skupině zobrazuje nejvyšší dostupné rozlišení jako první
 - Shodné řazení u filmů, epizod, výběru souboru a automatického pokračování
