@@ -453,9 +453,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             rows=[
                 ('TIPY NA SLEDOVÁNÍ',personal),
                 ('POKRAČOVAT VE SLEDOVÁNÍ',films+series),
-                ('NEJLÉPE HODNOCENÉ FILMY · '+movies_source,csfd_movies or [
+                (('NEJLÉPE HODNOCENÉ FILMY · '+movies_source) if movies_source!='KATALOG WEBSHARE' else 'FILMY NA WEBSHARE',csfd_movies or [
                     tile('OTEVŘÍT FILMOVOU KNIHOVNU','movies')]),
-                ('NEJLÉPE HODNOCENÉ SERIÁLY · '+shows_source,csfd_shows or [
+                (('NEJLÉPE HODNOCENÉ SERIÁLY · '+shows_source) if shows_source!='KATALOG WEBSHARE' else 'SERIÁLY NA WEBSHARE',csfd_shows or [
                     tile('OTEVŘÍT KATALOG SERIÁLŮ','shows')]),
                 ('NOVÉ FILMY',latest or [tile('PROCHÁZET FILMY','movies')]),
                 ('VYBER SI SERIÁL',shows or [tile('PROCHÁZET SERIÁLY','shows')]),
