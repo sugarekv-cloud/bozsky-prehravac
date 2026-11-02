@@ -943,7 +943,32 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 xbmcgui.NOTIFICATION_WARNING)
 
     def _gear_menu(self):
-        selected=xbmcgui.Dialog().select('⚙  Nastavení Božského přehrávače',[
+        """Cinema 2.0 grouped settings; legacy advanced tools remain available."""
+        from cinema_settings_hub import choose_settings
+        action=choose_settings(self.addon,self.textures)
+        if action=='account':
+            self._open_settings()
+        elif action=='catalog':
+            self._filters()
+        elif action=='profiles':
+            self._profiles_menu()
+        elif action=='sync':
+            self._sync_menu()
+        elif action=='backups':
+            chosen=xbmcgui.Dialog().select('KIVORA · zálohy',[
+                'Exportovat oblíbené a historii',
+                'Obnovit oblíbené a historii ze souboru'])
+            if chosen==0:
+                self._library_backup(False)
+            elif chosen==1:
+                self._library_backup(True)
+        elif action=='diagnostics':
+            self._diagnostics()
+        elif action=='advanced':
+            self._gear_legacy_menu()
+
+    def _gear_legacy_menu(self):
+        selected=xbmcgui.Dialog().select('KIVORA · rozšířená nastavení',[
             'Nastavení doplňku a přihlášení Webshare',
             'Filtry a řazení katalogu',
             'Načíst další tituly a aktualizovat Webshare',
