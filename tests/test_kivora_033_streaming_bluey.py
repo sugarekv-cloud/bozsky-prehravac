@@ -128,14 +128,14 @@ class StreamingSkinTests(unittest.TestCase):
             layout=rail.find('itemlayout')
             focus=rail.find('focusedlayout')
             dims=(int(layout.get('width')),int(layout.get('height')))
-            self.assertEqual(dims,(239,354) if rid in portrait else (359,259))
+            self.assertEqual(dims,(292,218))
             self.assertEqual(dims,(int(focus.get('width')),int(focus.get('height'))))
             self.assertIsNotNone(layout.find("control[@type='progress']"))
             self.assertIsNotNone(focus.find("control[@type='progress']"))
             posters=[x for x in layout.findall("control[@type='image']")
                      if x.findtext('texture')=='$INFO[ListItem.Art(poster)]']
             self.assertGreaterEqual(len(posters),1)
-            self.assertTrue(any(p.findtext('aspectratio')=='keep' for p in posters))
+            self.assertTrue(any(p.findtext('aspectratio')=='scale' for p in posters))
         banner=[x for x in self.root.findall(".//control[@type='image']")
                 if x.findtext('texture')=='$INFO[Window.Property(hero_art)]']
         self.assertGreaterEqual(int(banner[0].findtext('width')),1300)
@@ -150,7 +150,7 @@ class StreamingSkinTests(unittest.TestCase):
 
     def test_new_version_and_cached_textures(self):
         addon=ET.parse(os.path.join(PLUGIN,'addon.xml')).getroot()
-        self.assertEqual(addon.get('version'),'0.47.2')
+        self.assertEqual(addon.get('version'),'0.47.3')
         with open(os.path.join(PLUGIN,'cinematic_home.py'),encoding='utf8') as f:
             src=f.read()
         self.assertIn('stream_v12_cinema2_',src)

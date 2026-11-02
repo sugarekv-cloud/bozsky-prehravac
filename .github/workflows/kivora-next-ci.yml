@@ -48,9 +48,9 @@ jobs:
           from pathlib import Path
           from xml.etree import ElementTree as ET
           addon=ET.parse('plugin.video.fckyo/addon.xml').getroot()
-          assert addon.attrib['version']=='0.47.2'
+          assert addon.attrib['version']=='0.47.3'
           screen=Path('plugin.video.fckyo/cinema_screen_v2.py').read_text(encoding='utf-8')
-          assert "VERSION='0.47.2'" in screen
+          assert "VERSION='0.47.3'" in screen
           PY
       - name: Run full publish-workflow regression suite
         run: python -m unittest discover -s tests -v

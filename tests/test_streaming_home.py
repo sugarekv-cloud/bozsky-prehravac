@@ -34,14 +34,11 @@ class StreamingHomeTests(unittest.TestCase):
             self.assertIsNotNone(rail)
             self.assertEqual(rail.findtext('orientation'),'horizontal')
             item=rail.find('itemlayout')
-            if cid in (403,404):
-                self.assertGreater(int(item.get('height')),int(item.get('width')))
-            else:
-                self.assertGreater(int(item.get('width')),int(item.get('height')))
+            self.assertGreater(int(item.get('width')),int(item.get('height')))
             posters=[image for image in item.findall("control[@type='image']")
                      if image.findtext('texture')=='$INFO[ListItem.Art(poster)]']
             self.assertGreaterEqual(len(posters),1)
-            self.assertTrue(any(p.findtext('aspectratio')=='keep' for p in posters))
+            self.assertTrue(any(p.findtext('aspectratio')=='scale' for p in posters))
 
     def test_bottom_navigation_never_jumps_back_to_header(self):
         for cid in range(401,408):

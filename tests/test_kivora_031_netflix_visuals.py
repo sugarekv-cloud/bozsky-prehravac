@@ -29,11 +29,11 @@ class NetflixPosterLayoutTests(unittest.TestCase):
             for form in ('itemlayout','focusedlayout'):
                 tile=rail.find(form)
                 w,h=int(tile.get('width')),int(tile.get('height'))
-                self.assertEqual((w,h),(239,354) if id in portrait else (359,259))
+                self.assertEqual((w,h),(292,218))
                 posters=[x for x in tile.findall("control[@type='image']")
                          if x.findtext('texture')=='$INFO[ListItem.Art(poster)]']
                 self.assertGreaterEqual(len(posters),1)
-                self.assertTrue(any(p.findtext('aspectratio')=='keep' for p in posters))
+                self.assertTrue(any(p.findtext('aspectratio')=='scale' for p in posters))
             self.assertGreater(1610 / int(rail.find('itemlayout').get('width')),4)
 
     def test_focus_is_never_drawn_on_nonfocused_cards(self):

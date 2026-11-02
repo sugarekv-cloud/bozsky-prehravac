@@ -139,12 +139,8 @@ class NetflixSkinTests(unittest.TestCase):
             listcontrol=self.root.find(".//control[@id='%d']"%id)
             self.assertIsNotNone(listcontrol)
             item=listcontrol.find('itemlayout')
-            if id in (403,404,408,411):
-                self.assertEqual(item.get('width'),'239')
-                self.assertEqual(item.get('height'),'354')
-            else:
-                self.assertEqual(item.get('width'),'359')
-                self.assertEqual(item.get('height'),'259')
+            self.assertEqual(item.get('width'),'292')
+            self.assertEqual(item.get('height'),'218')
             self.assertTrue(listcontrol.findall('ondown'))
             self.assertEqual(listcontrol.findall('ondown')[-1].text,str(id))
 
@@ -169,7 +165,7 @@ class NetflixSkinTests(unittest.TestCase):
         service=root.find("./extension[@point='xbmc.service']")
         self.assertIsNotNone(service)
         self.assertEqual(service.get('library'),'service.py')
-        self.assertEqual(root.get('version'),'0.47.2')
+        self.assertEqual(root.get('version'),'0.47.3')
 
 
 if __name__=='__main__':

@@ -16,7 +16,25 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.47.2'
+VERSION='0.47.3'
+
+
+def quality_badge(raw):
+    """Short, readable verified release label: never show a full filename."""
+    text=str(raw or '').casefold()
+    if any(mark in text for mark in ('2160p','2160','4k','uhd')):
+        return '4K'
+    if '1080' in text or 'full hd' in text:
+        return '1080p'
+    if '720' in text or 'hd ready' in text:
+        return '720p'
+    if ' sd' in ' '+text or 'dvd' in text or '480' in text:
+        return 'SD'
+    if 'hdr' in text:
+        return 'HDR'
+    if ' hd' in ' '+text:
+        return 'HD'
+    return ''
 
 
 def tile(name,kind,**extra):
@@ -178,7 +196,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 item.setProperty('has_poster','yes' if c.get('poster') else '')
                 item.setProperty('has_fanart','yes' if item_fanart else '')
                 item.setProperty('is_more','yes' if c.get('kind') in ('most_watched','load_more','catalog_open','catalog_more','search_more','csfd_ranked','tips_retry') else '')
-                item.setProperty('quality',str(c.get('quality') or ''))
+                item.setProperty('quality',quality_badge(c.get('quality')))
                 item.setProperty('year',str(c.get('year') or c.get('file_year') or ''))
                 item.setProperty('hide_caption','yes' if c.get('_hide_caption') else '')
                 item.setProperty('progress',str(c.get('progress') or '0'))
@@ -595,6 +613,19 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             'movies' if view in ('files','catalog_all','csfd_ranked','most_watched') else
             'home')
         self.setProperty('nav_active',nav)
+        # Netflix-style shelves: browsing uses the whole screen; the cinematic
+        # hero remains on Home and in playback/TV contexts.
+        browse=view in ('movies','shows','premieres','bluey','genres',
+                         'genre_titles','catalog_all','csfd_ranked',
+                         'most_watched','favorites','recommendations','search')
+        self.setProperty('layout_mode','browse' if browse else 'hero')
+        self.setProperty('browse_title',{
+            'movies':'FILMY','shows':'SERIÁLY','premieres':'PREMIÉRY',
+            'bluey':'BLUEY','genres':'ŽÁNRY','genre_titles':'ŽÁNROVÝ KATALOG',
+            'catalog_all':'KNIHOVNA','csfd_ranked':'TOP ČSFD',
+            'most_watched':'NEJSLEDOVANĚJŠÍ','favorites':'OBLÍBENÉ',
+            'recommendations':'TIPY PRO TEBE','search':'VYHLEDÁVÁNÍ',
+        }.get(view,''))
         self.setProperty('is_home','yes' if view=='home' else '')
         self.setProperty('section_label',{
             'home':'DOPORUČENO PRO TEBE','movies':'FILMY · KVALITA A ČEŠTINA','shows':'SERIÁLY · KVALITA A ČEŠTINA','premieres':'PREMIÉRY',

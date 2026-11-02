@@ -27,7 +27,7 @@ class CinemaTV036Tests(unittest.TestCase):
 
     def test_version_and_preserved_plugin_identity(self):
         addon = ET.parse(PLUGIN / 'addon.xml').getroot()
-        self.assertEqual(addon.get('version'), '0.47.2')
+        self.assertEqual(addon.get('version'), '0.47.3')
         self.assertEqual(addon.get('id'), 'plugin.video.fckyo')
         self.assertEqual(addon.get('name'), 'KIVORA')
 
@@ -71,7 +71,7 @@ class CinemaTV036Tests(unittest.TestCase):
             self.assertGreater(int(item.get('width')), int(item.get('height')))
         for ident in PORTRAIT:
             item = self.control(ident).find('itemlayout')
-            self.assertGreater(int(item.get('height')), int(item.get('width')))
+            self.assertGreater(int(item.get('width')), int(item.get('height')))
 
     def test_landscape_cards_show_titles_for_posters_or_backdrops(self):
         for ident in LANDSCAPE:
@@ -92,11 +92,11 @@ class CinemaTV036Tests(unittest.TestCase):
                 layout = self.control(ident).find(name)
                 art = layout.findall("control[@type='image']")
                 self.assertTrue(any(x.findtext('texture') == '$INFO[ListItem.Art(poster)]'
-                                    and x.findtext('aspectratio') == 'keep' for x in art))
-                gradients = [x for x in art if x.findtext('texture') ==
-                             '$INFO[Window.Property(cinema_cardfade)]']
-                self.assertEqual(len(gradients), 1)
-                self.assertIn('ListItem.Art(poster)', gradients[0].findtext('visible'))
+                                    and x.findtext('aspectratio') == 'scale' for x in art))
+                backdrops = [x for x in art if x.findtext('texture') ==
+                             '$INFO[ListItem.Art(fanart)]']
+                self.assertEqual(len(backdrops),1)
+                self.assertEqual(backdrops[0].findtext('aspectratio'),'scale')
 
     def test_every_card_tracks_resume_progress(self):
         for ident in ROWS:
@@ -125,7 +125,7 @@ class CinemaTV036Tests(unittest.TestCase):
 
     def test_show_search_and_playback_logic_intact(self):
         logic = (PLUGIN / 'cinema_screen_v2.py').read_text(encoding='utf8')
-        for fragment in ("VERSION='0.47.2'", "'bluey_search'", "'genre_open'",
+        for fragment in ("VERSION='0.47.3'", "'bluey_search'", "'genre_open'",
                          "'catalog_more'", "'file'", "'movie'", "'show'",
                          'self._play_saved(c)', "self._refresh('files'"):
             self.assertIn(fragment, logic)
