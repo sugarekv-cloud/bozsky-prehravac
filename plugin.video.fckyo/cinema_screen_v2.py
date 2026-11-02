@@ -10,13 +10,13 @@ import xbmc
 
 TOP_ACTIONS={
     106:'home',101:'movies',102:'shows',103:'search',104:'premieres',
-    105:'genres',109:'bluey',107:'settings',
+    105:'genres',109:'bluey',111:'live_tv',107:'settings',
     201:'home',202:'continue',203:'favorites',204:'genres',
     205:'csfd_ranked',206:'premieres',207:'settings',208:'recommendations'
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.46.0'
+VERSION='0.47.0'
 
 
 def tile(name,kind,**extra):
@@ -266,6 +266,15 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             c=self.featured_card
         if c and wanted and c.get('kind')!=wanted:
             c=None
+        if c and mode=='live_tv' and c.get('kind') in ('tv_channel','tv_addon'):
+            self.featured_card=c
+            self._set_hero_property('hero_action','yes')
+            self._set_hero_property('hero_title',c.get('title') or 'ŽIVÁ TV')
+            self._set_hero_property('hero_info',c.get('quality') or 'ŽIVĚ · ZDARMA')
+            self._set_hero_property('hero_plot',c.get('plot') or '')
+            self._set_hero_property('hero_art','')
+            self._set_hero_property('hero_poster',c.get('poster') or '')
+            return
         if (not c or c.get('kind') not in ('movie','show')) and mode in (
                 'home','recommendations','movies','shows','premieres'):
             c=next((card for row in getattr(self,'rail_items',[])
@@ -501,13 +510,75 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             selected.append(c)
         return selected if keep_order else sort_cards(selected,self.sort)
 
+    def _live_tv_screen(self):
+        """Free TV works without a Webshare account or provider login."""
+        from cinema_live_tv import tv_cards,ct_card
+        profile=getattr(self,'return_profile',None)
+        artwork=os.path.join(self.addon.getAddonInfo('path'),'resources','live_tv') if getattr(self,'addon',None) else ''
+        fav,stations=tv_cards(profile,artwork)
+        # No empty or inert shelf on first launch: all free channels come first.
+        first=fav if fav else stations
+        first_label='MOJE OBLÍBENÉ STANICE' if fav else 'BEZPLATNÉ HUDEBNÍ STANICE'
+        second=stations if fav else [ct_card()]
+        second_label='VŠECHNY BEZPLATNÉ STANICE' if fav else 'ČESKÁ TELEVIZE · iVYSÍLÁNÍ'
+        extra=[('ČESKÁ TELEVIZE · ARCHIV A ŽIVÉ VYSÍLÁNÍ',[ct_card()])] if fav else []
+        self._fill(first_label,first,second_label,second,
+                   'OK = přehrát · tlačítko nabídky = oblíbené · streamy podle dostupnosti',
+                   extra_rows=extra)
+
+    def _live_tv_selected(self,card):
+        if not isinstance(card,dict):
+            return False
+        if card.get('kind')=='tv_addon':
+            # Kodi switches to a separate installed extension AFTER this
+            # modal WindowXMLDialog closes, as with other navigation.
+            try:
+                import xbmcaddon
+                xbmcaddon.Addon('plugin.video.ivysilani.cz')
+            except (RuntimeError,Exception):
+                xbmcgui.Dialog().notification('KIVORA ŽIVÁ TV',
+                    'Nejprve nainstaluj doplněk iVysílání ČT.')
+                return True
+            from cinema_live_tv import CT_PLUGIN_URL
+            self.destination=CT_PLUGIN_URL
+            self.is_play=False
+            self.close()
+            return True
+        if card.get('kind')!='tv_channel':
+            return False
+        from cinema_live_tv import playable_url
+        stream=playable_url(card.get('channel_id') or '')
+        if not stream:
+            xbmcgui.Dialog().notification('KIVORA ŽIVÁ TV','Stream stanice není dostupný.')
+            return True
+        self._start_playback(stream)
+        return True
+
+    def _live_tv_menu(self):
+        if getattr(self,'mode',None)!='live_tv':
+            return False
+        card=self._selected()
+        if not card or card.get('kind')!='tv_channel':
+            return True
+        from cinema_live_tv import toggle_favorite
+        name=str(card.get('title') or '')
+        option=xbmcgui.Dialog().select(name,['Přehrát živé vysílání',
+                  'Přidat / odebrat z oblíbených'])
+        if option==0:
+            self._live_tv_selected(card)
+        elif option==1:
+            toggle_favorite(getattr(self,'return_profile',None),
+                            card.get('channel_id'))
+            self._screen('live_tv',stack=False)
+        return True
+
     def _screen(self,view,context=None,stack=False):
         if view!=getattr(self,'mode',None):
             # A new section must not inherit the previous section's hero.
             self.featured_card=None
         self.mode=view
         self.context=context
-        nav=view if view in ('home','movies','shows','premieres','search','genres','bluey') else (
+        nav=view if view in ('home','movies','shows','premieres','search','genres','bluey','live_tv') else (
             'shows' if view in ('seasons','episodes') else
             'movies' if view in ('files','catalog_all','csfd_ranked','most_watched') else
             'home')
@@ -515,7 +586,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.setProperty('is_home','yes' if view=='home' else '')
         self.setProperty('section_label',{
             'home':'DOPORUČENO PRO TEBE','movies':'FILMY · KVALITA A ČEŠTINA','shows':'SERIÁLY · KVALITA A ČEŠTINA','premieres':'PREMIÉRY',
-            'bluey':'BLUEY',
+            'bluey':'BLUEY','live_tv':'ŽIVÁ TV · ZDARMA',
             'search':'VYHLEDÁVÁNÍ','seasons':'SÉRIE','episodes':'EPIZODY',
             'files':'VÝBĚR KVALITY',
              'most_watched':'NEJSLEDOVANĚJŠÍ',
@@ -523,6 +594,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
               'catalog_all':'ÚPLNÝ KATALOG',
               'csfd_ranked':'NEJLEPŠÍ DLE ČSFD',
               'favorites':'OBLÍBENÉ','recommendations':'TIPY NA SLEDOVÁNÍ'}.get(view,'KATALOG'))
+        if view=='live_tv':
+            self._live_tv_screen()
+            return
         if not self.service.token:
             self._fill('PŘIHLÁŠENÍ K WEBSHARE',[
                 tile('NASTAVIT ÚČET WEBSHARE','settings',
@@ -1048,7 +1122,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
     def onAction(self,action):
         self._apply_background_home()
         if action.getId()==117:
-            self._poster_menu()
+            if not self._live_tv_menu():
+                self._poster_menu()
         elif action.getId() in BACK_ACTIONS:
             self._go_back()
         elif action.getId()==4 and self.getFocusId()==self._last_filled_rail():
@@ -1073,6 +1148,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             return
         if control_id==108:
             chosen=self.featured_card
+            if chosen and self._live_tv_selected(chosen):
+                return
             if chosen and chosen.get('_continue'):
                 self._play_saved(chosen)
             elif chosen and chosen.get('kind')=='movie':
@@ -1103,6 +1180,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         c=self._selected(control_id)
         if not c:return
         kind=c.get('kind')
+        if self._live_tv_selected(c):
+            return
         if kind=='none':
             return
         if c.get('_continue'):
