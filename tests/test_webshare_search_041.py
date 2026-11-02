@@ -83,16 +83,16 @@ class SearchQualityTests(unittest.TestCase):
     def test_cached_search_is_refreshed_after_five_minutes(self):
         state={'ident':'one'}
         def fetch(t,o,q,s):
-            return [media(state['ident'],'Sample.Title.2022.1080p.mkv')],1
+            return [media(state['ident'],'Example.Title.2022.1080p.mkv')],1
         svc=self.make_service(fetch)
-        first=svc.search('Sample Title',kind='movie')
+        first=svc.search('Example Title',kind='movie')
         self.assertEqual(first[0]['ident'],'one')
         cached=len(self.fetches)
         state['ident']='two'
-        self.assertEqual(svc.search('Sample Title',kind='movie')[0]['ident'],'one')
+        self.assertEqual(svc.search('Example Title',kind='movie')[0]['ident'],'one')
         self.assertEqual(len(self.fetches),cached)
-        svc.search_cache_time[('sample title','movie')]=time.time()-301
-        again=svc.search('Sample Title',kind='movie')
+        svc.search_cache_time[('example title','movie')]=time.time()-301
+        again=svc.search('Example Title',kind='movie')
         self.assertEqual(again[0]['ident'],'two')
         self.assertGreater(len(self.fetches),cached)
 
