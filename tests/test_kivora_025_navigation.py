@@ -19,50 +19,43 @@ def ui():
 
 
 class KodiPlaybackAndHomeTests(unittest.TestCase):
-    def test_playing_saved_movie_does_not_close_film_window(self):
-        import cinema_screen_v2 as module
+    def test_playing_saved_movie_closes_dialog_before_player_starts(self):
         win=ui().__new__(ui())
         win.make_url=lambda **kw:'plugin://plugin.video.fckyo/?action=play'
         closed=[]
         win.close=lambda:closed.append(True)
-        calls=[]
-        original=getattr(module.xbmc,'executebuiltin',None)
-        module.xbmc.executebuiltin=lambda cmd:calls.append(cmd)
-        try:
-            win._play_saved({'ident':'42','name':'Demo.mkv','kind':'movie',
-                             'title':'Demo'})
-        finally:
-            if original is None:
-                delattr(module.xbmc,'executebuiltin')
-            else:
-                module.xbmc.executebuiltin=original
-        self.assertEqual(closed,[])
-        self.assertEqual(calls,['PlayMedia(plugin://plugin.video.fckyo/?action=play)'])
-        self.assertFalse(getattr(win,'is_play',False))
+        win._play_saved({'ident':'42','name':'Demo.mkv','kind':'movie',
+                         'title':'Demo'})
+        self.assertEqual(closed,[True])
+        self.assertEqual(win.destination,'plugin://plugin.video.fckyo/?action=play')
+        self.assertTrue(win.is_play)
+        self.assertTrue(win._playback_pending)
 
-    def test_selected_file_keeps_own_series_episode_context(self):
-        import cinema_screen_v2 as module
+    def test_selected_file_stages_correct_episode_for_deferred_playback(self):
         win=ui().__new__(ui())
         win.context=({'title':'Series','raw':'Series','kind':'show'},1,2)
+        kwargs=[]
         win.make_url=lambda **kw:kwargs.append(kw) or 'plugin://example'
         win.rail_items=[[{'kind':'file','ident':'f1','raw':'Series.S01E02.mkv'}]]
         win._selected=lambda cid=None:win.rail_items[0][0]
+        closed=[]
         win.close=lambda:closed.append(1)
-        kwargs=[];closed=[];calls=[]
-        original=getattr(module.xbmc,'executebuiltin',None)
-        module.xbmc.executebuiltin=lambda cmd:calls.append(cmd)
-        try:
-            win.onClick(401)
-        finally:
-            if original is None:
-                delattr(module.xbmc,'executebuiltin')
-            else:
-                module.xbmc.executebuiltin=original
-        self.assertEqual(calls,['PlayMedia(plugin://example)'])
-        self.assertEqual(closed,[])
+        win.onClick(401)
+        self.assertEqual(closed,[1])
+        self.assertTrue(win.is_play)
+        self.assertEqual(win.destination,'plugin://example')
         self.assertEqual(kwargs[0]['season'],'1')
         self.assertEqual(kwargs[0]['episode'],'2')
         self.assertEqual(kwargs[0]['from_cinema'],'1')
+
+    def test_double_select_cannot_start_two_playback_requests(self):
+        win=ui().__new__(ui())
+        closed=[]
+        win.close=lambda:closed.append(True)
+        win._start_playback('plugin://movie-one')
+        win._start_playback('plugin://movie-two')
+        self.assertEqual(closed,[True])
+        self.assertEqual(win.destination,'plugin://movie-one')
 
     def test_service_does_not_reopen_kodi_when_dialog_is_alive(self):
         import xbmcgui
