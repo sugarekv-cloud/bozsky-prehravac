@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build KIVORA god-inspired brand PNGs for Kodi using only Pillow (build-time only).
 
-Original Zeus-like god illustration, golden KIVORA wordmark and Kodi icon.
+Original god emblem, restrained KIVORA wordmark and Kodi icon.
 No fonts are bundled.
 """
 from pathlib import Path
@@ -14,8 +14,8 @@ WHITE=(249,250,252)
 
 
 def font(size):
-    for path in ('/usr/share/fonts/truetype/dejavu/DejaVuSans-BoldOblique.ttf',
-                 '/usr/share/fonts/truetype/liberation2/LiberationSans-BoldItalic.ttf',
+    for path in ('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
+                 '/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf',
                  'DejaVuSans-BoldOblique.ttf'):
         try:
             return ImageFont.truetype(path,size=size)
@@ -47,7 +47,7 @@ def make_menu_icons():
     for kind in styles:
         image=Image.new('RGBA',(72,72),(0,0,0,0))
         d=ImageDraw.Draw(image)
-        c=(236,235,248,255)
+        c=(228,226,216,255)
         w=5
         if kind=='home':
             d.line([(13,34),(36,13),(59,34)],fill=c,width=w,joint='curve')
@@ -189,27 +189,26 @@ def make_brand():
     god=god_portrait(410)
     # Wide transparent Kodi title logo; matches the actual Czech add-on name.
     im=Image.new('RGBA',(1150,275),(0,0,0,0))
-    im.alpha_composite(god.resize((262,262),Image.Resampling.LANCZOS),(8,4))
+    im.alpha_composite(god.resize((226,226),Image.Resampling.LANCZOS),(20,23))
     d=ImageDraw.Draw(im)
-    gold=(232,188,100,255)
-    champagne=(252,245,219,255)
-    d.text((286,66),'KIVORA',font=font(125),fill=champagne,
-           stroke_width=2,stroke_fill=(135,91,44,255))
-    d.text((293,200),'FILMY A SERIÁLY',font=font(30),fill=gold)
-    d.line((293,247,1050,247),fill=(190,140,65,230),width=4)
+    gold=(192,163,115,255)
+    champagne=(244,239,227,255)
+    d.text((284,63),'KIVORA',font=font(121),fill=champagne)
+    d.text((292,202),'FILMY  /  SERIÁLY',font=font(26),fill=gold)
+    d.line((291,248,1020,248),fill=(155,135,101,160),width=2)
     im.save(MEDIA/'brand.png',optimize=True)
 
     # Kodi's square add-on icon: same recognizable portrait, no unrelated logo.
-    icon=Image.new('RGBA',(512,512),(9,10,13,255))
+    icon=Image.new('RGBA',(512,512),(11,15,20,255))
     base=ImageDraw.Draw(icon)
     base.rounded_rectangle((11,11,500,500),radius=92,
-                           outline=(179,134,64,255),width=9)
+                           outline=(154,133,98,255),width=5)
     icon.alpha_composite(god.resize((440,440),Image.Resampling.LANCZOS),
                          (37,10))
     base=ImageDraw.Draw(icon)
-    base.rounded_rectangle((48,427,464,494),radius=18,fill=(9,10,14,238))
+    base.rounded_rectangle((48,427,464,494),radius=18,fill=(11,15,20,244))
     base.text((121,435),'KIVORA',font=font(43),
-              fill=(248,213,146,255))
+              fill=(232,222,203,255))
     icon.save(MEDIA/'icon.png',optimize=True)
     make_menu_icons()
     return MEDIA/'brand.png',MEDIA/'icon.png'
