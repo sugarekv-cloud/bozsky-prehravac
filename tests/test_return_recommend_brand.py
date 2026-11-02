@@ -156,8 +156,8 @@ class BrandAndNavigationTests(unittest.TestCase):
         end=self.screen.index("        elif view in ('movies'",start)
         segment=self.screen[start:end]
         self.assertNotIn('POPULÁRNÍ NA WEBSHARE',segment)
-        self.assertIn('NEJLÉPE HODNOCENÉ FILMY · ČSFD',segment)
-        self.assertIn('NEJLÉPE HODNOCENÉ SERIÁLY · ČSFD',segment)
+        self.assertIn("honest_ranked_shelf(all_movies",segment)
+        self.assertIn("honest_ranked_shelf(all_shows",segment)
         self.assertIn('TIPY NA SLEDOVÁNÍ',segment)
 
 
