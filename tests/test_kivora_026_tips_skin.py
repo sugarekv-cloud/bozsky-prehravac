@@ -118,7 +118,7 @@ class MovieTipsPageTests(unittest.TestCase):
         self.assertIn("self._home_catalogue()",home)
         self.assertIn("self._schedule_home_discovery()",home)
         self.assertLess(home.index("('TIPY NA SLEDOVÁNÍ',personal)"),
-                        home.index("movies_source,csfd_movies=honest_ranked_shelf"))
+                        home.index("(('NEJLÉPE HODNOCENÉ FILMY · '+movies_source)"))
 
 
 class CinemaSkinTests(unittest.TestCase):
