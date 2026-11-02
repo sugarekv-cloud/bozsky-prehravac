@@ -195,5 +195,6 @@ def variant_label(file):
     parts = [('%d' % res + 'p') if res else 'Kvalita nezjištěna']
     if is_hdr(name):
         parts.append('HDR*')
-    language={3:'CZ dabing?*',2:'CZ zvuk?*',1:'CZ titulky*'}\n    parts.append(language.get(czech_language_tier(name),'Jazyk nezjištěn'))
+    language={3:'CZ dabing?*',2:'CZ zvuk?*',1:'CZ titulky*'}
+    parts.append(language.get(czech_language_tier(name),'Jazyk nezjištěn'))
     return ' · '.join(parts)
