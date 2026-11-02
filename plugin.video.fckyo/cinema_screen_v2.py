@@ -951,7 +951,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             'Diagnostika a stav doplňku',
             'Zálohovat oblíbené a rozkoukané',
             'Obnovit oblíbené a rozkoukané ze zálohy',
-            'Uživatelské profily'
+            'Uživatelské profily',
+            'Synchronizace mezi televizemi (sdílená složka)'
         ])
         if selected==0:
             self._open_settings()
@@ -982,6 +983,46 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self._library_backup(True)
         elif selected==10:
             self._profiles_menu()
+        elif selected==11:
+            self._sync_menu()
+
+    def _sync_menu(self):
+        """Opt-in LAN sharing; Kodi VFS supports installed SMB/NFS sources."""
+        from cinema_sync import configured_folder,set_folder,sync_now
+        from cinema_user_state import WatchStore
+        dialog=xbmcgui.Dialog()
+        profile=self.return_profile
+        folder=configured_folder(profile)
+        entries=[
+            'Sdílená složka: '+('nastavena' if folder else 'vypnuto'),
+            'Vybrat sdílenou složku v Kodi',
+            'Synchronizovat nyní',
+            'Vypnout automatickou synchronizaci'
+        ]
+        n=dialog.select('KIVORA · synchronizace domácích TV',entries)
+        if n<1:
+            return
+        try:
+            if n==1:
+                chosen=dialog.browseSingle(3,'Vyber sdílenou složku',
+                        'files','',False,False,folder or profile)
+                if chosen:
+                    if not dialog.yesno('KIVORA · sdílená knihovna',
+                        'Do důvěryhodné složky se ukládá historie a oblíbené. Hesla a tokeny nikoli. Pokračovat?'):
+                        return
+                    set_folder(profile,chosen)
+                    dialog.notification('KIVORA','Synchronizace zapnuta.')
+            elif n==2:
+                result=sync_now(profile)
+                self.watch_store=WatchStore(profile)
+                self.stack=[]
+                self._screen('home',stack=False)
+                dialog.ok('KIVORA','Synchronizováno: %d záznamů / %d oblíbených.'%result)
+            elif n==3:
+                set_folder(profile,'')
+                dialog.notification('KIVORA','Synchronizace vypnuta.')
+        except (OSError,ValueError,TypeError,RuntimeError) as exc:
+            dialog.ok('KIVORA · synchronizace',str(exc)[:250])
 
     def _profiles_menu(self):
         """Keep viewing history and favorites separate on a shared Kodi TV."""
