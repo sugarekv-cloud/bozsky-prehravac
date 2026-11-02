@@ -54,11 +54,11 @@ def set_folder(root,folder):
         raise ValueError('Příliš dlouhá cesta ke složce.')
     _write_json(os.path.join(root,CONFIG),{'folder':folder})
 
-def _tomb_path(root):
-    return state_paths(root)[0]+'.removed.json'
+def _tomb_path(root,profile_id=None):
+    return state_paths(root,profile_id)[0]+'.removed.json'
 
-def note_favorite_change(root,key,enabled):
-    path=_tomb_path(root)
+def note_favorite_change(root,key,enabled,profile_id=None):
+    path=_tomb_path(root,profile_id)
     tomb=_json_file(path)
     if enabled:
         tomb.pop(key,None)
@@ -66,8 +66,8 @@ def note_favorite_change(root,key,enabled):
         tomb[str(key)[:250]]=time.time()
     _write_json(path,tomb)
 
-def _remote_path(root,folder):
-    name=active_profile(root)['name'].casefold().strip().encode('utf-8')
+def _remote_path(root,folder,profile_name=None):
+    name=(profile_name if profile_name is not None else active_profile(root)['name']).casefold().strip().encode('utf-8')
     digest=hashlib.sha256(name).hexdigest()[:20]
     filename='kivora-library-%s-v1.json'%digest
     if '://' in folder:
@@ -168,16 +168,18 @@ def sync_now(root):
     folder=configured_folder(root)
     if not folder:
         raise ValueError('Nejprve nastav sdílenou složku.')
-    path=_remote_path(root,folder)
-    store=WatchStore(root)
+    active=active_profile(root)
+    profile_id=active['id']
+    path=_remote_path(root,folder,active['name'])
+    store=WatchStore(root,profile_id)
     local=store._data()
-    local_deleted=_json_file(_tomb_path(root))
+    local_deleted=_json_file(_tomb_path(root,profile_id))
     remote=_remote_read(path)
     merged,tomb=_merge(local,remote.get('data',{}),local_deleted,remote.get('removed',{}))
     if merged!=local:
         store._write(store.path,merged)
     if tomb!=local_deleted:
-        _write_json(_tomb_path(root),tomb)
+        _write_json(_tomb_path(root,profile_id),tomb)
     _remote_write(path,{'schema':SCHEMA,'type':'kivora-sync','data':merged,'removed':tomb,
                         'synchronized':int(time.time())})
     return len(merged['watch']),len(merged['favorites'])
