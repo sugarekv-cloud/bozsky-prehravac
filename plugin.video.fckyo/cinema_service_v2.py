@@ -99,31 +99,87 @@ class CinemaService:
             except (OSError,TypeError,ValueError):
                 pass
 
-    def _cached_description(self,title,year='',kind='movie'):
-        """Use an already downloaded metadata description, never call HTTP on UI focus."""
+    def _cached_description(self,title,year='',kind='movie',original=''):
+        """Only ČSFD/CZDB plot, from memory or persistent cache: no UI HTTP."""
+        from cinema_csfd_plot import csfd_plot
+        client=getattr(self,'metadata',None)
+        peek=getattr(client,'peek',None)
+        if callable(peek):
+            for name in (title,original):
+                if not name:
+                    continue
+                data=peek(name,year if kind=='movie' else '')
+                plot=csfd_plot(data)
+                if plot:
+                    return plot
+        # Older 0.45 home JSON can still contain an already verified CZDB
+        # description. Ignore Cinemeta summaries even when localized.
         from novinky_catalogue import normalize
-        sought=normalize(title)
-        year=str(year or '')
-        feed=getattr(self,'feed',None)
-        data=getattr(feed,'data',None) or {}
-        for record in data.get(kind) or []:
-            if normalize(record.get('name') or '')!=sought:
-                continue
-            if year and record.get('year') and str(record['year'])!=year:
-                continue
-            plot=str(record.get('plot') or '').strip()
-            if plot:
-                return plot[:380]
-        for record in (self.home_cache or {}).get(
+        names={normalize(n) for n in (title,original) if n}
+        for item in (self.home_cache or {}).get(
                 '_all_movies' if kind=='movie' else '_all_shows',[]) or []:
-            if normalize(record.get('raw') or record.get('title') or '')!=sought:
+            if normalize(item.get('raw') or item.get('title')) not in names:
                 continue
-            if year and record.get('year') and str(record['year'])!=year:
+            if kind=='movie' and year and item.get('year') and str(item['year'])!=str(year):
                 continue
-            plot=str(record.get('plot') or '').strip()
-            if plot and not plot.casefold().startswith('soubor nalezen'):
-                return plot[:380]
+            plot=csfd_plot(item)
+            if plot:
+                return plot
         return ''
+
+    def start_csfd_description_refresh(self,cards,limit=12):
+        """Incrementally warm up ČSFD descriptions, NEVER block Kodi GUI.
+
+        Requests run in one daemon worker and use Catalogue's existing
+        rate/concurrency controls plus positive/negative disk cache.
+        """
+        client=getattr(self,'metadata',None)
+        if not client or getattr(self,'_csfd_plot_worker_busy',False):
+            return False
+        now=time.time()
+        if not hasattr(self,'_csfd_plot_attempted'):
+            self._csfd_plot_attempted={}
+        tasks=[]
+        for item in cards or []:
+            if not isinstance(item,dict) or item.get('kind') not in ('movie','show'):
+                continue
+            if not item.get('ident') or not item.get('files'):
+                continue
+            title=item.get('raw') or item.get('title') or ''
+            year=str(item.get('year') or '') if item.get('kind')=='movie' else ''
+            if not title or self._cached_description(title,year,item['kind'],
+                                                       item.get('original') or ''):
+                continue
+            from novinky_catalogue import normalize
+            key=(normalize(title),year)
+            if now-self._csfd_plot_attempted.get(key,0)<1800:
+                continue
+            self._csfd_plot_attempted[key]=now
+            tasks.append((title,year,item.get('original') or ''))
+            if len(tasks)>=limit:
+                break
+        if not tasks:
+            return False
+        self._csfd_plot_worker_busy=True
+
+        def worker():
+            try:
+                for title,year,original in tasks:
+                    try:
+                        data=client.lookup(title,year)
+                        from cinema_csfd_plot import csfd_plot
+                        if not csfd_plot(data) and original and original!=title:
+                            client.lookup(original,year)
+                    except Exception:
+                        continue
+                try:
+                    client.save()
+                except (OSError,TypeError,AttributeError):
+                    pass
+            finally:
+                self._csfd_plot_worker_busy=False
+        threading.Thread(target=worker,name='kivora-csfd-plots',daemon=True).start()
+        return True
 
     def _decorate(self, group, metadata=None):
         if metadata:
@@ -131,11 +187,16 @@ class CinemaService:
         elif self.metadata:
             group['metadata']=self.metadata.lookup(group['title'],group.get('year',''))
         entry=card(group)
-        plot=(entry.get('plot') or '').strip()
-        if not plot or plot.casefold().startswith('soubor nalezen'):
-            entry['plot']=self._cached_description(
-                group.get('title') or '',entry.get('year') or '',
-                group.get('kind') or 'movie')
+        # Trusted cached ČSFD synopsis wins over Cinemeta discovery metadata.
+        remembered=self._cached_description(
+            group.get('title') or '',entry.get('year') or '',
+            group.get('kind') or 'movie',
+            (metadata or {}).get('original') or '')
+        if remembered:
+            entry['plot']=remembered
+            entry['plot_source']='ČSFD/CZDB'
+        elif not entry.get('plot_source'):
+            entry['plot']=''
         if not entry.get('poster'):
             # Only enrich an already confirmed Webshare file-backed title.
             candidates=[entry.get('original') or '',group['title']]
