@@ -94,7 +94,7 @@ class FullScreenStreamingUI(unittest.TestCase):
         self.assertEqual(addon.get('version'),'0.47.0')
         with open(os.path.join(PLUGIN,'cinematic_home.py'),encoding='utf8') as f:
             generator=f.read()
-        self.assertIn('stream_v11_',generator)
+        self.assertIn('stream_v12_cinema2_',generator)
         self.assertIn("kind == 'cardfade'",generator)
         with open(os.path.join(PLUGIN,'cinema_screen_v2.py'),encoding='utf8') as f:
             logic=f.read()
