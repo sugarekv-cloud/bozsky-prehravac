@@ -45,10 +45,11 @@ def _safe(entry):
 
 
 class WatchStore:
-    def __init__(self,profile):
-        from cinema_profiles import state_paths
+    def __init__(self,profile,profile_id=None):
+        from cinema_profiles import state_paths,active_profile
         self.profile_root=profile
-        self.path,self.pending=state_paths(profile)
+        self.profile_id=profile_id if profile_id is not None else active_profile(profile)['id']
+        self.path,self.pending=state_paths(profile,self.profile_id)
 
     @staticmethod
     def _read(path):
@@ -167,7 +168,7 @@ class WatchStore:
         self._write(self.path,data)
         try:
             from cinema_sync import note_favorite_change
-            note_favorite_change(self.profile_root,key,enabled)
+            note_favorite_change(self.profile_root,key,enabled,self.profile_id)
         except (OSError,ValueError,ImportError):
             # Local favorites must keep working without any shared folder.
             pass
