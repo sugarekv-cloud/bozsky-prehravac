@@ -22,7 +22,7 @@ ALLOWED_VIEWS=frozenset((
 ))
 CARD_FIELDS=frozenset((
     'title','raw','raw_title','original','kind','ident','year','file_year',
-    'poster','fanart','plot','genre','rating','rating_source','aliases',
+    'plot','genre','rating','rating_source','aliases',
     'season','episode','files','name','size','available','removed',
     'password','quality','_continue','position','resume',
     'catalog_kind','genre_name','search_text',
