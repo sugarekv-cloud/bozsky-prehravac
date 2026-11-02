@@ -51,6 +51,7 @@ class CinemaService:
         self.search_cache_time={}
         self.search_scan={}
         self.series_cache={}
+        self._bluey_episode_extra={}
         self.last_diagnostics=''
         self.hits_path=os.path.join(profile,'cinema-v3-hits.json') if profile else None
         self.feed=None
@@ -1165,8 +1166,57 @@ class CinemaService:
                 aliases=tuple(aliases))
         return self.series_cache[key]
 
+    def _bluey_czech_episode_candidates(self, card, season, episode, known):
+        """Find a CZ-marked Bluey episode beyond generic series pages.
+
+        A file's name is only a language hint. MULTI/DUAL media may contain
+        Czech audio even when the filename does not say so. Kodi's preferred
+        audio language ultimately selects the real embedded audio track.
+        """
+        from catalog_engine import prefers_cz
+        if any(prefers_cz(f) for f in known):
+            return []
+        key=(int(season),int(episode))
+        cached=self._bluey_episode_extra.get(key)
+        if cached and time.time()-cached[0]<900:
+            return list(cached[1])
+        if not self.token:
+            return []
+        tag='S%02dE%02d'%key
+        alt='%dx%02d'%key
+        # Exact episode and language markers are far narrower than "Bluey".
+        # Four bounded searches, with no background crawl or long UI freeze.
+        queries=('Bluey '+tag+' CZDAB','Bluey '+tag+' CZ',
+                 'Bluey.'+tag,'Bluey '+alt+' CZ')
+        candidates={}
+        successful=False
+        for query in queries:
+            try:
+                page,total=self.fetch(self.token,0,query,sort='rating')
+                if page is None:
+                    continue
+                successful=True
+                for f in matching_files(page,['Bluey'],kind='show'):
+                    p=parse_video_name(f.get('name') or '')
+                    if (p and p.get('kind')=='episode'
+                            and p.get('season')==key[0]
+                            and p.get('episode')==key[1]):
+                        candidates[str(f['ident'])]=f
+            except Exception:
+                continue
+        extra=list(candidates.values())
+        if successful:
+            self._bluey_episode_extra[key]=(time.time(),extra)
+        return extra
+
     def episode_variants(self, card, season, episode, quality='all', language='all'):
-        found=self.seasons(card).get(season,{}).get(episode,[])
+        found=list(self.seasons(card).get(season,{}).get(episode,[]))
+        # Bluey is a dedicated tab: older English search hits must not hide
+        # later Czech dubbed files buried on other Webshare pages.
+        raw=normalize(card.get('raw') or card.get('title') or '')
+        if card.get('kind')=='show' and raw=='bluey':
+            found.extend(self._bluey_czech_episode_candidates(
+                card,season,episode,found))
         return self.availability.check_files(
             choose_files(found,quality,language),limit=30)
 
