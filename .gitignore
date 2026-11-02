@@ -1,0 +1,10 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+# Generated Kodi repository / QA output
+site/
+audit-results/
+# Local/editor temporary files
+*.tmp
+.DS_Store
