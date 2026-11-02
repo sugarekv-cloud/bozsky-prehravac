@@ -42,6 +42,19 @@ jobs:
         env:
           PYTHONPATH: tests/kodi_ci_stubs
         run: python -m unittest discover -s tests -p 'test_kivora_*.py' -v
+      - name: Give development build a newer installable version
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          addon=Path('plugin.video.fckyo/addon.xml')
+          content=addon.read_text(encoding='utf-8')
+          assert 'version="0.47.0"' in content
+          addon.write_text(content.replace('version="0.47.0"','version="0.47.1"',1),encoding='utf-8')
+          screen=Path('plugin.video.fckyo/cinema_screen_v2.py')
+          source=screen.read_text(encoding='utf-8')
+          assert "VERSION='0.47.0'" in source
+          screen.write_text(source.replace("VERSION='0.47.0'","VERSION='0.47.1'",1),encoding='utf-8')
+          PY
       - name: Build full Kodi preview package
         run: python build_repo.py --owner sugarekv-cloud --output preview_site
       - name: Validate preview ZIP
