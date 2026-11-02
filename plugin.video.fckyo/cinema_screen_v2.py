@@ -535,13 +535,14 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             try:
                 import xbmcaddon
                 xbmcaddon.Addon('plugin.video.ivysilani.cz')
-            except (RuntimeError,Exception):
+            except Exception:
                 xbmcgui.Dialog().notification('KIVORA ŽIVÁ TV',
                     'Nejprve nainstaluj doplněk iVysílání ČT.')
                 return True
             from cinema_live_tv import CT_PLUGIN_URL
             self.destination=CT_PLUGIN_URL
             self.is_play=False
+            self._external_nav_pending=True
             self.close()
             return True
         if card.get('kind')!='tv_channel':
@@ -1331,5 +1332,6 @@ def launch(addon,profile,get_url,token,search_page,
         if not getattr(win,'_playback_pending',False):
             from cinema_navigation import discard
             discard(profile)
-            win.close()
+            if not getattr(win,'_external_nav_pending',False):
+                win.close()
         del win
