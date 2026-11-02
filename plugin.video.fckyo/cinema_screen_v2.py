@@ -16,7 +16,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.47.3'
+VERSION='0.47.2'
 
 
 def quality_badge(raw):
@@ -613,6 +613,19 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             'movies' if view in ('files','catalog_all','csfd_ranked','most_watched') else
             'home')
         self.setProperty('nav_active',nav)
+        # Netflix-style shelves: browsing uses the whole screen; the cinematic
+        # hero remains on Home and in playback/TV contexts.
+        browse=view in ('movies','shows','premieres','bluey','genres',
+                         'genre_titles','catalog_all','csfd_ranked',
+                         'most_watched','favorites','recommendations','search')
+        self.setProperty('layout_mode','browse' if browse else 'hero')
+        self.setProperty('browse_title',{
+            'movies':'FILMY','shows':'SERIÁLY','premieres':'PREMIÉRY',
+            'bluey':'BLUEY','genres':'ŽÁNRY','genre_titles':'ŽÁNROVÝ KATALOG',
+            'catalog_all':'KNIHOVNA','csfd_ranked':'TOP ČSFD',
+            'most_watched':'NEJSLEDOVANĚJŠÍ','favorites':'OBLÍBENÉ',
+            'recommendations':'TIPY PRO TEBE','search':'VYHLEDÁVÁNÍ',
+        }.get(view,''))
         self.setProperty('is_home','yes' if view=='home' else '')
         self.setProperty('section_label',{
             'home':'DOPORUČENO PRO TEBE','movies':'FILMY · KVALITA A ČEŠTINA','shows':'SERIÁLY · KVALITA A ČEŠTINA','premieres':'PREMIÉRY',
