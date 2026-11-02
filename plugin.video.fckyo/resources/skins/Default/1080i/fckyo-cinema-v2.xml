@@ -237,8 +237,8 @@
             <onleft>108</onleft><onright>401</onright>
             <visible>String.IsEqual(Window.Property(hero_action),yes)</visible>
         </control>
-        <control type="image"><left>0</left><top>96</top><width>89</width><height>984</height><texture>$INFO[Window.Property(cinema_button)]</texture><colordiffuse>F0080B10</colordiffuse></control>
-        <control type="image"><left>87</left><top>96</top><width>1</width><height>984</height><texture>$INFO[Window.Property(cinema_focus)]</texture><colordiffuse>445A605E</colordiffuse></control>
+        <control type="image"><left>0</left><top>96</top><width>89</width><height>984</height><texture>$INFO[Window.Property(cinema_button)]</texture><colordiffuse>F0080B10</colordiffuse><visible>Control.HasFocus(201) | Control.HasFocus(202) | Control.HasFocus(203) | Control.HasFocus(204) | Control.HasFocus(205) | Control.HasFocus(206) | Control.HasFocus(207) | Control.HasFocus(208)</visible></control>
+        <control type="image"><left>87</left><top>96</top><width>1</width><height>984</height><texture>$INFO[Window.Property(cinema_focus)]</texture><colordiffuse>285A605E</colordiffuse><visible>Control.HasFocus(201) | Control.HasFocus(202) | Control.HasFocus(203) | Control.HasFocus(204) | Control.HasFocus(205) | Control.HasFocus(206) | Control.HasFocus(207) | Control.HasFocus(208)</visible></control>
         <control type="button" id="201">
             <left>12</left><top>146</top><width>66</width><height>58</height>
             <font>font12</font><description>DOMŮ</description><label> </label><align>left</align><aligny>center</aligny>
@@ -251,6 +251,7 @@
             <left>29</left><top>161</top><width>33</width><height>33</height>
             <texture>$INFO[Window.Property(side_icon_201)]</texture>
             <aspectratio>keep</aspectratio>
+            <visible>Control.HasFocus(201) | Control.HasFocus(202) | Control.HasFocus(203) | Control.HasFocus(204) | Control.HasFocus(205) | Control.HasFocus(206) | Control.HasFocus(207) | Control.HasFocus(208)</visible>
         </control>
 
         <control type="image"><left>20</left><top>197</top><width>46</width><height>3</height>
@@ -267,6 +268,7 @@
             <left>29</left><top>309</top><width>33</width><height>33</height>
             <texture>$INFO[Window.Property(side_icon_202)]</texture>
             <aspectratio>keep</aspectratio>
+            <visible>Control.HasFocus(201) | Control.HasFocus(202) | Control.HasFocus(203) | Control.HasFocus(204) | Control.HasFocus(205) | Control.HasFocus(206) | Control.HasFocus(207) | Control.HasFocus(208)</visible>
         </control>
 
         <control type="image"><left>20</left><top>345</top><width>46</width><height>3</height>
@@ -283,6 +285,7 @@
             <left>29</left><top>383</top><width>33</width><height>33</height>
             <texture>$INFO[Window.Property(side_icon_203)]</texture>
             <aspectratio>keep</aspectratio>
+            <visible>Control.HasFocus(201) | Control.HasFocus(202) | Control.HasFocus(203) | Control.HasFocus(204) | Control.HasFocus(205) | Control.HasFocus(206) | Control.HasFocus(207) | Control.HasFocus(208)</visible>
         </control>
 
         <control type="image"><left>20</left><top>419</top><width>46</width><height>3</height>
@@ -299,6 +302,7 @@
             <left>29</left><top>457</top><width>33</width><height>33</height>
             <texture>$INFO[Window.Property(side_icon_204)]</texture>
             <aspectratio>keep</aspectratio>
+            <visible>Control.HasFocus(201) | Control.HasFocus(202) | Control.HasFocus(203) | Control.HasFocus(204) | Control.HasFocus(205) | Control.HasFocus(206) | Control.HasFocus(207) | Control.HasFocus(208)</visible>
         </control>
 
         <control type="image"><left>20</left><top>493</top><width>46</width><height>3</height>
@@ -315,6 +319,7 @@
             <left>29</left><top>531</top><width>33</width><height>33</height>
             <texture>$INFO[Window.Property(side_icon_205)]</texture>
             <aspectratio>keep</aspectratio>
+            <visible>Control.HasFocus(201) | Control.HasFocus(202) | Control.HasFocus(203) | Control.HasFocus(204) | Control.HasFocus(205) | Control.HasFocus(206) | Control.HasFocus(207) | Control.HasFocus(208)</visible>
         </control>
 
         <control type="image"><left>20</left><top>567</top><width>46</width><height>3</height>
@@ -331,6 +336,7 @@
             <left>29</left><top>605</top><width>33</width><height>33</height>
             <texture>$INFO[Window.Property(side_icon_206)]</texture>
             <aspectratio>keep</aspectratio>
+            <visible>Control.HasFocus(201) | Control.HasFocus(202) | Control.HasFocus(203) | Control.HasFocus(204) | Control.HasFocus(205) | Control.HasFocus(206) | Control.HasFocus(207) | Control.HasFocus(208)</visible>
         </control>
 
         <control type="image"><left>20</left><top>641</top><width>46</width><height>3</height>
@@ -347,6 +353,7 @@
             <left>29</left><top>679</top><width>33</width><height>33</height>
             <texture>$INFO[Window.Property(side_icon_207)]</texture>
             <aspectratio>keep</aspectratio>
+            <visible>Control.HasFocus(201) | Control.HasFocus(202) | Control.HasFocus(203) | Control.HasFocus(204) | Control.HasFocus(205) | Control.HasFocus(206) | Control.HasFocus(207) | Control.HasFocus(208)</visible>
         </control>
 
         <control type="image"><left>20</left><top>715</top><width>46</width><height>3</height>
@@ -364,6 +371,7 @@
             <left>29</left><top>235</top><width>33</width><height>33</height>
             <texture>$INFO[Window.Property(side_icon_208)]</texture>
             <aspectratio>keep</aspectratio>
+            <visible>Control.HasFocus(201) | Control.HasFocus(202) | Control.HasFocus(203) | Control.HasFocus(204) | Control.HasFocus(205) | Control.HasFocus(206) | Control.HasFocus(207) | Control.HasFocus(208)</visible>
         </control>
         <control type="image">
             <left>20</left><top>271</top><width>46</width><height>3</height>
