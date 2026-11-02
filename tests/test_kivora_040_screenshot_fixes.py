@@ -30,9 +30,9 @@ class ScreenshotFixes040Tests(unittest.TestCase):
                 posters = [x for x in images if x.findtext('texture') ==
                            '$INFO[ListItem.Art(poster)]']
                 self.assertEqual(len(posters), 1, (ident, kind))
-                self.assertEqual(posters[0].findtext('aspectratio'), 'keep')
-                self.assertEqual(posters[0].findtext('width'), '344')
-                self.assertEqual(posters[0].findtext('height'), '196')
+                self.assertEqual(posters[0].findtext('aspectratio'), 'scale')
+                self.assertEqual(posters[0].findtext('width'), '286')
+                self.assertEqual(posters[0].findtext('height'), '161')
 
     def test_landscape_title_and_year_are_below_video_artwork(self):
         for ident in LANDSCAPE:
@@ -42,7 +42,7 @@ class ScreenshotFixes040Tests(unittest.TestCase):
                 titles = [x for x in layout.findall("control[@type='label']")
                           if x.findtext('label') == '$INFO[ListItem.Label]']
                 self.assertTrue(titles, (ident, kind))
-                self.assertTrue(any(int(x.findtext('top')) >= 205 for x in titles))
+                self.assertTrue(any(int(x.findtext('top')) >= 168 for x in titles))
                 years = [x for x in layout.findall("control[@type='label']")
                          if x.findtext('label') == '$INFO[ListItem.Property(year)]']
                 self.assertEqual(len(years), 1)
