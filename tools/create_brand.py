@@ -187,15 +187,16 @@ def god_portrait(size=360):
 def make_brand():
     MEDIA.mkdir(parents=True,exist_ok=True)
     god=god_portrait(410)
-    # Wide transparent Kodi title logo; matches the actual Czech add-on name.
+    # Restrained masthead: small familiar god emblem, confident typographic wordmark.
+    # Keep the full deity portrait on Kodi's square app icon.
     im=Image.new('RGBA',(1150,275),(0,0,0,0))
-    im.alpha_composite(god.resize((226,226),Image.Resampling.LANCZOS),(20,23))
+    im.alpha_composite(god.resize((136,136),Image.Resampling.LANCZOS),(28,67))
     d=ImageDraw.Draw(im)
-    gold=(192,163,115,255)
-    champagne=(244,239,227,255)
-    d.text((284,63),'KIVORA',font=font(121),fill=champagne)
-    d.text((292,202),'FILMY  /  SERIÁLY',font=font(26),fill=gold)
-    d.line((291,248,1020,248),fill=(155,135,101,160),width=2)
+    gold=(181,155,113,255)
+    champagne=(246,244,236,255)
+    d.text((186,30),'KIVORA',font=font(163),fill=champagne)
+    d.text((196,221),'FILMY  /  SERIÁLY',font=font(25),fill=gold)
+    d.line((184,208,885,208),fill=(135,134,128,110),width=2)
     im.save(MEDIA/'brand.png',optimize=True)
 
     # Kodi's square add-on icon: same recognizable portrait, no unrelated logo.
