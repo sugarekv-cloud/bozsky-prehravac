@@ -89,7 +89,7 @@ class AtelierTVTests(unittest.TestCase):
 
     def test_no_bright_red_or_purple_glows_in_skin(self):
         source = SKIN.read_text(encoding='utf-8')
-        self.assertIn('KIVORA 0.39 / CINEMA', source)
+        self.assertIn('KIVORA 0.40 / CINEMA QA', source)
         self.assertNotIn('FFE50914', source)
         self.assertIn('FFC9AA71', source)
 
