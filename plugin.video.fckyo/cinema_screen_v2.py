@@ -942,7 +942,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             'Automatické pokračování seriálu: '+(
                 'ZAPNUTO' if self.addon.getSetting('autoplay_next_episode')!='false'
                 else 'VYPNUTO'),
-            'Diagnostika a stav doplňku'
+            'Diagnostika a stav doplňku',
+            'Zálohovat oblíbené a rozkoukané',
+            'Obnovit oblíbené a rozkoukané ze zálohy'
         ])
         if selected==0:
             self._open_settings()
@@ -967,6 +969,46 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 else 'Automatické další díly zapnuty')
         elif selected==7:
             self._diagnostics()
+        elif selected==8:
+            self._library_backup(False)
+        elif selected==9:
+            self._library_backup(True)
+
+    def _library_backup(self,restore=False):
+        """Manual local export/import. No Webshare login data is included."""
+        from cinema_backup import export_backup, import_backup
+        profile=getattr(self,'return_profile',None)
+        if not profile:
+            xbmcgui.Dialog().notification('KIVORA','Profil není dostupný.')
+            return
+        dialog=xbmcgui.Dialog()
+        default_path=os.path.join(profile,'kivora-library-backup.json')
+        try:
+            if restore:
+                source=dialog.browseSingle(1,'Vyber zálohu KIVORA','files',
+                                           '.json',False,False,default_path)
+                if not source:
+                    return
+                if not dialog.yesno('KIVORA – obnova knihovny',
+                                    'Nahradit současné oblíbené a historii vybranou zálohou?'):
+                    return
+                count=import_backup(profile,source)
+            else:
+                destination=dialog.browseSingle(3,'Vyber složku pro zálohu',
+                                                'files','',False,False,profile)
+                if not destination:
+                    return
+                destination=os.path.join(destination,'kivora-library-backup.json')
+                if os.path.exists(destination) and not dialog.yesno(
+                        'KIVORA','Přepsat existující zálohu?'):
+                    return
+                count=export_backup(profile,destination)
+            dialog.ok('KIVORA',('%s: %d rozkoukaných / %d oblíbených' %
+                 ('Obnoveno' if restore else 'Zálohováno',count[0],count[1])))
+            if restore:
+                self._screen('home')
+        except (OSError,ValueError,TypeError) as exc:
+            dialog.ok('KIVORA – chyba zálohy',str(exc)[:300])
 
     def _diagnostics(self):
         """Offline diagnostics; never display credentials or playback URLs."""
