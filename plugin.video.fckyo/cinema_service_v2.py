@@ -972,7 +972,8 @@ class CinemaService:
     def search_has_more(self, query, kind='all'):
         key=(normalize((query or '').strip()),kind)
         state=self.search_scan.get(key)
-        return bool(state and len(state['done'])<len(state['plan']))
+        return bool(state and (len(state['done'])<len(state['plan']) or
+                               any(state.get('pending',{}).get(k) for k in ('movie','show'))))
 
     def _search_impl(self, query, kind='all', more=False):
         term=(query or '').strip()
@@ -997,7 +998,8 @@ class CinemaService:
             # Prefer explicit localized/original names; include cached aliases.
             plan=list(dict.fromkeys(plan[:2]+cached_aliases[:3]+plan[2:]))[:18]
             state={'plan':plan,'offsets':{},'done':set(),'cursor':0,
-                   'matches':{},'cards':[],'attempted':0,'failed':0,
+                   'matches':{},'cards':[],'pending':{'movie':[],'show':[]},
+                   'attempted':0,'failed':0,
                    'started':time.time(),
                    'names':names,'metadata':md,
                    'title':title,'year':requested_year,
@@ -1074,9 +1076,14 @@ class CinemaService:
         for mode in ('movie','show'):
             if kind in ('movie','show') and kind!=mode:
                 continue
-            candidates=groups(fresh,mode)
+            pending=state['pending'][mode]
+            pending.extend(groups(fresh,mode))
+            # Verify the next queue slice and retain the rest for later clicks.
+            # Files on late pages must not be dropped by the verification cap.
+            candidates=pending[:65]
+            del pending[:65]
             candidates=verified_groups(candidates,self.availability,
-                                       maximum=90,checked=135)
+                                       maximum=65,checked=85)
             add_metadata(candidates,self.metadata,maximum=6)
             for group in candidates:
                 # A metadata match for Avengers (2012) must never relabel
@@ -1114,7 +1121,7 @@ class CinemaService:
         combined.sort(key=rank)
         # Preserve empty searches only after all aliases have really been
         # queried; later "load more" can still find titles on deep pages.
-        if combined or len(state['done'])==len(plan):
+        if combined or not self.search_has_more(term,kind):
             self.search_cache[key]=list(combined)
             self.search_cache_time[key]=time.time()
         return [c for c in combined if kind=='all' or c['kind']==kind]
