@@ -7,6 +7,7 @@ alone: every card is backed by a verified Webshare ident.
 from collections import OrderedDict
 from novinky_catalogue import normalize, parse_video_name, quality_score
 from catalog_engine import file_label, file_score
+from cinema_content_filter import safe_file, safe_card
 
 def acceptable(f):
     if not f or not f.get('ident') or not f.get('name'):
@@ -16,7 +17,7 @@ def acceptable(f):
             return False
     if str(f.get('available') or '1') == '0':
         return False
-    return bool(parse_video_name(f['name']))
+    return safe_file(f) and bool(parse_video_name(f['name']))
 
 def groups(files, kind):
     by_key = OrderedDict()
@@ -70,7 +71,7 @@ def card(group, tag=''):
         'file_year':group.get('year') or '',
         'poster':meta.get('poster') or webshare_image_url(best.get('img')),
         'fanart':meta.get('fanart') or '',
-        'plot':meta.get('plot') or 'Soubor nalezen na Webshare. Vyber kvalitu a jazyk.',
+        'plot':meta.get('plot') or '',
         'genre':', '.join(meta.get('genres') or []),
         'rating':meta.get('rating'), 'rating_source':meta.get('rating_source') or 'ČSFD',
         'quality':file_label(best),
