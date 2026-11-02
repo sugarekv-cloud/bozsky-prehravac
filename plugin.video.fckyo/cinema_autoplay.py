@@ -4,7 +4,7 @@
 Never skip an unverified missing episode or guess a filename. The caller must
 availability-check each candidate before attempting Kodi playback.
 """
-from catalog_engine import file_score, release_details
+from catalog_engine import file_score
 
 
 def next_episode_key(seasons, season, episode):
@@ -28,22 +28,12 @@ def next_episode_key(seasons, season, episode):
 
 
 def select_release(files, previous_name=''):
-    """Prefer a comparable resolution/CZ filename over an unrelated release."""
+    """Prefer a CZ-marked, high-quality release of the verified next episode."""
     valid=[f for f in (files or []) if isinstance(f,dict)
            and f.get('ident') and f.get('name')]
     if not valid:
         return None
-    previous=release_details(previous_name)
-    def rank(file):
-        details=release_details(file.get('name'))
-        resolution=details.get('resolution') or 0
-        requested=previous.get('resolution') or 0
-        target_lang=previous.get('language') or ''
-        language=details.get('language') or ''
-        # Prefer a known matching CZ-tagged file if the user chose one.
-        same_language=(target_lang==language)
-        same_resolution=(requested>0 and resolution==requested)
-        return (int(same_language),int(same_resolution),
-                -abs(resolution-requested) if requested else resolution,
-                file_score(file))
-    return max(valid,key=rank)
+    # Same preference as the manual selector: CZ-marked release first,
+    # then its highest available quality. An earlier foreign-language
+    # episode must not cause autoplay to skip a newly available CZ copy.
+    return max(valid,key=file_score)
