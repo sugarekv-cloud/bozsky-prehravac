@@ -16,7 +16,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.37.0'
+VERSION='0.37.1'
 
 
 def tile(name,kind,**extra):
@@ -867,15 +867,19 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 self._refresh('seasons',card)
 
     def _start_playback(self,url):
-        """Keep the film dialog alive below video, preserving scroll/focus."""
-        builtin=getattr(xbmc,'executebuiltin',None)
-        if callable(builtin):
-            builtin('PlayMedia(%s)'%url)
-        else:
-            # Compatible fallback for minimal Kodi stubs.
-            self.destination=url
-            self.is_play=True
-            self.close()
+        """Defer PlayMedia until Kodi has fully closed WindowXMLDialog.
+
+        Reentrant playback launched from an active modal dialog can crash
+        Android TV's native Kodi window/player transition. The caller in
+        fckyo.cinematic_menu starts playback after doModal() returns.
+        Never log the URL: it may contain account credentials or cookies.
+        """
+        if not url or getattr(self,'_playback_pending',False):
+            return
+        self.destination=url
+        self.is_play=True
+        self._playback_pending=True
+        self.close()
 
     def _play_saved(self,card):
         """Resume a real, previously played Webshare file at its stored time."""
@@ -1073,6 +1077,7 @@ def launch(addon,profile,get_url,token,search_page,
     win.make_url=get_url
     win.destination=None
     win.is_play=False
+    win._playback_pending=False
     win.sort='date'
     win.quality='all'
     win.language='all'
@@ -1086,5 +1091,7 @@ def launch(addon,profile,get_url,token,search_page,
             xbmcgui.Window(10000).clearProperty('kivora_window_open')
         except (RuntimeError,AttributeError,TypeError):
             pass
-        win.close()
+        # _start_playback already closed the dialog; avoid a second native close.
+        if not getattr(win,'_playback_pending',False):
+            win.close()
         del win
