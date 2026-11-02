@@ -98,6 +98,29 @@ def title_and_year(query):
     return query,''
 
 
+_SEARCH_EPISODE = re.compile(
+    r'(?i)(?<![a-z0-9])s(\\d{1,2})[ ._-]*e(\\d{1,3})(?!\\d)|'
+    r'(?i:(?<![a-z0-9])(\\d{1,2})x(\\d{1,3})(?!\\d))')
+
+
+def search_intent(query):
+    """Parse user-entered title, optional release year and episode.
+
+    Examples: 'Stranger Things S01E02', 'Show.1x03', 'Duna (2021)'.
+    Keep the original search text for display/cache identity, but never
+    include season/episode tokens when querying Webshare by SERIES title.
+    """
+    text=str(query or '').strip()
+    match=_SEARCH_EPISODE.search(text)
+    season=episode=None
+    if match:
+        season=int(match.group(1) or match.group(3))
+        episode=int(match.group(2) or match.group(4))
+        text=(text[:match.start()]+' '+text[match.end():]).strip(' ._-')
+    title,year=title_and_year(text)
+    return title,year,season,episode
+
+
 def candidate_names(query, metadata=None):
     """Localized/original names, known sequels and safe franchise expansions.
 
