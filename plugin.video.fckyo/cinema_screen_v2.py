@@ -1177,19 +1177,17 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         Kodi closes its modal window before entering the external add-on.
         """
         import xbmcaddon
-        from urllib.parse import quote_plus
+        from cinema_trailers import trailer_search_url
         try:
             xbmcaddon.Addon('plugin.video.youtube')
         except Exception:
             xbmcgui.Dialog().notification('KIVORA – trailery',
                 'Nainstaluj doplněk YouTube z repozitáře Kodi.')
             return
-        title=str(card.get('original') or card.get('title') or '').strip()
-        if not title:
+        url=trailer_search_url(card)
+        if not url:
             return
-        year=str(card.get('year') or '').strip()
-        query=' '.join(x for x in (title,year,'official trailer') if x)
-        self.destination='plugin://plugin.video.youtube/search/?q='+quote_plus(query)
+        self.destination=url
         self.is_play=False
         self._external_nav_pending=True
         self.close()
