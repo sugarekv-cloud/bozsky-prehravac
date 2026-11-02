@@ -54,7 +54,7 @@ class CsfdDescription046Tests(unittest.TestCase):
 
     def test_parser_sanitizes_html_and_multiline_synopsis(self):
         entry=parse_entry({'title':'Film','uid':'101','plot':
-                           '<p>První věta.</p>  Další\\n věta.'})
+                           '<p>První věta.</p>  Další\n věta.'})
         self.assertEqual(entry['plot'],'První věta. Další věta.')
 
     def test_local_cache_is_consulted_before_fallback_for_movie_and_show(self):
