@@ -221,7 +221,7 @@
         </control>
         <control type="button" id="108">
             <left>137</left><top>437</top><width>261</width><height>62</height>
-            <font>font13</font><label>▶  PŘEHRÁT</label>
+            <font>font13</font><label>PŘEHRÁT</label>
             <align>center</align><aligny>center</aligny>
             <textcolor>FFF8F8F5</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_cta_focus)]</texturefocus>
@@ -234,7 +234,7 @@
         <!-- Quiet secondary detail action; playback is always explicit. -->
         <control type="button" id="110">
             <left>411</left><top>437</top><width>189</width><height>62</height>
-            <font>font13</font><label>ℹ  DETAIL</label>
+            <font>font13</font><label>DETAILY</label>
             <align>center</align><aligny>center</aligny>
             <textcolor>FFE0E0DA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
