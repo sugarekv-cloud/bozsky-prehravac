@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="KIVORA" version="0.44.0" provider-name="KIVORA Community">
+<addon id="plugin.video.fckyo" name="KIVORA" version="0.45.0" provider-name="KIVORA Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -22,7 +22,19 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
-[B]0.44.0 Návrat na předchozí obrazovku po filmu nebo epizodě[/B]
+[B]0.45.0 KIVORA – vizuální opravy podle skutečných snímků Android TV[/B]
+- Viditelné zvýraznění první karty v každé řadě; zvýrazňovací rámeček je nad plakátem
+- Čitelné roky vydání pod názvy všech filmů a seriálů
+- Krátký děj z již uložených metadat místo obecné hlášky o dostupnosti
+- Odstraněn zbytečný nápis Výběr KIVORA; informace o přednosti CZ zvuku a kvalitě
+- Čisté karty Tipy pro tebe bez spodních titulků a štítku tipů
+- Nové filmové logo KIVORA s monogramem K, symbol boha zachován na ikoně
+- Automatické filtrování explicitního obsahu z Webshare i katalogových karet pro filmy, seriály, hledání a tipy
+- Zvýšená bezpečná výška katalogu a větší kontrast roků
+- Filtr je konzervativní a nemůže zaručit zachycení nesprávně označeného obsahu
+
+
+[B]0.45.0 Návrat na předchozí obrazovku po filmu nebo epizodě[/B]
 - Po ukončení přehrávání se KIVORA vrátí na původní filmový seznam, epizody nebo jiné místo katalogu
 - Obnoví poslední vybraný řádek i přibližnou pozici v řadě a zachová historii navigace Zpět
 - Před přehráváním nadále bezpečně zavírá modální Kodi okno, aby se snížilo riziko pádu na Android TV
@@ -30,7 +42,7 @@
 - Po normálním opuštění KIVORA se stará pozice zahodí; neaktuální záznam se automaticky ignoruje
 
 
-[B]0.44.0 Bluey – vyhledání českého dabingu pro každou epizodu[/B]
+[B]0.45.0 Bluey – vyhledání českého dabingu pro každou epizodu[/B]
 - Pokud Bluey v běžném výpisu neobsahuje CZ zvuk, vyhledají se cílené varianty konkrétní SxxExx s CZDAB a CZ
 - Vyhledané soubory musí patřit Bluey a přesně odpovídat sérii a epizodě
 - Český dabing má přednost před EN a CZSUB, pouze podle označení souboru
@@ -38,7 +50,7 @@
 - Pokud má soubor více jazykových stop, skutečný jazyk vybírá Kodi podle nastavení přehrávače
 
 
-[B]0.44.0 Přesnější a rychlejší hledání Webshare[/B]
+[B]0.45.0 Přesnější a rychlejší hledání Webshare[/B]
 - Při překlepu nabídka Myslel jsi podle Webshare suggest a českých/originálních názvů
 - Dotazy S01E02 nebo 1x02 nejprve hledají konkrétní epizodu a potom prohledávají celý seriál
 - Filmy objevené až na dalších stránkách už nejsou skryty limitem prvních 28 kandidátů
@@ -48,7 +60,7 @@
 - Návrhy nezaručují dostupnost, ta se dál ověřuje přes Webshare
 
 
-[B]0.44.0 Rozšířené stránkování Webshare a oprava zobrazování hodnocení[/B]
+[B]0.45.0 Rozšířené stránkování Webshare a oprava zobrazování hodnocení[/B]
 - Přímé hledání prochází všechny dostupné stránky daného dotazu postupnými dávkami přes Načíst další stránky
 - Stejná práce s každým českým a původním názvem, zachování kurzorů a spojení výsledků bez duplicit
 - Úplný katalog pokračuje napříč stránkami bez předchozího skrytého limitu 1500 ověřených titulů
@@ -57,7 +69,7 @@
 - Metadatové obohacení zachová dříve načtená data při překročení rozpočtu požadavků
 
 
-[B]0.44.0 Rychlejší a přesnější vyhledávání Webshare[/B]
+[B]0.45.0 Rychlejší a přesnější vyhledávání Webshare[/B]
 - Rozlišena cache hledání filmů a seriálů (nepřepisují si výsledky)
 - Přímé zadání epizody S01E02 nebo 1x03 filtruje správnou epizodu
 - Přednost českému a původnímu názvu před méně užitečnými variantami
@@ -66,7 +78,7 @@
 - Výsledky dotazů se po pěti minutách znovu ověří
 
 
-[B]0.44.0 Opravy podle skutečného snímku z Android TV[/B]
+[B]0.45.0 Opravy podle skutečného snímku z Android TV[/B]
 - Tlačítko PŘEHRÁT má vždy čitelný bílý text na tmavém podkladu
 - Odstraněny vložené duplicitní náhledy plakátů ve filmových kartách
 - Názvy filmů jsou pod fotografiemi, ne přes světlé/tmavé části obrázku
@@ -74,7 +86,7 @@
 - Výraznější viditelnost filmových fotografií a nové lokální textury
 
 
-[B]0.44.0 KIVORA Cinema – přepracovaná kompozice televizní obrazovky[/B]
+[B]0.45.0 KIVORA Cinema – přepracovaná kompozice televizní obrazovky[/B]
 - Hlavní film má samostatnou velkou obrazovou plochu a přehledné ovládání
 - Filmové řady začínají výše; banner už nezabírá většinu obrazovky
 - Duplicitní boční nabídka je skrytá a objeví se při přechodu doleva
@@ -82,14 +94,14 @@
 - Zachované sekce, Webshare, vyhledávání, jazykové preference i přehrávání
 
 
-[B]0.44.0 KIVORA Atelier – nadčasové televizní rozhraní[/B]
+[B]0.45.0 KIVORA Atelier – nadčasové televizní rozhraní[/B]
 - Nová grafitová barevnost, teplá slonová kost a decentní bronzové zvýraznění
 - Čitelnější titulky, filmové fotografie, plakáty a ovládací tlačítka
 - Zklidněné rozhraní, nové textury a nové ikony 24 žánrů
 - Zachovány všechny navigační prvky a výběr Webshare souborů i přehrávání
 
 
-[B]0.44.0 Jazykové pořadí: český dabing → CZ zvuk → CZ titulky → ostatní[/B]
+[B]0.45.0 Jazykové pořadí: český dabing → CZ zvuk → CZ titulky → ostatní[/B]
 - Rozlišuje explicitní označení dabingu, obecnou značku CZ a CZSUB/CZ.Subs/CZ.Titulky
 - V každé jazykové skupině zobrazuje nejvyšší dostupné rozlišení jako první
 - Shodné řazení u filmů, epizod, výběru souboru a automatického pokračování
