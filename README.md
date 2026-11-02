@@ -2,7 +2,7 @@
 
 KIVORA je neoficiální komunitní doplněk Kodi s vyhledáváním Webshare, metadaty filmů, plakáty a katalogem filmů i seriálů.
 
-**Technické ID zůstává `plugin.video.fckyo`:** KIVORA je nový zobrazovaný název původního doplňku FCKYO. Verze KIVORA 0.46.0 a repozitář 1.0.1 upravují i název přímo v instalačních metadatech Kodi. Historie přehrávání, účet i nastavení této instalace zůstávají zachované. Starší samostatný doplněk `plugin.video.yawsp` není touto aktualizací dotčen.
+**Technické ID zůstává `plugin.video.fckyo`:** KIVORA je nový zobrazovaný název původního doplňku FCKYO. Verze KIVORA 0.47.0 a repozitář 1.0.1 upravují i název přímo v instalačních metadatech Kodi. Historie přehrávání, účet i nastavení této instalace zůstávají zachované. Starší samostatný doplněk `plugin.video.yawsp` není touto aktualizací dotčen.
 
 ## Struktura repozitáře
 
@@ -42,3 +42,12 @@ Změna čísla verze v `plugin.video.fckyo/addon.xml` spustí pomocí GitHub Act
 ## Licence a původ projektu
 
 Zdrojový kód tohoto Kodi doplňku zahrnuje úpravy staršího svobodného projektu. Autorská historie a povinné informace jsou v `plugin.video.fckyo/CREDITS.md`, původní licence AGPL-3.0 zůstává v `plugin.video.fckyo/LICENSE`. Změna názvu a technického ID neznamená změnu autorství, licence ani vznik nové nezávislé implementace. Nepoužívejte soubory, ke kterým nemáte oprávnění.
+
+
+### ŽIVÁ TV (od verze 0.47.0)
+
+KIVORA obsahuje samostatnou záložku **ŽIVÁ TV** s několika bezplatně dostupnými českými televizními streamy (Óčko, Óčko Expres, Óčko Star, TV POLAR, Praha TV), zobrazenými přes Kodi HLS přehrávač. Není nutný účet Webshare. Na kartě stiskněte **OK** pro živé přehrávání; tlačítko kontextové nabídky přidá nebo odebere stanici z místních oblíbených. Po zastavení přehrávání se KIVORA vrátí do TV přehledu.
+
+Pro živou Českou televizi a archiv slouží položka **ČESKÁ TELEVIZE · iVysílání**, která otevírá samostatný doplněk Kodi `plugin.video.ivysilani.cz`, pokud už je instalován. KIVORA automaticky neinstaluje ani nepřepisuje jiné doplňky.
+
+Streamy mohou časem změnit adresy nebo dostupnost; některé mohou být geograficky omezené. První verze nemá vlastní EPG a neumožňuje sledování placených televizí bez oprávnění.
