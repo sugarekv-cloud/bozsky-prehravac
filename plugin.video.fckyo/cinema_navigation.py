@@ -16,7 +16,7 @@ MAX_AGE=12*3600  # A film may last longer than 2 hours.
 MAX_SIZE=65536
 MAX_DEPTH=6
 ALLOWED_VIEWS=frozenset((
-    'home','movies','shows','bluey','premieres','search',
+    'home','movies','shows','bluey','live_tv','premieres','search',
     'recommendations','favorites','genres','genre_titles','seasons',
     'episodes','most_watched','csfd_ranked','catalog_all','tips',
 ))
@@ -136,3 +136,20 @@ def consume(profile):
         return None
     finally:
         discard(profile)
+
+
+def has_live_tv_return(profile):
+    """Read-only bounded check used after stopping direct HLS playback."""
+    path=_path(profile)
+    if not path:
+        return False
+    try:
+        if os.path.getsize(path)>MAX_SIZE:
+            return False
+        with io.open(path,'r',encoding='utf8') as stream:
+            state=json.load(stream)
+        return (state.get('version')==1 and
+                state.get('view')=='live_tv' and
+                0<=time.time()-float(state.get('timestamp',0))<MAX_AGE)
+    except (OSError,TypeError,ValueError,AttributeError):
+        return False
