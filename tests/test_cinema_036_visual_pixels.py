@@ -56,10 +56,10 @@ class CinemaRenderedAssetTests(unittest.TestCase):
                 self.assertEqual(im.mode, 'RGBA')
                 im.verify()
 
-    def test_red_focus_and_play_buttons_have_distinct_pixels(self):
-        self.assertEqual(self.sample('focus', 0, 0), (229, 9, 20, 255))
-        self.assertEqual(self.sample('cta', 0, 0), (215, 13, 25, 255))
-        self.assertEqual(self.sample('cta_focus', 0, 0), (245, 28, 43, 255))
+    def test_warm_brass_focus_and_ivory_play_buttons_have_distinct_pixels(self):
+        self.assertEqual(self.sample('focus', 0, 0), (201, 170, 113, 255))
+        self.assertEqual(self.sample('cta', 0, 0), (239, 231, 217, 255))
+        self.assertEqual(self.sample('cta_focus', 0, 0), (255, 243, 218, 255))
         self.assertNotEqual(self.sample('button', 0, 0),
                             self.sample('cta', 0, 0))
 
