@@ -99,12 +99,43 @@ class CinemaService:
             except (OSError,TypeError,ValueError):
                 pass
 
+    def _cached_description(self,title,year='',kind='movie'):
+        """Use an already downloaded metadata description, never call HTTP on UI focus."""
+        from novinky_catalogue import normalize
+        sought=normalize(title)
+        year=str(year or '')
+        feed=getattr(self,'feed',None)
+        data=getattr(feed,'data',None) or {}
+        for record in data.get(kind) or []:
+            if normalize(record.get('name') or '')!=sought:
+                continue
+            if year and record.get('year') and str(record['year'])!=year:
+                continue
+            plot=str(record.get('plot') or '').strip()
+            if plot:
+                return plot[:380]
+        for record in (self.home_cache or {}).get(
+                '_all_movies' if kind=='movie' else '_all_shows',[]) or []:
+            if normalize(record.get('raw') or record.get('title') or '')!=sought:
+                continue
+            if year and record.get('year') and str(record['year'])!=year:
+                continue
+            plot=str(record.get('plot') or '').strip()
+            if plot and not plot.casefold().startswith('soubor nalezen'):
+                return plot[:380]
+        return ''
+
     def _decorate(self, group, metadata=None):
         if metadata:
             group['metadata']=metadata
         elif self.metadata:
             group['metadata']=self.metadata.lookup(group['title'],group.get('year',''))
         entry=card(group)
+        plot=(entry.get('plot') or '').strip()
+        if not plot or plot.casefold().startswith('soubor nalezen'):
+            entry['plot']=self._cached_description(
+                group.get('title') or '',entry.get('year') or '',
+                group.get('kind') or 'movie')
         if not entry.get('poster'):
             # Only enrich an already confirmed Webshare file-backed title.
             candidates=[entry.get('original') or '',group['title']]
