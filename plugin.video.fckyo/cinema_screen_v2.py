@@ -16,7 +16,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.43.1'
+VERSION='0.44.0'
 
 
 def tile(name,kind,**extra):
@@ -61,13 +61,78 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.setProperty('hero_poster','')
         self.setProperty('hero_action','')
         try:
-            self._screen('home',stack=False)
+            from cinema_navigation import consume
+            saved=consume(getattr(self,'return_profile',None))
+            if not saved or not self._restore_return_screen(saved):
+                self._screen('home',stack=False)
         except Exception:
             traceback.print_exc()
             self._fill('ZAČNĚTE VYHLEDÁVÁNÍM',[
                 tile('HLEDAT FILM / SERIÁL','search'),
                 tile('NASTAVENÍ WEBSHARE','settings'),
             ],'DALŠÍ MOŽNOSTI',[], 'Webshare či ČSFD nyní neodpovídá.')
+
+    def _restore_return_screen(self,saved):
+        """Reopen the last browse shelf without retaining a Kodi player dialog."""
+        if not isinstance(saved,dict):
+            return False
+        view=saved.get('view') or 'home'
+        try:
+            self._screen(view,saved.get('context'),stack=False)
+            self.stack=list(saved.get('stack') or [])
+            self._restore_browse_focus(saved.get('focus'),saved.get('index',0))
+            return True
+        except Exception:
+            traceback.print_exc()
+            self.stack=[]
+            return False
+
+    def _restore_browse_focus(self,focus,index):
+        if focus not in ROW_IDS:
+            return
+        items=self.rail_items[ROW_IDS.index(focus)]
+        if not items:
+            return
+        try:
+            control=self.getControl(focus)
+            self.setFocusId(focus)
+            control.selectItem(max(0,min(int(index or 0),len(items)-1)))
+            self._update_hero()
+        except (RuntimeError,AttributeError,TypeError,ValueError):
+            pass
+
+    def _remember_playback_return(self):
+        """Remember the shelf one level above file choice, not the player.
+
+        On the next open, an episode returns to its episode list and a
+        movie to the previously highlighted movie shelf. Save ONLY benign
+        navigation data; no Webshare URL, token or credentials.
+        """
+        profile=getattr(self,'return_profile',None)
+        if not profile:
+            return
+        view=getattr(self,'mode','home')
+        context=getattr(self,'context',None)
+        stack=list(getattr(self,'stack',[]) or [])
+        focus=None
+        index=0
+        if view=='files' and stack:
+            previous=stack.pop()
+            view,context,focus,index=previous
+        else:
+            try:
+                focus=self.getFocusId()
+                if focus in ROW_IDS:
+                    index=self.getControl(focus).getSelectedPosition()
+            except (RuntimeError,AttributeError,TypeError):
+                pass
+        try:
+            from cinema_navigation import save
+            if not save(profile,view,context,stack,focus,index):
+                xbmc.log('KIVORA: návrat k výběru nelze uložit',
+                         getattr(xbmc,'LOGWARNING',0))
+        except (OSError,ValueError,TypeError):
+            traceback.print_exc()
 
     def _loading(self,text):
         d=xbmcgui.DialogProgress()
@@ -907,6 +972,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         """
         if not url or getattr(self,'_playback_pending',False):
             return
+        self._remember_playback_return()
         self.destination=url
         self.is_play=True
         self._playback_pending=True
@@ -1104,6 +1170,7 @@ def launch(addon,profile,get_url,token,search_page,
                           suggest_fetch=suggest_provider)
     win=CinemaScreen('fckyo-cinema-v2.xml',addon.getAddonInfo('path'),'Default','1080i')
     win.service=service
+    win.return_profile=profile
     win.watch_store=WatchStore(profile)
     win.addon=addon
     win.revalidate_callback=revalidate_callback
@@ -1130,7 +1197,10 @@ def launch(addon,profile,get_url,token,search_page,
             xbmcgui.Window(10000).clearProperty('kivora_window_open')
         except (RuntimeError,AttributeError,TypeError):
             pass
-        # _start_playback already closed the dialog; avoid a second native close.
+        # A normal Exit is not a future playback return.
+        # _start_playback already closed the dialog; never double-close it.
         if not getattr(win,'_playback_pending',False):
+            from cinema_navigation import discard
+            discard(profile)
             win.close()
         del win
