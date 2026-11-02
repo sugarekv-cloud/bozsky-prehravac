@@ -71,7 +71,7 @@ class CinemaTV036Tests(unittest.TestCase):
             self.assertGreater(int(item.get('width')), int(item.get('height')))
         for ident in PORTRAIT:
             item = self.control(ident).find('itemlayout')
-            self.assertGreater(int(item.get('height')), int(item.get('width')))
+            self.assertGreater(int(item.get('width')), int(item.get('height')))
 
     def test_landscape_cards_show_titles_for_posters_or_backdrops(self):
         for ident in LANDSCAPE:
@@ -92,11 +92,11 @@ class CinemaTV036Tests(unittest.TestCase):
                 layout = self.control(ident).find(name)
                 art = layout.findall("control[@type='image']")
                 self.assertTrue(any(x.findtext('texture') == '$INFO[ListItem.Art(poster)]'
-                                    and x.findtext('aspectratio') == 'keep' for x in art))
-                gradients = [x for x in art if x.findtext('texture') ==
-                             '$INFO[Window.Property(cinema_cardfade)]']
-                self.assertEqual(len(gradients), 1)
-                self.assertIn('ListItem.Art(poster)', gradients[0].findtext('visible'))
+                                    and x.findtext('aspectratio') == 'scale' for x in art))
+                backdrops = [x for x in art if x.findtext('texture') ==
+                             '$INFO[ListItem.Art(fanart)]']
+                self.assertEqual(len(backdrops),1)
+                self.assertEqual(backdrops[0].findtext('aspectratio'),'scale')
 
     def test_every_card_tracks_resume_progress(self):
         for ident in ROWS:
