@@ -117,9 +117,9 @@ class StreamingSkinTests(unittest.TestCase):
         self.assertEqual(button.get('type'),'button')
         self.assertEqual(button.findtext('label'),'BLUEY')
         self.assertEqual(button.findtext('onleft'),'105')
-        self.assertEqual(button.findtext('onright'),'107')
+        self.assertEqual(button.findtext('onright'),'111')
         self.assertEqual(self.root.find(".//control[@id='105']").findtext('onright'),'109')
-        self.assertEqual(self.root.find(".//control[@id='107']").findtext('onleft'),'109')
+        self.assertEqual(self.root.find(".//control[@id='107']").findtext('onleft'),'111')
 
     def test_landscape_and_portrait_rows_both_preserve_progress_and_focus(self):
         portrait={403,404,408,411,412,413}
