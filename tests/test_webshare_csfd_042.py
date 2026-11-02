@@ -7,6 +7,7 @@ import time
 import unittest
 from pathlib import Path
 from unittest.mock import Mock
+import requests
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'plugin.video.fckyo'))
 from cinema_service_v2 import CinemaService
 from cinema_rankings import honest_ranked_shelf,csfd_only
@@ -111,7 +112,7 @@ class CsfdReliabilityTests(unittest.TestCase):
             state={'up':False}
             def get(url,**kwargs):
                 if not state['up']:
-                    raise RuntimeError('unreachable')
+                    raise requests.ConnectionError('unreachable')
                 response=Mock()
                 response.json.return_value={'results':[{
                   'title':'Zelená míle','year':1999,'uid':'2294',
