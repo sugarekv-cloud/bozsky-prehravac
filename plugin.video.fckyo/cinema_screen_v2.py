@@ -941,7 +941,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             'Vyhledat podle žánru',
             'Automatické pokračování seriálu: '+(
                 'ZAPNUTO' if self.addon.getSetting('autoplay_next_episode')!='false'
-                else 'VYPNUTO')
+                else 'VYPNUTO'),
+            'Diagnostika a stav doplňku'
         ])
         if selected==0:
             self._open_settings()
@@ -964,6 +965,45 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             xbmcgui.Dialog().notification('KIVORA',
                 'Automatické další díly vypnuty' if enabled
                 else 'Automatické další díly zapnuty')
+        elif selected==7:
+            self._diagnostics()
+
+    def _diagnostics(self):
+        """Offline diagnostics; never display credentials or playback URLs."""
+        import sys
+        import platform
+        try:
+            from cinema_live_tv import CHANNELS
+            channels=len(CHANNELS)
+        except Exception:
+            channels=0
+        service=getattr(self,'service',None)
+        cache_stats=[]
+        for key in ('search_cache','series_cache'):
+            value=getattr(service,key,None)
+            cache_stats.append('%s: %s' % (
+                key, len(value) if hasattr(value,'__len__') else 'nedostupné'))
+        rows=[
+            'KIVORA: '+VERSION,
+            'Python: '+sys.version.split()[0],
+            'Platforma: '+platform.system(),
+            'TV kanály: '+str(channels),
+            'Webshare účet: '+(
+                'nastaven' if self.addon.getSetting('wsuser') else 'nenastaven'),
+        ]+cache_stats
+        choice=xbmcgui.Dialog().select('KIVORA · diagnostika',rows+[
+            'Vymazat paměťové cache (bez smazání oblíbených)',
+        ])
+        if choice==len(rows):
+            for key in ('search_cache','search_cache_time','search_scan',
+                        'series_cache'):
+                value=getattr(service,key,None)
+                if hasattr(value,'clear'):
+                    value.clear()
+            if service is not None and hasattr(service,'home_cache'):
+                service.home_cache=None
+            xbmcgui.Dialog().notification('KIVORA',
+                'Cache vymazána; oblíbené a historie zůstaly zachované.')
 
     def _filters(self):
         choice=xbmcgui.Dialog().select('Katalog · filtrování a řazení',[
