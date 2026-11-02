@@ -1199,6 +1199,7 @@ class CinemaService:
                 for f in matching_files(page,['Bluey'],kind='show'):
                     p=parse_video_name(f.get('name') or '')
                     if (p and p.get('kind')=='episode'
+                            and normalize(p.get('title'))=='bluey'
                             and p.get('season')==key[0]
                             and p.get('episode')==key[1]):
                         candidates[str(f['ident'])]=f
