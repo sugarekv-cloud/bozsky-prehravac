@@ -13,7 +13,8 @@ import xml.etree.ElementTree as ET
 HERE=Path(__file__).resolve().parent
 PLUGIN_ID='plugin.video.fckyo'
 REPO_ID='repository.bozskyprehravac'
-REPO_NAME='Božský přehrávač – repozitář'
+REPO_NAME='KIVORA – repozitář'
+REPO_VERSION='1.0.1'
 GITHUB_REPO='bozsky-prehravac'
 
 def zip_folder(path, target):
@@ -27,12 +28,12 @@ def website_index(repo_name, version, base):
     """Use Apache-style filename anchors: Kodi's HTTPDirectory parser requires
     visible anchor text to match the link target, not a friendly CTA caption.
     """
-    return f'''<!doctype html><html lang="cs"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Božský přehrávač – Kodi repozitář</title>
-<style>body{{font:18px system-ui;background:#0c1420;color:#f2e6d2;max-width:800px;margin:5em auto;padding:1em}}a{{color:#ffcc66}}h1{{font-size:2.2em}}</style><h1>Božský přehrávač</h1><p>Neoficiální doplněk Kodi s kalendářem filmových premiér a vyhledáváním přes Webshare.</p><h2>Instalační soubory (kompatibilní s Kodi)</h2>
+    return f'''<!doctype html><html lang="cs"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>KIVORA – Kodi repozitář</title>
+<style>body{{font:18px system-ui;background:#0c1420;color:#f2e6d2;max-width:800px;margin:5em auto;padding:1em}}a{{color:#ffcc66}}h1{{font-size:2.2em}}</style><h1>KIVORA</h1><p>Neoficiální doplněk Kodi s kalendářem filmových premiér a vyhledáváním přes Webshare.</p><h2>Instalační soubory (kompatibilní s Kodi)</h2>
 <pre>
 <a href="{html.escape(repo_name)}">{html.escape(repo_name)}</a>  – instalační repozitář
 <a href="{PLUGIN_ID}/{PLUGIN_ID}-{version}.zip">{PLUGIN_ID}/{PLUGIN_ID}-{version}.zip</a>  – samostatný doplněk
-</pre><p>V Kodi vyberte přímo soubor <strong>{html.escape(repo_name)}</strong> ze zdroje {base}.</p><p>Pokud Kodi nenabízí aktualizaci: Doplňky → Moje doplňky → Video doplňky → Božský přehrávač → Verze / Aktualizovat → zvolit Božský přehrávač repozitář. Doplňky původně instalované ručně ze ZIPu mohou mít aktualizace připnuté k původnímu zdroji. Samotný ZIP lze použít nouzově, ale automatické aktualizace pak nemusí fungovat.</p><p>Následně v Kodi: Nastavení → Doplňky → Instalovat ze ZIP → Instalovat z repozitáře → Božský přehrávač repozitář.</p><small>Komunitní doplněk Božský přehrávač · Licence AGPL-3.0 · Žádná videa nejsou součástí doplňku.</small></html>'''
+</pre><p>V Kodi vyberte přímo soubor <strong>{html.escape(repo_name)}</strong> ze zdroje {base}.</p><p>Pokud Kodi nenabízí aktualizaci: Doplňky → Moje doplňky → Video doplňky → KIVORA → Verze / Aktualizovat → zvolit KIVORA repozitář. Doplňky původně instalované ručně ze ZIPu mohou mít aktualizace připnuté k původnímu zdroji. Samotný ZIP lze použít nouzově, ale automatické aktualizace pak nemusí fungovat.</p><p>Následně v Kodi: Nastavení → Doplňky → Instalovat ze ZIP → Instalovat z repozitáře → KIVORA repozitář.</p><small>Komunitní doplněk KIVORA · Licence AGPL-3.0 · Žádná videa nejsou součástí doplňku.</small></html>'''
 
 def main():
     ap=argparse.ArgumentParser()
@@ -63,7 +64,7 @@ def main():
     shutil.copy2(plugin/'resources/icon.png',out/PLUGIN_ID/'icon.png')
     # Generate the Kodi repository addon with a real, owner-specific Pages URL.
     repoxml=f'''<?xml version="1.0" encoding="UTF-8"?>
-<addon id="{REPO_ID}" name="{REPO_NAME}" version="1.0.0" provider-name="Božský přehrávač – komunitní repozitář">
+<addon id="{REPO_ID}" name="{REPO_NAME}" version="{REPO_VERSION}" provider-name="KIVORA – komunitní repozitář">
   <requires><import addon="xbmc.addon" version="12.0.0"/></requires>
   <extension point="xbmc.addon.repository">
     <dir>
@@ -74,8 +75,8 @@ def main():
     </dir>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="cs_CZ">Aktualizace doplňku Božský přehrávač</summary>
-    <description lang="cs_CZ">Neoficiální aktualizace doplňku Božský přehrávač pro Kodi.</description>
+    <summary lang="cs_CZ">Aktualizace doplňku KIVORA</summary>
+    <description lang="cs_CZ">Neoficiální aktualizace doplňku KIVORA pro Kodi.</description>
     <platform>all</platform>
   </extension>
 </addon>
@@ -84,9 +85,15 @@ def main():
     repodir.mkdir()
     (repodir/'addon.xml').write_text(repoxml,encoding='utf-8')
     shutil.copy2(plugin/'resources/icon.png',repodir/'icon.png')
-    repo_file=repodir/f'{REPO_ID}-1.0.0.zip'
+    repo_file=repodir/f'{REPO_ID}-{REPO_VERSION}.zip'
     zip_folder(repodir,repo_file) # Careful: repo zip is within folder; see safeguard below.
     shutil.copy2(repo_file,out/repo_file.name)
+    # Keep the previous documented installer link working for existing users.
+    legacy_xml=repoxml.replace(f'version="{REPO_VERSION}"', 'version="1.0.0"', 1)
+    legacy_zip=out/f'{REPO_ID}-1.0.0.zip'
+    with zipfile.ZipFile(legacy_zip,'w',compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr(f'{REPO_ID}/addon.xml',legacy_xml)
+        archive.write(repodir/'icon.png',f'{REPO_ID}/icon.png')
     reporoot=ET.fromstring(repoxml)
     addons=ET.Element('addons')
     addons.append(reporoot)
