@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window>
+    <defaultcontrol always="true">501</defaultcontrol>
+    <coordinates><system>1</system><posx>0</posx><posy>0</posy></coordinates>
+    <controls>
+        <!-- KIVORA Cinema 2.0 settings hub for a television remote. -->
+        <control type="image">
+            <left>0</left><top>0</top><width>1920</width><height>1080</height>
+            <texture>$INFO[Window.Property(settings_background)]</texture>
+        </control>
+        <control type="image">
+            <left>90</left><top>120</top><width>840</width><height>850</height>
+            <texture>$INFO[Window.Property(settings_tile)]</texture>
+            <aspectratio>stretch</aspectratio>
+        </control>
+        <control type="image">
+            <left>90</left><top>120</top><width>4</width><height>850</height>
+            <texture>$INFO[Window.Property(settings_focus)]</texture>
+        </control>
+        <control type="label">
+            <left>145</left><top>79</top><width>950</width><height>40</height>
+            <label>KIVORA  /  KONTROLNÍ CENTRUM</label>
+            <font>font13</font><textcolor>FFDDB36A</textcolor>
+        </control>
+        <control type="label">
+            <left>145</left><top>154</top><width>815</width><height>60</height>
+            <label>NASTAVENÍ</label>
+            <font>font45_title</font><textcolor>FFFFFFFF</textcolor>
+        </control>
+        <control type="button" id="501">
+            <left>144</left><top>235</top><width>754</width><height>70</height>
+            <label>ÚČET A PŘEHRÁVÁNÍ</label><font>font13</font>
+            <align>left</align><aligny>center</aligny>
+            <textoffsetx>25</textoffsetx>
+            <textcolor>FFD1D4D4</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <texturefocus>$INFO[Window.Property(settings_cta_focus)]</texturefocus>
+            <texturenofocus>$INFO[Window.Property(settings_button)]</texturenofocus>
+            <onleft>501</onleft><onright>501</onright>
+            <onup>508</onup><ondown>502</ondown>
+        </control>
+        <control type="button" id="502">
+            <left>144</left><top>319</top><width>754</width><height>70</height>
+            <label>FILTRY A KATALOG</label><font>font13</font>
+            <align>left</align><aligny>center</aligny>
+            <textoffsetx>25</textoffsetx>
+            <textcolor>FFD1D4D4</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <texturefocus>$INFO[Window.Property(settings_cta_focus)]</texturefocus>
+            <texturenofocus>$INFO[Window.Property(settings_button)]</texturenofocus>
+            <onleft>502</onleft><onright>502</onright>
+            <onup>501</onup><ondown>503</ondown>
+        </control>
+        <control type="button" id="503">
+            <left>144</left><top>403</top><width>754</width><height>70</height>
+            <label>UŽIVATELSKÉ PROFILY</label><font>font13</font>
+            <align>left</align><aligny>center</aligny>
+            <textoffsetx>25</textoffsetx>
+            <textcolor>FFD1D4D4</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <texturefocus>$INFO[Window.Property(settings_cta_focus)]</texturefocus>
+            <texturenofocus>$INFO[Window.Property(settings_button)]</texturenofocus>
+            <onleft>503</onleft><onright>503</onright>
+            <onup>502</onup><ondown>504</ondown>
+        </control>
+        <control type="button" id="504">
+            <left>144</left><top>487</top><width>754</width><height>70</height>
+            <label>SYNCHRONIZACE TV</label><font>font13</font>
+            <align>left</align><aligny>center</aligny>
+            <textoffsetx>25</textoffsetx>
+            <textcolor>FFD1D4D4</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <texturefocus>$INFO[Window.Property(settings_cta_focus)]</texturefocus>
+            <texturenofocus>$INFO[Window.Property(settings_button)]</texturenofocus>
+            <onleft>504</onleft><onright>504</onright>
+            <onup>503</onup><ondown>505</ondown>
+        </control>
+        <control type="button" id="505">
+            <left>144</left><top>571</top><width>754</width><height>70</height>
+            <label>ZÁLOHY KNIHOVNY</label><font>font13</font>
+            <align>left</align><aligny>center</aligny>
+            <textoffsetx>25</textoffsetx>
+            <textcolor>FFD1D4D4</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <texturefocus>$INFO[Window.Property(settings_cta_focus)]</texturefocus>
+            <texturenofocus>$INFO[Window.Property(settings_button)]</texturenofocus>
+            <onleft>505</onleft><onright>505</onright>
+            <onup>504</onup><ondown>506</ondown>
+        </control>
+        <control type="button" id="506">
+            <left>144</left><top>655</top><width>754</width><height>70</height>
+            <label>DIAGNOSTIKA</label><font>font13</font>
+            <align>left</align><aligny>center</aligny>
+            <textoffsetx>25</textoffsetx>
+            <textcolor>FFD1D4D4</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <texturefocus>$INFO[Window.Property(settings_cta_focus)]</texturefocus>
+            <texturenofocus>$INFO[Window.Property(settings_button)]</texturenofocus>
+            <onleft>506</onleft><onright>506</onright>
+            <onup>505</onup><ondown>507</ondown>
+        </control>
+        <control type="button" id="507">
+            <left>144</left><top>739</top><width>754</width><height>70</height>
+            <label>ROZŠÍŘENÉ NASTAVENÍ</label><font>font13</font>
+            <align>left</align><aligny>center</aligny>
+            <textoffsetx>25</textoffsetx>
+            <textcolor>FFD1D4D4</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <texturefocus>$INFO[Window.Property(settings_cta_focus)]</texturefocus>
+            <texturenofocus>$INFO[Window.Property(settings_button)]</texturenofocus>
+            <onleft>507</onleft><onright>507</onright>
+            <onup>506</onup><ondown>508</ondown>
+        </control>
+        <control type="button" id="508">
+            <left>144</left><top>823</top><width>754</width><height>70</height>
+            <label>ZPĚT K FILMŮM</label><font>font13</font>
+            <align>left</align><aligny>center</aligny>
+            <textoffsetx>25</textoffsetx>
+            <textcolor>FFD1D4D4</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <texturefocus>$INFO[Window.Property(settings_cta_focus)]</texturefocus>
+            <texturenofocus>$INFO[Window.Property(settings_button)]</texturenofocus>
+            <onleft>508</onleft><onright>508</onright>
+            <onup>507</onup><ondown>501</ondown>
+        </control>
+        <control type="label">
+            <left>1040</left><top>270</top><width>690</width><height>85</height>
+            <label>TVŮJ FILMOVÝ SVĚT</label>
+            <font>font45_title</font><textcolor>FFFFFFFF</textcolor>
+        </control>
+        <control type="textbox">
+            <left>1040</left><top>390</top><width>640</width><height>260</height>
+            <font>font13</font><textcolor>FFCBD0CE</textcolor>
+            <label>Spravuj přehrávání, katalog, své profily a propojení televizí. Všechny důležité volby jsou dostupné pomocí šipek a tlačítka OK. Přehrávání a historie zůstávají oddělené pro každý profil.</label>
+        </control>
+        <control type="label">
+            <left>1040</left><top>793</top><width>660</width><height>60</height>
+            <font>font13</font><textcolor>FFDDB36A</textcolor>
+            <label>ŠIPKY  NAVIGACE   ·   OK  POTVRDIT</label>
+        </control>
+        <control type="label">
+            <left>1040</left><top>855</top><width>660</width><height>50</height>
+            <font>font12</font><textcolor>FF989E9E</textcolor>
+            <label>ZPĚT  NÁVRAT DO KIVORY</label>
+        </control>
+    </controls>
+</window>
