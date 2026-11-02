@@ -102,7 +102,7 @@ class CsfdDescription046Tests(unittest.TestCase):
         source=(ROOT/'plugin.video.fckyo/cinema_screen_v2.py').read_text(
             encoding='utf-8')
         self.assertIn("plot=self._csfd_description(c)",source)
-        self.assertIn("self._csfd_description(selected) or",source)
+        self.assertIn("self._csfd_description(selected))",source)
         self.assertNotIn('Film nebo seriál je dostupný · zvol si jazyk',source)
         self.assertIn('start_csfd_description_refresh',source)
 
