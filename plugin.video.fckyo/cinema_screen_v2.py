@@ -879,6 +879,10 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.destination=url
         self.is_play=True
         self._playback_pending=True
+        logger=getattr(xbmc,'log',None)
+        if callable(logger):
+            logger('KIVORA playback: closing cinema dialog before PlayMedia',
+                   getattr(xbmc,'LOGINFO',0))
         self.close()
 
     def _play_saved(self,card):
