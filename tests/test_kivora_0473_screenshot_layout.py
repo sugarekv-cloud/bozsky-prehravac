@@ -57,6 +57,9 @@ class ScreenshotLibraryRegression(unittest.TestCase):
         self.assertIn('quality_badge(c.get(\'quality\'))',code)
         self.assertIn("'layout_mode','browse' if browse else 'hero'",code)
         self.assertIn("'shows':'SERIÁLY'",code)
+        overlay=self.root.find(".//control[@type='image'][visible='String.IsEqual(Window.Property(layout_mode),browse)']")
+        self.assertIsNotNone(overlay, 'Browse mode should hide old movie hero')
+        self.assertIn("browse_title",ET.tostring(self.root,encoding='unicode'))
 
 if __name__=='__main__':
     unittest.main()
