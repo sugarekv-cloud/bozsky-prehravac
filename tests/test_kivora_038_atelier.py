@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""KIVORA Atelier / 0.47.2 visual-system and remote-navigation regression."""
+"""KIVORA Atelier / 0.47.3 visual-system and remote-navigation regression."""
 from pathlib import Path
 from xml.etree import ElementTree as ET
 import sys
@@ -113,7 +113,7 @@ class AtelierTVTests(unittest.TestCase):
         self.assertIn('color = (221,179,106,255)', textures)
         metadata = ET.parse(PLUGIN / 'addon.xml').getroot()
         self.assertEqual(metadata.get('name'), 'KIVORA')
-        self.assertEqual(metadata.get('version'), '0.47.2')
+        self.assertEqual(metadata.get('version'), '0.47.3')
 
 
 if __name__ == '__main__':
