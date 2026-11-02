@@ -107,7 +107,7 @@ class SmartSearch043Tests(unittest.TestCase):
              f('dub4k','Matrix.1999.2160p.CZDAB.mkv')],3))
         result=svc.search('Matrix',kind='movie')
         self.assertEqual(len(result),1)
-        self.assertEqual(result[0]['files'][0]['ident'],'dub4k')
+        self.assertEqual(result[0]['ident'],'dub4k')
 
     def test_session_count_is_bounded(self):
         svc=service(lambda *a,**kw:([],0))
