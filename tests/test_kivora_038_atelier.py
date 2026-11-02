@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""KIVORA Atelier / 0.44.0 visual-system and remote-navigation regression."""
+"""KIVORA Atelier / 0.45.0 visual-system and remote-navigation regression."""
 from pathlib import Path
 from xml.etree import ElementTree as ET
 import sys
@@ -89,7 +89,7 @@ class AtelierTVTests(unittest.TestCase):
 
     def test_no_bright_red_or_purple_glows_in_skin(self):
         source = SKIN.read_text(encoding='utf-8')
-        self.assertIn('KIVORA 0.40 / CINEMA QA', source)
+        self.assertIn('KIVORA 0.45 / TV POLISH', source)
         self.assertNotIn('FFE50914', source)
         self.assertIn('FFC9AA71', source)
 
@@ -113,7 +113,7 @@ class AtelierTVTests(unittest.TestCase):
         self.assertIn('color = (201,170,113,255)', textures)
         metadata = ET.parse(PLUGIN / 'addon.xml').getroot()
         self.assertEqual(metadata.get('name'), 'KIVORA')
-        self.assertEqual(metadata.get('version'), '0.44.0')
+        self.assertEqual(metadata.get('version'), '0.45.0')
 
 
 if __name__ == '__main__':
