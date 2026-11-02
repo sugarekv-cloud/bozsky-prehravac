@@ -187,12 +187,12 @@ class AutoplayIntegrationTests(unittest.TestCase):
         self.assertIn("play(playback)",contents)
         self.assertIn("ActivateWindow(Videos,plugin://plugin.video.fckyo/",contents)
 
-    def test_setting_is_opt_out_and_default_enabled(self):
+    def test_setting_is_optional_and_default_disabled(self):
         root=ET.parse(os.path.join(PLUGIN,'resources','settings.xml')).getroot()
         node=root.find(".//setting[@id='autoplay_next_episode']")
         self.assertIsNotNone(node)
         self.assertEqual(node.get('type'),'bool')
-        self.assertEqual(node.get('default'),'true')
+        self.assertEqual(node.get('default'),'false')
 
 
 if __name__=='__main__':
