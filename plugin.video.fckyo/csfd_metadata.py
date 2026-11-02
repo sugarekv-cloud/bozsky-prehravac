@@ -144,7 +144,8 @@ def parse_entry(entry):
     return {'title': title, 'original': original, 'year': year, 'poster': poster,
             'fanart': backdrop, 'plot': description, 'rating': rating,
             'genres': genre, 'runtime': duration, 'uid': uid,
-            'csfd_url': ('https://www.csfd.cz/film/' + uid + '/' if uid else direct_url if 'csfd.cz/film/' in direct_url else '')}
+            'csfd_url': ('https://www.csfd.cz/film/' + uid + '/' if uid else direct_url if 'csfd.cz/film/' in direct_url else ''),
+            'rating_source': 'ČSFD' if rating is not None else ''}
 
 
 def select_match(payload, title, year=''):
@@ -175,6 +176,8 @@ class Catalogue:
         self._cache = None
         self._dirty = False
         self._service_down = False
+        self._service_retry_at = 0
+        self._last_fetch_failed = False
         self._mutex = threading.RLock()
 
     def _load(self):
@@ -201,9 +204,18 @@ class Catalogue:
                 if age < (TTL_POSITIVE if previous.get('metadata') else TTL_NEGATIVE):
                     return previous.get('metadata')
         with self._mutex:
-            offline = self._service_down
-        result = None if offline else self._fetch(title, year)
+            offline = self._service_down and time.time() < self._service_retry_at
+            if not offline:
+                self._service_down = False
+            self._last_fetch_failed = bool(offline)
+        if offline:
+            return None
+        result = self._fetch(title, year)
+        # A temporary outage is NOT a genuine negative title search. Never
+        # cache it for another 30 minutes (or permanently until Kodi exits).
         with self._mutex:
+            if self._last_fetch_failed:
+                return None
             self._cache[key] = {'time': time.time(), 'metadata': result}
             self._dirty = True
         return result
@@ -242,15 +254,19 @@ class Catalogue:
                         except (requests.RequestException, ValueError, TypeError):
                             pass
                     return match
-                # Valid JSON response: the server is up but this title is not indexed.
-                # Repeating an alternate path would add latency without any benefit.
-                break
+                # Root and /search can return different payload formats.
+                # A valid empty result is not evidence that an alternate
+                # documented endpoint also lacks the title.
+                continue
             except (requests.RequestException, ValueError, TypeError):
                 continue
         if not successful_http:
-            # Stop queuing more identical failing calls for the current menu page.
+            # Circuit-breaker for a temporarily unavailable metadata server:
+            # retry after five minutes without restarting Kodi.
             with self._mutex:
                 self._service_down = True
+                self._service_retry_at = time.time()+300
+                self._last_fetch_failed = True
         return None
 
     def lookup_many(self, groups, max_new=16):
@@ -271,7 +287,11 @@ class Catalogue:
                 except Exception:
                     results[jobs[job]] = None
         for group in groups:
-            group['metadata'] = results.get(self._key(group['title'], group.get('year', '')))
+            key=self._key(group['title'], group.get('year', ''))
+            # Never erase previously valid metadata for groups outside
+            # max_new or after a temporary CZDB outage.
+            if results.get(key):
+                group['metadata']=results[key]
         self.save()
         return groups
 
