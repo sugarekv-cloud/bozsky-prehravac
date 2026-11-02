@@ -1356,16 +1356,31 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 self._update_hero()
             return
         if control_id==110:
-            selected=self.featured_card
-            if selected:
-                summary='\n'.join(x for x in (
-                    str(selected.get('year') or ''),
-                    str(selected.get('genre') or ''),
-                    self._csfd_description(selected) or
-                    'Popis z ČSFD zatím není dostupný.'
-                ) if x)
-                xbmcgui.Dialog().textviewer(str(selected.get('title') or 'Detail'),
-                                            summary)
+            selected=getattr(self,'featured_card',None)
+            if selected and selected.get('kind') in ('movie','show'):
+                from cinema_details import choose_detail
+                choice=choose_detail(self.addon,self.textures,selected,
+                                     self._csfd_description(selected))
+                if choice=='open':
+                    if selected.get('_continue'):
+                        self._play_saved(selected)
+                    elif selected.get('kind')=='movie':
+                        self._refresh('files',(selected,None,None))
+                    else:
+                        self._refresh('seasons',selected)
+                elif choice=='trailer':
+                    self._open_trailer_search(selected)
+                elif choice=='favorite':
+                    store=getattr(self,'watch_store',None)
+                    if store:
+                        enabled=store.toggle_favorite(selected)
+                        xbmcgui.Dialog().notification('KIVORA',
+                            'Přidáno do oblíbených' if enabled
+                            else 'Odebráno z oblíbených')
+            elif selected:
+                xbmcgui.Dialog().textviewer(
+                    str(selected.get('title') or 'Detail'),
+                    str(selected.get('plot') or ''))
             return
         if control_id==108:
             chosen=self.featured_card
