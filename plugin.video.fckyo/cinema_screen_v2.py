@@ -634,16 +634,31 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 movies=self._filtered([c for c in found if c['kind']=='movie'])
                 shows=self._filtered([c for c in found if c['kind']=='show'])
                 self.context=query
+                suggestions=[]
                 if not movies and not shows:
-                    movies=[tile('ZKUSIT JINÝ NÁZEV','search')]
+                    try:
+                        suggestions=getattr(self.service,'suggestions',lambda q:[])(query)
+                    except Exception:
+                        suggestions=[]
+                    movies=[tile('ZADAT JINÝ NÁZEV','search')]
+                    if suggestions:
+                        shows=[tile('MOŽNÁ HLEDÁŠ: '+name,
+                                    'search_retry',search_text=name)
+                               for name in suggestions[:5]]
                 has_more=getattr(self.service,'search_has_more',lambda *a:False)
                 if has_more(query):
                     movies=list(movies)+[tile('+ NAČÍST DALŠÍ STRÁNKY WEBSHARE',
                                             'search_more',search_text=query)]
+                progress=getattr(self.service,'search_progress',lambda q:{'pages':0,'pending':0})(query)
+                status=('%d filmů · %d seriálů · prohledáno %d stránek · %s' %
+                        (len([x for x in movies if x['kind']=='movie']),
+                         len([x for x in shows if x['kind']=='show']),
+                         progress['pages'],
+                         'další stránky dostupné' if progress['pending']
+                         else 'hledání dokončeno'))
                 self._fill('FILMY: '+query.upper(),movies,
-                           'SERIÁLY: '+query.upper(),shows,
-                           '%d filmů · %d seriálů · pouze dostupné na Webshare' %
-                           (len([x for x in movies if x['kind']=='movie']),len(shows)))
+                           'MOŽNÉ OPRAVY NÁZVU' if suggestions else 'SERIÁLY: '+query.upper(),
+                           shows,status)
             finally:load.close()
         elif view=='seasons':
             load=self._loading('Vyhledávám všechny dostupné série…')
@@ -1077,14 +1092,16 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
 
 
 def launch(addon,profile,get_url,token,search_page,
-           metadata_factory,calendar_factory,revalidate_callback):
+           metadata_factory,calendar_factory,revalidate_callback,
+           suggest_provider=None):
     from cinema_service_v2 import CinemaService
     from ws_availability import Availability
     from cinematic_home import ensure_textures
     from cinema_user_state import WatchStore
     metadata=metadata_factory() if addon.getSetting('smart_metadata')!='false' else None
     service=CinemaService(token,search_page,Availability(profile),
-                          metadata,calendar_factory(),profile=profile)
+                          metadata,calendar_factory(),profile=profile,
+                          suggest_fetch=suggest_provider)
     win=CinemaScreen('fckyo-cinema-v2.xml',addon.getAddonInfo('path'),'Default','1080i')
     win.service=service
     win.watch_store=WatchStore(profile)
