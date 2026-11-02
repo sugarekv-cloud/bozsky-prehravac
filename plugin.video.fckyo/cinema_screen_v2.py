@@ -716,6 +716,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self.service.token=new_token
             self.service.home_cache=None
             self.service.search_cache.clear()
+            self.service.search_cache_time.clear()
+            self.service.search_scan.clear()
             self.service.series_cache.clear()
             self.stack=[]
             self._screen('home')
