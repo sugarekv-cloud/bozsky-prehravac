@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Build Božský přehrávač god-inspired brand PNGs for Kodi using only Pillow (build-time only).
+"""Build KIVORA god-inspired brand PNGs for Kodi using only Pillow (build-time only).
 
-Original Zeus-like god illustration, golden Czech wordmark and Kodi icon.
+Original Zeus-like god illustration, golden KIVORA wordmark and Kodi icon.
 No fonts are bundled.
 """
 from pathlib import Path
@@ -193,9 +193,9 @@ def make_brand():
     d=ImageDraw.Draw(im)
     gold=(232,188,100,255)
     champagne=(252,245,219,255)
-    d.text((281,27),'BOŽSKÝ',font=font(130),fill=champagne,
+    d.text((286,66),'KIVORA',font=font(125),fill=champagne,
            stroke_width=2,stroke_fill=(135,91,44,255))
-    d.text((291,160),'PŘEHRÁVAČ',font=font(70),fill=gold)
+    d.text((293,200),'FILMY A SERIÁLY',font=font(30),fill=gold)
     d.line((293,247,1050,247),fill=(190,140,65,230),width=4)
     im.save(MEDIA/'brand.png',optimize=True)
 
@@ -208,7 +208,7 @@ def make_brand():
                          (37,10))
     base=ImageDraw.Draw(icon)
     base.rounded_rectangle((48,427,464,494),radius=18,fill=(9,10,14,238))
-    base.text((101,435),'BOŽSKÝ',font=font(47),
+    base.text((121,435),'KIVORA',font=font(43),
               fill=(248,213,146,255))
     icon.save(MEDIA/'icon.png',optimize=True)
     make_menu_icons()
