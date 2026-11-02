@@ -7,7 +7,7 @@
         <posy>0</posy>
     </coordinates>
     <controls>
-        <!-- BOZSKY CINEMA 0.36: minimal charcoal/red, TV-first browsing and consistent art rails. -->
+        <!-- KIVORA CINEMA 0.37: minimal charcoal/red, TV-first browsing and consistent art rails. -->
         <control type="image">
             <left>0</left><top>0</top><width>1920</width><height>1080</height>
             <texture>$INFO[Window.Property(cinema_background)]</texture>
@@ -462,7 +462,7 @@
         <control type="label">
             <left>125</left><top>123</top><width>360</width><height>29</height>
             <font>font12</font><textcolor>FFEBEBEF</textcolor>
-            <label>●  BOŽSKÝ VÝBĚR</label>
+            <label>●  VÝBĚR KIVORA</label>
             <visible>String.IsEqual(Window.Property(hero_action),yes) + String.IsEqual(Window.Property(nav_active),home)</visible>
         </control>
         <!-- Netflix-inspired full-poster horizontal rails. -->
