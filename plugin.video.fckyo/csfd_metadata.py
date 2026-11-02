@@ -243,7 +243,8 @@ class Catalogue:
                 match = select_match(data, title, year)
                 if match:
                     # Search responses may contain only minimal details.
-                    if not match['plot'] and not match['poster'] and match['uid']:
+                    if match['uid'] and (not match['plot'] or not match['poster'] or
+                                         match['rating'] is None):
                         try:
                             full = self.transport(endpoint, params={'uid':match['uid']}, timeout=2.5,
                                                   headers={'Accept':'application/json', 'User-Agent':'YAWsP-SmartSearch/0.5'})
