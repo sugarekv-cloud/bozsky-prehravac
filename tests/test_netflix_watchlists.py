@@ -139,12 +139,8 @@ class NetflixSkinTests(unittest.TestCase):
             listcontrol=self.root.find(".//control[@id='%d']"%id)
             self.assertIsNotNone(listcontrol)
             item=listcontrol.find('itemlayout')
-            if id in (403,404,408,411):
-                self.assertEqual(item.get('width'),'239')
-                self.assertEqual(item.get('height'),'354')
-            else:
-                self.assertEqual(item.get('width'),'359')
-                self.assertEqual(item.get('height'),'259')
+            self.assertEqual(item.get('width'),'292')
+            self.assertEqual(item.get('height'),'218')
             self.assertTrue(listcontrol.findall('ondown'))
             self.assertEqual(listcontrol.findall('ondown')[-1].text,str(id))
 
