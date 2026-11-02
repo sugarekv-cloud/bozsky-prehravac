@@ -1,6 +1,6 @@
-# FCKYO pro Kodi
+# KIVORA pro Kodi
 
-Technické ID: `plugin.video.fckyo`. Hledání videí z Webshare, katalog filmů a seriálů, české a originální názvy, filtrování kvalit, premiéry a obrazovka s plakáty.
+Název aplikace: **KIVORA**. Technické ID: `plugin.video.fckyo`. Hledání videí z Webshare, katalog filmů a seriálů, české a originální názvy, filtrování kvalit, premiéry a obrazovka s plakáty.
 
 Tento doplněk neobsahuje filmové soubory. Uživatel si zajišťuje oprávnění k přehrávanému obsahu.
 
