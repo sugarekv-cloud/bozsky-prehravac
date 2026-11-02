@@ -46,8 +46,8 @@ def _safe(entry):
 
 class WatchStore:
     def __init__(self,profile):
-        self.path=os.path.join(profile,'fckyo-watch-state-v1.json')
-        self.pending=os.path.join(profile,'fckyo-playback-pending-v1.json')
+        from cinema_profiles import state_paths
+        self.path,self.pending=state_paths(profile)
 
     @staticmethod
     def _read(path):
