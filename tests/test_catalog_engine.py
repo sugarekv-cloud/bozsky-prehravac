@@ -8,7 +8,8 @@ sys.path.insert(0,os.path.abspath(os.path.join(os.path.dirname(__file__),'..',
                                                'plugin.video.fckyo')))
 from catalog_engine import (release_details, file_label, file_score,
                             filter_groups, sort_groups, sort_files, prefers_cz)
-from novinky_catalogue import parse_video_name, resolution, is_czech_audio_marked
+from novinky_catalogue import (parse_video_name, resolution, is_czech_audio_marked,
+                              czech_language_tier, sort_variants, variant_label)
 from smartsearch import variants
 
 def file(i,name,gb=3):
@@ -27,7 +28,7 @@ class FilenameTests(unittest.TestCase):
         d=release_details(name)
         self.assertEqual(d['resolution'],1080)
         self.assertEqual(d['source'],'WEB-DL')
-        self.assertEqual(d['language'],'CZ (název)')
+        self.assertEqual(d['language'],'CZ dabing (název)')
 
     def test_actual_webshare_anime_episodic(self):
         name='Shingeki no Kyojin - 60 CZ [1080p].mkv'
@@ -46,6 +47,30 @@ class FilenameTests(unittest.TestCase):
         self.assertFalse(is_czech_audio_marked('Film.2025.MULTi.2160p.mkv'))
         self.assertFalse(prefers_cz(file('1','Film.2025.CZ.titulky.1080p.mkv')))
         self.assertTrue(prefers_cz(file('2','Film.2025.CZ.Dabing.1080p.mkv')))
+
+    def test_cz_language_tiers_and_file_labels(self):
+        fixtures={
+            'Movie.2025.CZDAB.1080p.mkv':3,
+            'Movie.2025.CZ.Dabing.1080p.mkv':3,
+            'Movie.2025.Czech.Audio.1080p.mkv':3,
+            'Movie.2025.CZSUB.CZ.Dabing.1080p.mkv':3,
+            'Movie.2025.CZ.2160p.mkv':2,
+            'Movie.2025.CZE.1080p.mkv':2,
+            'Movie.2025.CZSUB.2160p.mkv':1,
+            'Movie.2025.CZ.Subs.2160p.mkv':1,
+            'Movie.2025.CZ.Titulky.2160p.mkv':1,
+            'Movie.2025.Czech.Subtitles.2160p.mkv':1,
+            'Movie.2025.EN.2160p.mkv':0,
+            'Movie.2025.MULTi.2160p.mkv':0,
+        }
+        for name,tier in fixtures.items():
+            with self.subTest(filename=name):
+                self.assertEqual(czech_language_tier(name),tier)
+                self.assertEqual(release_details(name)['audio_priority'],tier)
+                self.assertEqual(is_czech_audio_marked(name),tier>=2)
+        self.assertIn('CZ titulky',file_label(file('s','Movie.CZSUB.2160p.mkv')))
+        self.assertIn('CZ titulky',variant_label(file('s','Movie.CZSUB.2160p.mkv')))
+        self.assertIn('CZ dabing',variant_label(file('d','Movie.CZ.Dabing.1080p.mkv')))
 
     def test_dots_in_query(self):
         self.assertIn('murder.mystery',variants('Murder Mystery'))
@@ -73,9 +98,21 @@ class SortingTests(unittest.TestCase):
         fourth=file('4','Film.2025.2160p.CZ.WEB-DL.mkv',18)
         subtitles=file('5','Film.2025.2160p.CZSUB.WEB-DL.mkv',22)
         ordered=sort_files([subtitles,self.b,self.a,self.c,fourth])
-        self.assertEqual(ordered[0]['ident'],'4')
-        self.assertEqual([f['ident'] for f in ordered[:3]],['4','3','1'])
+        self.assertEqual(ordered[0]['ident'],'3')
+        self.assertEqual([f['ident'] for f in ordered],['3','4','1','5','2'])
         self.assertFalse(prefers_cz(subtitles))
+
+    def test_dubbing_first_then_cz_audio_subtitles_and_other(self):
+        files=[
+            file('foreign','Movie.2025.EN.2160p.mkv'),
+            file('subs','Movie.2025.CZSUB.2160p.mkv'),
+            file('probable','Movie.2025.CZ.2160p.mkv'),
+            file('dub','Movie.2025.CZ.Dabing.1080p.mkv'),
+            file('dub4k','Movie.2025.CZDAB.2160p.mkv'),
+        ]
+        expected=['dub4k','dub','probable','subs','foreign']
+        self.assertEqual([f['ident'] for f in sort_files(files)],expected)
+        self.assertEqual([f['ident'] for f in sort_variants(files)],expected)
 
     def test_filter_quality_and_cz(self):
         groups=[group('Film','2025',[self.a,self.b,self.c])]
