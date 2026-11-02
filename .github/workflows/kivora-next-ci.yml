@@ -1,0 +1,77 @@
+name: KIVORA next – Python and TV XML validation
+
+on:
+  push:
+    branches:
+      - feature/kivora-next-improvements
+  pull_request:
+    paths:
+      - 'plugin.video.fckyo/**'
+      - 'tests/test_kivora_*.py'
+      - '.github/workflows/kivora-next-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install headless test dependencies
+        run: python -m pip install requests pillow
+      - name: Compile the complete add-on
+        run: python -m compileall -q plugin.video.fckyo
+      - name: Validate Kodi XML files
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from xml.etree import ElementTree as ET
+          files = list(Path('plugin.video.fckyo/resources').rglob('*.xml'))
+          files.append(Path('plugin.video.fckyo/addon.xml'))
+          for filename in files:
+              ET.parse(filename)
+          print('Validated', len(files), 'XML files')
+          PY
+      - name: Run all KIVORA regression tests
+        env:
+          PYTHONPATH: tests/kodi_ci_stubs
+        run: python -m unittest discover -s tests -p 'test_kivora_*.py' -v
+      - name: Check released version and add-on metadata
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from xml.etree import ElementTree as ET
+          addon=ET.parse('plugin.video.fckyo/addon.xml').getroot()
+          assert addon.attrib['version']=='0.47.2'
+          screen=Path('plugin.video.fckyo/cinema_screen_v2.py').read_text(encoding='utf-8')
+          assert "VERSION='0.47.2'" in screen
+          PY
+      - name: Run full publish-workflow regression suite
+        run: python -m unittest discover -s tests -v
+      - name: Build full Kodi preview package
+        run: python build_repo.py --owner sugarekv-cloud --output preview_site
+      - name: Validate preview ZIP
+        run: |
+          python - <<'PY'
+          from glob import glob
+          from zipfile import ZipFile
+          paths=glob('preview_site/plugin.video.fckyo/*.zip')
+          assert len(paths)==1, paths
+          with ZipFile(paths[0]) as z:
+              assert z.testzip() is None
+              assert 'plugin.video.fckyo/addon.xml' in z.namelist()
+              assert 'plugin.video.fckyo/cinema_profiles.py' in z.namelist()
+          print(paths[0])
+          PY
+      - name: Upload development ZIP (not a stable release)
+        uses: actions/upload-artifact@v4
+        with:
+          name: KIVORA-development-preview
+          path: preview_site/plugin.video.fckyo/*.zip
+          retention-days: 14

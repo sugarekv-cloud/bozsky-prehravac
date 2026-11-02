@@ -41,12 +41,12 @@ def _rgba_png(path, width, height, kind):
         for x in range(width):
             if kind == 'background':
                 h = y / float(max(1,height-1))
-                color = (int(9+4*h),int(12+5*h),int(17+7*h),255)
+                color = (int(7+4*h),int(10+5*h),int(15+8*h),255)
             elif kind == 'fade':
                 edge = 249*(1-x/float(max(1,width-1)))**2.0
                 bottom = 254*(y/float(max(1,height-1)))**2.4
                 a = int(min(255,max(edge,bottom)))
-                color = (9,12,17,a)
+                color = (7,10,15,a)
             elif kind in ('gear','gear_dark'):
                 # Crisp 8-tooth settings icon with a transparent center.
                 cx=(x-(width-1)/2.0)/(min(width,height))
@@ -59,14 +59,14 @@ def _rgba_png(path, width, height, kind):
                 else:
                     color = (0,0,0,0)
             elif kind == 'focus':
-                color = (201,170,113,255)
+                color = (221,179,106,255)
             elif kind == 'chip':
-                color = (8,11,15,235)
+                color = (10,14,21,240)
             elif kind == 'cardfade':
                 a = int(248 * (y/float(max(1,height-1)))**1.6)
                 color = (8,11,15,a)
             elif kind == 'nav_hover':
-                color = (40,44,48,244)
+                color = (45,43,40,248)
             elif kind == 'tile':
                 # Matte charcoal surfaces: restrained black edges, never purple glow.
                 radius=5
@@ -84,13 +84,13 @@ def _rgba_png(path, width, height, kind):
                            int(21+4*top+accent),
                            int(27+5*top+accent),255)
                     if edge:
-                        color=(45,48,52,232)
+                        color=(65,61,53,235)
             elif kind == 'cta':
-                color = (52,60,67,255)
+                color = (43,49,57,255)
             elif kind == 'cta_focus':
-                color = (77,88,94,255)
+                color = (112,80,39,255)
             else:
-                color = (17,21,26,255)
+                color = (11,15,21,255)
             raw.extend(color)
     header = b'\x89PNG\r\n\x1a\n'
     ihdr = struct.pack('>IIBBBBB', width, height, 8, 6, 0, 0, 0)
@@ -116,7 +116,7 @@ def ensure_textures(profile):
              'cardfade':(128,84)}
     result = {}
     for kind,(w,h) in specs.items():
-        result[kind] = _rgba_png(os.path.join(folder,'stream_v11_'+kind+'.png'),w,h,kind)
+        result[kind] = _rgba_png(os.path.join(folder,'stream_v12_cinema2_'+kind+'.png'),w,h,kind)
     return result
 
 

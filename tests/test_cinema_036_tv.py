@@ -27,7 +27,7 @@ class CinemaTV036Tests(unittest.TestCase):
 
     def test_version_and_preserved_plugin_identity(self):
         addon = ET.parse(PLUGIN / 'addon.xml').getroot()
-        self.assertEqual(addon.get('version'), '0.47.0')
+        self.assertEqual(addon.get('version'), '0.47.2')
         self.assertEqual(addon.get('id'), 'plugin.video.fckyo')
         self.assertEqual(addon.get('name'), 'KIVORA')
 
@@ -116,8 +116,8 @@ class CinemaTV036Tests(unittest.TestCase):
 
     def test_new_palette_and_refreshable_texture_cache(self):
         code = (PLUGIN / 'cinematic_home.py').read_text(encoding='utf8')
-        self.assertIn("stream_v11_", code)
-        self.assertIn("color = (201,170,113,255)", code)
+        self.assertIn("stream_v12_cinema2_", code)
+        self.assertIn("color = (221,179,106,255)", code)
         self.assertIn("kind == 'cta_focus'", code)
         self.assertIn("'cta':(2,2)", code)
         brand = (ROOT / 'tools/create_brand.py').read_text(encoding='utf8')
@@ -125,7 +125,7 @@ class CinemaTV036Tests(unittest.TestCase):
 
     def test_show_search_and_playback_logic_intact(self):
         logic = (PLUGIN / 'cinema_screen_v2.py').read_text(encoding='utf8')
-        for fragment in ("VERSION='0.47.0'", "'bluey_search'", "'genre_open'",
+        for fragment in ("VERSION='0.47.2'", "'bluey_search'", "'genre_open'",
                          "'catalog_more'", "'file'", "'movie'", "'show'",
                          'self._play_saved(c)', "self._refresh('files'"):
             self.assertIn(fragment, logic)

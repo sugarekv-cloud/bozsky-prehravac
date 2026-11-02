@@ -16,7 +16,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.47.0'
+VERSION='0.47.2'
 
 
 def tile(name,kind,**extra):
@@ -52,6 +52,12 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         for cid,icon_path in getattr(self,'icon_paths',{}).items():
             self.setProperty('side_icon_'+str(cid),icon_path)
         self.setProperty('app_version','v'+VERSION)
+        try:
+            from cinema_profiles import active_profile
+            self.setProperty('active_profile_name',
+                             active_profile(self.return_profile)['name'])
+        except Exception:
+            self.setProperty('active_profile_name','Hlavní')
         self.setProperty('section_label','ÚVOD')
         self.setProperty('ui_status','Šipky = pohyb, OK = výběr, Zpět = předchozí obrazovka')
         self.setProperty('hero_title','KIVORA')
@@ -60,6 +66,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.setProperty('hero_art','')
         self.setProperty('hero_poster','')
         self.setProperty('hero_action','')
+        self.setProperty('hero_media_action','')
         try:
             from cinema_navigation import consume
             saved=consume(getattr(self,'return_profile',None))
@@ -267,6 +274,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         if c and wanted and c.get('kind')!=wanted:
             c=None
         if c and mode=='live_tv' and c.get('kind') in ('tv_channel','tv_addon'):
+            self._set_hero_property('hero_media_action','')
             self.featured_card=c
             self._set_hero_property('hero_action','yes')
             self._set_hero_property('hero_title',c.get('title') or 'ŽIVÁ TV')
@@ -290,13 +298,16 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self._set_hero_property('hero_art','')
             self._set_hero_property('hero_poster','')
             self._set_hero_property('hero_action','')
+            self._set_hero_property('hero_media_action','')
             return
         if c.get('kind') in ('movie','show'):
             self.featured_card=c
             self._set_hero_property('hero_action','yes')
+            self._set_hero_property('hero_media_action','yes')
         else:
             self.featured_card=None
             self._set_hero_property('hero_action','')
+            self._set_hero_property('hero_media_action','')
         self._set_hero_property('hero_title',str(c.get('title') or ''))
         genre=str(c.get('genre') or '').split(',')[:2]
         text=[str(c.get('year') or ''),', '.join(x.strip() for x in genre if x.strip())]
@@ -932,7 +943,32 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 xbmcgui.NOTIFICATION_WARNING)
 
     def _gear_menu(self):
-        selected=xbmcgui.Dialog().select('⚙  Nastavení Božského přehrávače',[
+        """Cinema 2.0 grouped settings; legacy advanced tools remain available."""
+        from cinema_settings_hub import choose_settings
+        action=choose_settings(self.addon,self.textures)
+        if action=='account':
+            self._open_settings()
+        elif action=='catalog':
+            self._filters()
+        elif action=='profiles':
+            self._profiles_menu()
+        elif action=='sync':
+            self._sync_menu()
+        elif action=='backups':
+            chosen=xbmcgui.Dialog().select('KIVORA · zálohy',[
+                'Exportovat oblíbené a historii',
+                'Obnovit oblíbené a historii ze souboru'])
+            if chosen==0:
+                self._library_backup(False)
+            elif chosen==1:
+                self._library_backup(True)
+        elif action=='diagnostics':
+            self._diagnostics()
+        elif action=='advanced':
+            self._gear_legacy_menu()
+
+    def _gear_legacy_menu(self):
+        selected=xbmcgui.Dialog().select('KIVORA · rozšířená nastavení',[
             'Nastavení doplňku a přihlášení Webshare',
             'Filtry a řazení katalogu',
             'Načíst další tituly a aktualizovat Webshare',
@@ -941,7 +977,12 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             'Vyhledat podle žánru',
             'Automatické pokračování seriálu: '+(
                 'ZAPNUTO' if self.addon.getSetting('autoplay_next_episode')!='false'
-                else 'VYPNUTO')
+                else 'VYPNUTO'),
+            'Diagnostika a stav doplňku',
+            'Zálohovat oblíbené a rozkoukané',
+            'Obnovit oblíbené a rozkoukané ze zálohy',
+            'Uživatelské profily',
+            'Synchronizace mezi televizemi (sdílená složka)'
         ])
         if selected==0:
             self._open_settings()
@@ -964,6 +1005,172 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             xbmcgui.Dialog().notification('KIVORA',
                 'Automatické další díly vypnuty' if enabled
                 else 'Automatické další díly zapnuty')
+        elif selected==7:
+            self._diagnostics()
+        elif selected==8:
+            self._library_backup(False)
+        elif selected==9:
+            self._library_backup(True)
+        elif selected==10:
+            self._profiles_menu()
+        elif selected==11:
+            self._sync_menu()
+
+    def _sync_menu(self):
+        """Opt-in LAN sharing; Kodi VFS supports installed SMB/NFS sources."""
+        from cinema_sync import configured_folder,set_folder,sync_now
+        from cinema_user_state import WatchStore
+        dialog=xbmcgui.Dialog()
+        profile=self.return_profile
+        folder=configured_folder(profile)
+        entries=[
+            'Sdílená složka: '+('nastavena' if folder else 'vypnuto'),
+            'Vybrat sdílenou složku v Kodi',
+            'Synchronizovat nyní',
+            'Vypnout automatickou synchronizaci'
+        ]
+        n=dialog.select('KIVORA · synchronizace domácích TV',entries)
+        if n<1:
+            return
+        try:
+            if n==1:
+                chosen=dialog.browseSingle(3,'Vyber sdílenou složku',
+                        'files','',False,False,folder or profile)
+                if chosen:
+                    if not dialog.yesno('KIVORA · sdílená knihovna',
+                        'Do důvěryhodné složky se ukládá historie a oblíbené. Hesla a tokeny nikoli. Pokračovat?'):
+                        return
+                    set_folder(profile,chosen)
+                    dialog.notification('KIVORA','Synchronizace zapnuta.')
+            elif n==2:
+                result=sync_now(profile)
+                self.watch_store=WatchStore(profile)
+                self.stack=[]
+                self._screen('home',stack=False)
+                dialog.ok('KIVORA','Synchronizováno: %d záznamů / %d oblíbených.'%result)
+            elif n==3:
+                set_folder(profile,'')
+                dialog.notification('KIVORA','Synchronizace vypnuta.')
+        except (OSError,ValueError,TypeError,RuntimeError) as exc:
+            dialog.ok('KIVORA · synchronizace',str(exc)[:250])
+
+    def _profiles_menu(self):
+        """Keep viewing history and favorites separate on a shared Kodi TV."""
+        from cinema_profiles import (list_profiles,active_profile,add_profile,
+            activate_profile,delete_profile)
+        from cinema_user_state import WatchStore
+        dialog=xbmcgui.Dialog()
+        profile=self.return_profile
+        people=list_profiles(profile)
+        current=active_profile(profile)['id']
+        labels=[('✓  ' if p['id']==current else '     ')+p['name']
+                for p in people]
+        choice=dialog.select('KIVORA · vyber profil',labels+[
+            '+ Vytvořit nový profil','Odstranit jiný profil'])
+        if choice<0:
+            return
+        try:
+            if choice<len(people):
+                activate_profile(profile,people[choice]['id'])
+            elif choice==len(people):
+                name=dialog.input('Název profilu',type=xbmcgui.INPUT_ALPHANUM)
+                if not name:
+                    return
+                add_profile(profile,name)
+            else:
+                removable=[p for p in people if p['id'] not in ('main',current)]
+                if not removable:
+                    dialog.notification('KIVORA','Není co odstranit.')
+                    return
+                n=dialog.select('Odstranit profil', [p['name'] for p in removable])
+                if n<0:
+                    return
+                chosen=removable[n]
+                if not dialog.yesno('Odstranit profil',
+                    'Smazat profil %s včetně jeho historie a oblíbených?'%chosen['name']):
+                    return
+                delete_profile(profile,chosen['id'])
+                dialog.notification('KIVORA','Profil odstraněn.')
+                return
+            self.watch_store=WatchStore(profile)
+            self.setProperty('active_profile_name',active_profile(profile)['name'])
+            self.stack=[]
+            self._screen('home',stack=False)
+        except (OSError,ValueError,TypeError) as exc:
+            dialog.ok('KIVORA – profily',str(exc)[:250])
+
+    def _library_backup(self,restore=False):
+        """Manual local export/import. No Webshare login data is included."""
+        from cinema_backup import export_backup, import_backup
+        profile=getattr(self,'return_profile',None)
+        if not profile:
+            xbmcgui.Dialog().notification('KIVORA','Profil není dostupný.')
+            return
+        dialog=xbmcgui.Dialog()
+        default_path=os.path.join(profile,'kivora-library-backup.json')
+        try:
+            if restore:
+                source=dialog.browseSingle(1,'Vyber zálohu KIVORA','files',
+                                           '.json',False,False,default_path)
+                if not source:
+                    return
+                if not dialog.yesno('KIVORA – obnova knihovny',
+                                    'Nahradit současné oblíbené a historii vybranou zálohou?'):
+                    return
+                count=import_backup(profile,source)
+            else:
+                destination=dialog.browseSingle(3,'Vyber složku pro zálohu',
+                                                'files','',False,False,profile)
+                if not destination:
+                    return
+                destination=os.path.join(destination,'kivora-library-backup.json')
+                if os.path.exists(destination) and not dialog.yesno(
+                        'KIVORA','Přepsat existující zálohu?'):
+                    return
+                count=export_backup(profile,destination)
+            dialog.ok('KIVORA',('%s: %d rozkoukaných / %d oblíbených' %
+                 ('Obnoveno' if restore else 'Zálohováno',count[0],count[1])))
+            if restore:
+                self._screen('home')
+        except (OSError,ValueError,TypeError) as exc:
+            dialog.ok('KIVORA – chyba zálohy',str(exc)[:300])
+
+    def _diagnostics(self):
+        """Offline diagnostics; never display credentials or playback URLs."""
+        import sys
+        import platform
+        try:
+            from cinema_live_tv import CHANNELS
+            channels=len(CHANNELS)
+        except Exception:
+            channels=0
+        service=getattr(self,'service',None)
+        cache_stats=[]
+        for key in ('search_cache','series_cache'):
+            value=getattr(service,key,None)
+            cache_stats.append('%s: %s' % (
+                key, len(value) if hasattr(value,'__len__') else 'nedostupné'))
+        rows=[
+            'KIVORA: '+VERSION,
+            'Python: '+sys.version.split()[0],
+            'Platforma: '+platform.system(),
+            'TV kanály: '+str(channels),
+            'Webshare účet: '+(
+                'nastaven' if self.addon.getSetting('wsuser') else 'nenastaven'),
+        ]+cache_stats
+        choice=xbmcgui.Dialog().select('KIVORA · diagnostika',rows+[
+            'Vymazat paměťové cache (bez smazání oblíbených)',
+        ])
+        if choice==len(rows):
+            for key in ('search_cache','search_cache_time','search_scan',
+                        'series_cache'):
+                value=getattr(service,key,None)
+                if hasattr(value,'clear'):
+                    value.clear()
+            if service is not None and hasattr(service,'home_cache'):
+                service.home_cache=None
+            xbmcgui.Dialog().notification('KIVORA',
+                'Cache vymazána; oblíbené a historie zůstaly zachované.')
 
     def _filters(self):
         choice=xbmcgui.Dialog().select('Katalog · filtrování a řazení',[
@@ -1065,7 +1272,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         actions=['Přidat / odebrat z oblíbených',
                  'Označit jako dokoukáno',
                  'Odebrat z rozkoukaných',
-                 'Otevřít titul']
+                 'Otevřít titul',
+                 'Vyhledat trailer na YouTube']
         selected=xbmcgui.Dialog().select(card.get('title') or 'Film',actions)
         if selected==0:
             enabled=store.toggle_favorite(card)
@@ -1085,6 +1293,29 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 self._refresh('files',(card,None,None))
             else:
                 self._refresh('seasons',card)
+        elif selected==4:
+            self._open_trailer_search(card)
+
+    def _open_trailer_search(self,card):
+        """Search YouTube trailers without scraping, tokens or autoplay.
+
+        Kodi closes its modal window before entering the external add-on.
+        """
+        import xbmcaddon
+        from cinema_trailers import trailer_search_url
+        try:
+            xbmcaddon.Addon('plugin.video.youtube')
+        except Exception:
+            xbmcgui.Dialog().notification('KIVORA – trailery',
+                'Nainstaluj doplněk YouTube z repozitáře Kodi.')
+            return
+        url=trailer_search_url(card)
+        if not url:
+            return
+        self.destination=url
+        self.is_play=False
+        self._external_nav_pending=True
+        self.close()
 
     def _start_playback(self,url):
         """Defer PlayMedia until Kodi has fully closed WindowXMLDialog.
@@ -1135,17 +1366,46 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self._update_hero()
 
     def onClick(self,control_id):
+        if control_id==112:
+            chosen=getattr(self,'featured_card',None)
+            if chosen and chosen.get('kind') in ('movie','show'):
+                self._open_trailer_search(chosen)
+            return
+        if control_id==113:
+            chosen=getattr(self,'featured_card',None)
+            store=getattr(self,'watch_store',None)
+            if chosen and store and chosen.get('kind') in ('movie','show'):
+                enabled=store.toggle_favorite(chosen)
+                xbmcgui.Dialog().notification('KIVORA',
+                    'Přidáno do oblíbených' if enabled else 'Odebráno z oblíbených')
+                self._update_hero()
+            return
         if control_id==110:
-            selected=self.featured_card
-            if selected:
-                summary='\n'.join(x for x in (
-                    str(selected.get('year') or ''),
-                    str(selected.get('genre') or ''),
-                    self._csfd_description(selected) or
-                    'Popis z ČSFD zatím není dostupný.'
-                ) if x)
-                xbmcgui.Dialog().textviewer(str(selected.get('title') or 'Detail'),
-                                            summary)
+            selected=getattr(self,'featured_card',None)
+            if selected and selected.get('kind') in ('movie','show'):
+                from cinema_details import choose_detail
+                choice=choose_detail(self.addon,self.textures,selected,
+                                     self._csfd_description(selected))
+                if choice=='open':
+                    if selected.get('_continue'):
+                        self._play_saved(selected)
+                    elif selected.get('kind')=='movie':
+                        self._refresh('files',(selected,None,None))
+                    else:
+                        self._refresh('seasons',selected)
+                elif choice=='trailer':
+                    self._open_trailer_search(selected)
+                elif choice=='favorite':
+                    store=getattr(self,'watch_store',None)
+                    if store:
+                        enabled=store.toggle_favorite(selected)
+                        xbmcgui.Dialog().notification('KIVORA',
+                            'Přidáno do oblíbených' if enabled
+                            else 'Odebráno z oblíbených')
+            elif selected:
+                xbmcgui.Dialog().textviewer(
+                    str(selected.get('title') or 'Detail'),
+                    str(selected.get('plot') or ''))
             return
         if control_id==108:
             chosen=self.featured_card

@@ -45,9 +45,11 @@ def _safe(entry):
 
 
 class WatchStore:
-    def __init__(self,profile):
-        self.path=os.path.join(profile,'fckyo-watch-state-v1.json')
-        self.pending=os.path.join(profile,'fckyo-playback-pending-v1.json')
+    def __init__(self,profile,profile_id=None):
+        from cinema_profiles import state_paths,active_profile
+        self.profile_root=profile
+        self.profile_id=profile_id if profile_id is not None else active_profile(profile)['id']
+        self.path,self.pending=state_paths(profile,self.profile_id)
 
     @staticmethod
     def _read(path):
@@ -164,6 +166,12 @@ class WatchStore:
         data['favorites']=dict(sorted(data['favorites'].items(),
             key=lambda kv:float(kv[1].get('added') or 0),reverse=True)[:MAX_FAVORITES])
         self._write(self.path,data)
+        try:
+            from cinema_sync import note_favorite_change
+            note_favorite_change(self.profile_root,key,enabled,self.profile_id)
+        except (OSError,ValueError,ImportError):
+            # Local favorites must keep working without any shared folder.
+            pass
         return enabled
 
     def favorite_cards(self):

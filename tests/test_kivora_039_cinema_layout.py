@@ -77,7 +77,7 @@ class Cinema039LayoutTests(unittest.TestCase):
         addon=ET.parse(ADDON).getroot()
         self.assertEqual(addon.get('id'),'plugin.video.fckyo')
         self.assertEqual(addon.get('name'),'KIVORA')
-        self.assertEqual(addon.get('version'),'0.47.0')
+        self.assertEqual(addon.get('version'),'0.47.2')
 
     def test_remote_and_artwork_controls_remain_compatible(self):
         for cid in (101,102,103,104,105,106,107,108,109,110):
