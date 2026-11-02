@@ -261,7 +261,7 @@
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <onup>106</onup><ondown>401</ondown>
-            <onleft>108</onleft><onright>112</onright>
+            <onleft>108</onleft><onright condition="String.IsEqual(Window.Property(hero_media_action),yes)">112</onright><onright>401</onright>
             <visible>String.IsEqual(Window.Property(hero_action),yes)</visible>
         </control>
         <!-- Explicit trailer and favorite actions keep TV focus inside the hero. -->
