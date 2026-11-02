@@ -46,6 +46,17 @@ class NextEpisodeSelectionTests(unittest.TestCase):
         self.assertEqual(select_release(releases,
                          'Series.S02E02.2160p.EN.mkv')['ident'],'cz')
 
+    def test_autoplay_tiers_dubbing_cz_subtitles_foreign(self):
+        files=[
+            {'ident':'en','name':'Series.S02E03.2160p.EN.mkv'},
+            {'ident':'sub','name':'Series.S02E03.2160p.CZSUB.mkv'},
+            {'ident':'cz','name':'Series.S02E03.2160p.CZ.mkv'},
+            {'ident':'dub','name':'Series.S02E03.1080p.CZDAB.mkv'}
+        ]
+        self.assertEqual(select_release(files)['ident'],'dub')
+        self.assertEqual(select_release(files[:3])['ident'],'cz')
+        self.assertEqual(select_release(files[:2])['ident'],'sub')
+
     def test_pending_and_resume_preserve_original_title(self):
         with tempfile.TemporaryDirectory() as root:
             store=WatchStore(root)

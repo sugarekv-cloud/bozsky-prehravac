@@ -16,7 +16,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.37.2'
+VERSION='0.37.3'
 
 
 def tile(name,kind,**extra):
@@ -669,7 +669,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 items=self.service.file_rows(files,poster=c.get('poster') or '')
                 self._fill('VYBER SOUBOR · '+c['title'],items or [
                     tile('ŽÁDNÝ SOUBOR PRO TENTO FILTR','none')
-                ],'NEJDŘÍV CZ · NEJVYŠŠÍ KVALITA',[],
+                ],'DABING → CZ ZVUK → CZ TITULKY → OSTATNÍ',[],
                 '%d ověřených souborů · jazyk odhadnut pouze z názvu' %len(files))
             finally:load.close()
 

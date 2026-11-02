@@ -34,16 +34,35 @@ def resolution(name):
     return 2160 if re.search(r'(?i)(?<!\w)(?:4k|uhd)(?!\w)',value) else 0
 
 
-def is_czech_audio_marked(name):
-    """Only explicit Czech tags; MULTI/DUAL alone never proves CZ audio."""
+def czech_language_tier(name):
+    """Classify filename hints, never verified media audio tracks.
+
+    3 = explicit Czech dubbing/audio; 2 = probable Czech audio tag;
+    1 = Czech subtitles only; 0 = no evidence of Czech audio/subtitles.
+    When a filename explicitly marks BOTH dubbing and subtitles, audio wins.
+    """
     n=normalize(name)
-    subtitles=bool(re.search(r'\b(?:czsub|czsubs|cz sub|cz subs|cz subtitles|'
-                             r'czech subs|cz titulky|titulky|subtitles)\b',n))
-    explicit=bool(re.search(r'\b(?:czdab|czdub|cz dabing|cz dub|'
-                            r'czech dub|czech audio|cz audio|cesky dabing)\b',n))
-    if subtitles and not explicit:
-        return False
-    return explicit or bool(re.search(r'\b(?:cz|cze|czech|cesky|cestina|czsk)\b',n))
+    explicit=bool(re.search(
+        r'\b(?:czdab|czdub|cz dabing|cz dab|cz dub|cz dubbing|'
+        r'czech dub|czech dubbed|czech dubbing|czech audio|'
+        r'cz audio|cze audio|cesky dabing|ceske zneni|cesky zvuk)\b',n))
+    if explicit:
+        return 3
+    subtitles=bool(re.search(
+        r'\b(?:czsub|czsubs|cz sub|cz subs|cz subtitle|cz subtitles|'
+        r'czech sub|czech subs|czech subtitle|czech subtitles|'
+        r'cz titulky|ceske titulky|cesky titulky|titulky|'
+        r'cz srt|cz tit|sub cz|subs cz|subtitle cz)\b',n))
+    if subtitles:
+        return 1
+    if re.search(r'\b(?:cz|cze|czech|cesky|cestina|czsk|cz sk)\b',n):
+        return 2
+    return 0
+
+
+def is_czech_audio_marked(name):
+    """Explicit/likely CZ audio only; CZSUB and CZ subtitles are excluded."""
+    return czech_language_tier(name)>=2
 
 
 def is_hdr(name):
@@ -98,7 +117,9 @@ def quality_score(file):
         size = 0
     # The classic Webshare listing uses the same CZ-first priority as Cinema.
     # 4K without CZ tags remains visible after CZ 1080p/720p variants.
-    return ((100000 if is_czech_audio_marked(name) else 0) +
+    # Explicit CZ dubbing > probable CZ audio > Czech subtitles > others,
+    # with resolution first WITHIN each tier. This is filename-based only.
+    return (czech_language_tier(name) * 100000 +
             resolution(name) * 10 + (60 if is_hdr(name) else 0) +
             min(size // (1024**3), 60))
 
@@ -174,5 +195,6 @@ def variant_label(file):
     parts = [('%d' % res + 'p') if res else 'Kvalita nezjištěna']
     if is_hdr(name):
         parts.append('HDR*')
-    parts.append('CZ dabing?*' if is_czech_audio_marked(name) else 'Jazyk nezjištěn')
+    language={3:'CZ dabing?*',2:'CZ zvuk?*',1:'CZ titulky*'}
+    parts.append(language.get(czech_language_tier(name),'Jazyk nezjištěn'))
     return ' · '.join(parts)

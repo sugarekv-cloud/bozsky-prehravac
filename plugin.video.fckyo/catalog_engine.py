@@ -7,7 +7,7 @@ A filename is a hint, never verified information about audio tracks.
 """
 import re
 from novinky_catalogue import (normalize, resolution, is_czech_audio_marked,
-                                is_hdr, quality_score)
+                                is_hdr, quality_score, czech_language_tier)
 
 EXT = re.compile(r'\.(?:mkv|mp4|avi|m4v|mov|webm|wmv|ts|mpg|mpeg)$', re.I)
 LANG_CZ = re.compile(
@@ -53,24 +53,23 @@ def release_details(name):
     tag = 'HDR' if is_hdr(name) else ''
     if re.search(r'(?i)(?<!\w)(?:dovi|dolby[ ._-]*vision|dv)(?!\w)', name):
         tag='Dolby Vision'
-    if CZ_SUBS.search(name) and not AUDIO_EXPLICIT.search(name):
-        lang = 'CZ titulky'
-    elif LANG_CZ.search(name) or is_czech_audio_marked(name):
-        lang = 'CZ (název)'
+    tier=czech_language_tier(name)
+    if tier==3:
+        lang='CZ dabing (název)'
+    elif tier==2:
+        lang='CZ (název)'
+    elif tier==1:
+        lang='CZ titulky'
     elif re.search(r'(?i)\bmulti\b|\bdual\b',name):
-        lang = 'MULTi / DUAL (?)'
+        lang='MULTi / DUAL (?)'
     else:
-        lang = 'Jazyk ?'
-    try:
-        return {'resolution':res,'source':source,'codec':codec,
-                'hdr':tag,'language':lang}
-    except (ValueError, TypeError):
-        return {'resolution':0,'source':source,'codec':codec,
-                'hdr':tag,'language':lang}
+        lang='Jazyk ?'
+    return {'resolution':res,'source':source,'codec':codec,
+            'hdr':tag,'language':lang,'audio_priority':tier}
 
 
 def prefers_cz(file):
-    return release_details(file.get('name',''))['language']=='CZ (název)'
+    return release_details(file.get('name',''))['audio_priority']>=2
 
 
 def file_score(file):
@@ -81,11 +80,10 @@ def file_score(file):
         size=int(file.get('size') or 0)
     except (ValueError, TypeError):
         size=0
-    # Language is a preference, not a hard filter: show every verified
-    # release, but put CZ-marked audio before any unmarked/foreign version.
-    # Within each language tier favor resolution, then HDR/source/size.
-    # Filename tags are only hints; actual audio tracks are not verified.
-    return ((100000 if d['language']=='CZ (název)' else 0) +
+    # Explicit Czech dubbing > probable Czech audio > Czech subtitles >
+    # unmarked/foreign. Within each tier, highest resolution goes first.
+    # This is NOT verification of audio tracks inside the file.
+    return (d['audio_priority']*100000 +
             d['resolution']*10 + (35 if d['hdr'] else 0) +
             src + min(size//(1024**3),60))
 
