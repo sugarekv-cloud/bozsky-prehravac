@@ -141,8 +141,37 @@ class WatchTracker:
 
     def run(self,monitor=None):
         monitor=monitor or xbmc.Monitor()
+        import threading
+        last_sync=0
+        worker=None
+
+        def synchronize():
+            try:
+                from cinema_sync import sync_now
+                sync_now(self.return_profile)
+            except (OSError,ValueError,TypeError,RuntimeError,ImportError) as exc:
+                # Don't log folder paths, credentials, URLs or personal history.
+                try:
+                    xbmc.log('KIVORA sync failed: '+type(exc).__name__,
+                             getattr(xbmc,'LOGWARNING',2))
+                except (RuntimeError,AttributeError):
+                    pass
+
         while not monitor.abortRequested():
             self.tick()
+            # Run in a daemon thread, outside Kodi's playback tracking loop.
+            # A disconnected NAS must never freeze TV playback or navigation.
+            now=time.monotonic()
+            if (not self.active and now-last_sync>=240
+                    and (worker is None or not worker.is_alive())):
+                last_sync=now
+                try:
+                    from cinema_sync import configured_folder
+                    if configured_folder(self.return_profile):
+                        worker=threading.Thread(target=synchronize,daemon=True)
+                        worker.start()
+                except (OSError,ValueError,ImportError):
+                    pass
             if monitor.waitForAbort(4):
                 break
         if self.active:
