@@ -155,10 +155,10 @@ class DataLayer(unittest.TestCase):
         self.assertEqual(len(choose_files(entries,quality='all',language='cz')),1)
 
     def test_movie_and_episode_variants_are_czech_first(self):
-        movie_versions=[ws('foreign4k','Film.2025.2160p.MULTI.mkv'),
-                        ws('czfullhd','Film.2025.1080p.CZ.Dabing.mkv'),
-                        ws('czultra','Film.2025.2160p.CZ.mkv'),
-                        ws('czsubs','Film.2025.2160p.CZSUB.mkv')]
+        movie_versions=[ws('foreign4k','Mystery.Film.2025.2160p.MULTI.mkv'),
+                        ws('czfullhd','Mystery.Film.2025.1080p.CZ.Dabing.mkv'),
+                        ws('czultra','Mystery.Film.2025.2160p.CZ.mkv'),
+                        ws('czsubs','Mystery.Film.2025.2160p.CZSUB.mkv')]
         self.assertEqual([f['ident'] for f in choose_files(movie_versions)],
                          ['czultra','czfullhd','foreign4k','czsubs'])
         episodes=[ws('en4k','Show.S01E02.2160p.EN.mkv'),
