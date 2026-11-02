@@ -84,6 +84,9 @@ class WatchTracker:
         playing=self.player.isPlayingVideo()
         if playing:
             if not self.active and not self.was_playing:
+                # The UI can switch local profiles while this service stays
+                # alive. Rebind on the next playback start, not during a film.
+                self.store=WatchStore(self.return_profile)
                 pending=self.store.pop_pending()
                 if pending.get('ident') and pending.get('name'):
                     self.active=pending
