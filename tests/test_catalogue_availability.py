@@ -62,6 +62,22 @@ class AvailabilityTests(unittest.TestCase):
             a=Availability(d,transport=lambda *args,**kwargs:self.Response('0','0'))
             self.assertEqual(a.check_files([movie('a','X.2025.mkv')]),[])
 
+    def test_availability_checks_czech_quality_first_for_movie_and_show(self):
+        with tempfile.TemporaryDirectory() as d:
+            queried=[]
+            def request(url,data,timeout):
+                queried.append(data['ident'])
+                return self.Response('1','1')
+            a=Availability(d,transport=request)
+            for kind,base in (('movie','Film.2025'),
+                              ('show','Show.S01E01')):
+                entries=[movie('en-'+kind,base+'.2160p.EN.mkv'),
+                         movie('cz-'+kind,base+'.1080p.CZ.mkv'),
+                         movie('sub-'+kind,base+'.2160p.CZSUB.mkv')]
+                best=a.check_groups([{'kind':kind,'files':entries}])[0]['best']
+                self.assertEqual(best['ident'],'cz-'+kind)
+            self.assertEqual(queried,['cz-movie','cz-show'])
+
     def test_only_downloadable(self):
         with tempfile.TemporaryDirectory() as d:
             def request(url,data,timeout):
