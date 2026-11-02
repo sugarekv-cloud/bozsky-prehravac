@@ -87,7 +87,7 @@ class FullScreenStreamingUI(unittest.TestCase):
 
     def test_release_uses_fresh_gradients_and_real_metadata(self):
         addon=ET.parse(os.path.join(PLUGIN,'addon.xml')).getroot()
-        self.assertEqual(addon.get('version'),'0.47.2')
+        self.assertEqual(addon.get('version'),'0.47.3')
         with open(os.path.join(PLUGIN,'cinematic_home.py'),encoding='utf8') as f:
             generator=f.read()
         self.assertIn('stream_v12_cinema2_',generator)
@@ -95,7 +95,7 @@ class FullScreenStreamingUI(unittest.TestCase):
         with open(os.path.join(PLUGIN,'cinema_screen_v2.py'),encoding='utf8') as f:
             logic=f.read()
         self.assertIn('if rating>0:',logic)
-        self.assertIn("VERSION='0.47.2'",logic)
+        self.assertIn("VERSION='0.47.3'",logic)
 
 
 if __name__=='__main__':
