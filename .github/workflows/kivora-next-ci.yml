@@ -1,0 +1,40 @@
+name: KIVORA next – Python and TV XML validation
+
+on:
+  push:
+    branches:
+      - feature/kivora-next-improvements
+  pull_request:
+    paths:
+      - 'plugin.video.fckyo/**'
+      - 'tests/test_kivora_*.py'
+      - '.github/workflows/kivora-next-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile the complete add-on
+        run: python -m compileall -q plugin.video.fckyo
+      - name: Validate Kodi XML files
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from xml.etree import ElementTree as ET
+          files = list(Path('plugin.video.fckyo/resources').rglob('*.xml'))
+          files.append(Path('plugin.video.fckyo/addon.xml'))
+          for filename in files:
+              ET.parse(filename)
+          print('Validated', len(files), 'XML files')
+          PY
+      - name: Run KIVORA feature unit tests
+        run: python -m unittest discover -s tests -p 'test_kivora_*.py' -v
