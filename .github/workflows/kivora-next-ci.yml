@@ -42,3 +42,24 @@ jobs:
         env:
           PYTHONPATH: tests/kodi_ci_stubs
         run: python -m unittest discover -s tests -p 'test_kivora_*.py' -v
+      - name: Build full Kodi preview package
+        run: python build_repo.py --owner sugarekv-cloud --output preview_site
+      - name: Validate preview ZIP
+        run: |
+          python - <<'PY'
+          from glob import glob
+          from zipfile import ZipFile
+          paths=glob('preview_site/plugin.video.fckyo/*.zip')
+          assert len(paths)==1, paths
+          with ZipFile(paths[0]) as z:
+              assert z.testzip() is None
+              assert 'plugin.video.fckyo/addon.xml' in z.namelist()
+              assert 'plugin.video.fckyo/cinema_profiles.py' in z.namelist()
+          print(paths[0])
+          PY
+      - name: Upload development ZIP (not a stable release)
+        uses: actions/upload-artifact@v4
+        with:
+          name: KIVORA-development-preview
+          path: preview_site/plugin.video.fckyo/*.zip
+          retention-days: 14
