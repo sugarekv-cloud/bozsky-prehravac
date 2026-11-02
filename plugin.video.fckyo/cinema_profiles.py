@@ -101,8 +101,11 @@ def delete_profile(directory,ident):
         except OSError:
             pass
 
-def state_paths(directory):
-    ident=active_profile(directory)['id']
+def state_paths(directory,ident=None):
+    if ident is None:
+        ident=active_profile(directory)['id']
+    elif ident not in (p['id'] for p in list_profiles(directory)):
+        raise ValueError('Neznámý profil.')
     suffix='' if ident=='main' else '-'+ident
     return (os.path.join(directory,'fckyo-watch-state-v1%s.json'%suffix),
             os.path.join(directory,'fckyo-playback-pending-v1%s.json'%suffix))
