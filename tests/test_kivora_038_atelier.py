@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""KIVORA Atelier / 0.39.0 visual-system and remote-navigation regression."""
+"""KIVORA Atelier / 0.40.0 visual-system and remote-navigation regression."""
 from pathlib import Path
 from xml.etree import ElementTree as ET
 import sys
@@ -55,8 +55,8 @@ class AtelierTVTests(unittest.TestCase):
         self.assertEqual(play.findtext('texturefocus'),
                          '$INFO[Window.Property(cinema_cta_focus)]')
         foreground = rgb(play.findtext('textcolor'))
-        self.assertGreaterEqual(contrast_ratio(foreground, (239, 231, 217)), 8)
-        self.assertGreaterEqual(contrast_ratio(foreground, (255, 243, 218)), 8)
+        self.assertGreaterEqual(contrast_ratio(foreground, (52, 60, 67)), 8)
+        self.assertGreaterEqual(contrast_ratio(foreground, (77, 88, 94)), 6)
 
     def test_focus_is_unmistakable_but_does_not_cover_artwork(self):
         for ident in range(401, 414):
@@ -109,11 +109,11 @@ class AtelierTVTests(unittest.TestCase):
         brand = (ROOT / 'tools/create_brand.py').read_text(encoding='utf-8')
         self.assertIn('god_portrait', brand)
         textures = (PLUGIN / 'cinematic_home.py').read_text(encoding='utf-8')
-        self.assertIn('stream_v10_', textures)
+        self.assertIn('stream_v11_', textures)
         self.assertIn('color = (201,170,113,255)', textures)
         metadata = ET.parse(PLUGIN / 'addon.xml').getroot()
         self.assertEqual(metadata.get('name'), 'KIVORA')
-        self.assertEqual(metadata.get('version'), '0.39.0')
+        self.assertEqual(metadata.get('version'), '0.40.0')
 
 
 if __name__ == '__main__':
