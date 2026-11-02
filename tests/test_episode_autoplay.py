@@ -39,6 +39,13 @@ class NextEpisodeSelectionTests(unittest.TestCase):
         self.assertEqual(chosen['ident'],'b')
         self.assertIsNone(select_release([],'Show.S01E01.mkv'))
 
+    def test_next_episode_prefers_czech_over_previous_foreign_4k(self):
+        releases=[{'ident':'en','name':'Series.S02E03.2160p.EN.mkv'},
+                  {'ident':'cz','name':'Series.S02E03.1080p.CZ.mkv'},
+                  {'ident':'subs','name':'Series.S02E03.2160p.CZSUB.mkv'}]
+        self.assertEqual(select_release(releases,
+                         'Series.S02E02.2160p.EN.mkv')['ident'],'cz')
+
     def test_pending_and_resume_preserve_original_title(self):
         with tempfile.TemporaryDirectory() as root:
             store=WatchStore(root)
