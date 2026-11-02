@@ -2,7 +2,7 @@
 
 KIVORA je neoficiální komunitní doplněk Kodi s vyhledáváním Webshare, metadaty filmů, plakáty a katalogem filmů i seriálů.
 
-**Technické ID zůstává `plugin.video.fckyo`:** KIVORA je nový zobrazovaný název původního doplňku FCKYO. Verze KIVORA 0.39.0 a repozitář 1.0.1 upravují i název přímo v instalačních metadatech Kodi. Historie přehrávání, účet i nastavení této instalace zůstávají zachované. Starší samostatný doplněk `plugin.video.yawsp` není touto aktualizací dotčen.
+**Technické ID zůstává `plugin.video.fckyo`:** KIVORA je nový zobrazovaný název původního doplňku FCKYO. Verze KIVORA 0.40.0 a repozitář 1.0.1 upravují i název přímo v instalačních metadatech Kodi. Historie přehrávání, účet i nastavení této instalace zůstávají zachované. Starší samostatný doplněk `plugin.video.yawsp` není touto aktualizací dotčen.
 
 ## Struktura repozitáře
 

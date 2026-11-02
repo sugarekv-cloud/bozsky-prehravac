@@ -43,7 +43,7 @@ def _rgba_png(path, width, height, kind):
                 h = y / float(max(1,height-1))
                 color = (int(9+4*h),int(12+5*h),int(17+7*h),255)
             elif kind == 'fade':
-                edge = 253-241*x/float(max(1,width-1))
+                edge = 249*(1-x/float(max(1,width-1)))**2.0
                 bottom = 254*(y/float(max(1,height-1)))**2.4
                 a = int(min(255,max(edge,bottom)))
                 color = (9,12,17,a)
@@ -86,9 +86,9 @@ def _rgba_png(path, width, height, kind):
                     if edge:
                         color=(45,48,52,232)
             elif kind == 'cta':
-                color = (239,231,217,255)
+                color = (52,60,67,255)
             elif kind == 'cta_focus':
-                color = (255,243,218,255)
+                color = (77,88,94,255)
             else:
                 color = (17,21,26,255)
             raw.extend(color)
@@ -116,7 +116,7 @@ def ensure_textures(profile):
              'cardfade':(128,84)}
     result = {}
     for kind,(w,h) in specs.items():
-        result[kind] = _rgba_png(os.path.join(folder,'stream_v10_'+kind+'.png'),w,h,kind)
+        result[kind] = _rgba_png(os.path.join(folder,'stream_v11_'+kind+'.png'),w,h,kind)
     return result
 
 
