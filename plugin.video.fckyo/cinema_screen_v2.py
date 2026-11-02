@@ -196,8 +196,12 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             focus_target=next((rid for rid,cards in zip(ROW_IDS,self.rail_items)
                                if cards),107)
         try:
+            if focus_target in ROW_IDS:
+                row=self.rail_items[ROW_IDS.index(focus_target)]
+                if row:
+                    self.getControl(focus_target).selectItem(0)
             self.setFocusId(focus_target)
-        except (RuntimeError,AttributeError):
+        except (RuntimeError,AttributeError,TypeError):
             pass
         self._update_hero()
 
@@ -270,9 +274,18 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 pass
         self._set_hero_property('hero_info','  ·  '.join(x for x in text if x)[:115])
         plot=str(c.get('plot') or '').strip()
-        if (not plot or plot.casefold().startswith('soubor nalezen na webshare')):
-            plot='Film nebo seriál je dostupný · zvol si jazyk a kvalitu.'
-        self._set_hero_property('hero_plot',plot[:255])
+        if not plot or plot.casefold().startswith('soubor nalezen na webshare') or plot.casefold().startswith('film nebo seriál je dostupný'):
+            lookup=getattr(self.service,'_cached_description',None)
+            if callable(lookup):
+                plot=lookup(c.get('raw') or c.get('title') or '',
+                            c.get('year') or '',c.get('kind') or 'movie')
+        if not plot or plot.casefold().startswith('soubor nalezen'):
+            plot='Popis tohoto titulu zatím není v metadatech k dispozici.'
+        # The first two sentences are enough for a legible TV hero.
+        import re
+        summary=re.split(r'(?<=[.!?])\s+(?=[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ])',plot.strip())
+        summary=' '.join(summary[:2])
+        self._set_hero_property('hero_plot',summary[:265])
         # Never stretch a vertical, low-res Webshare poster across the TV hero.
         self._set_hero_property('hero_art',str(c.get('fanart') or ''))
         self._set_hero_property('hero_poster',str(c.get('poster') or ''))
@@ -470,7 +483,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.setProperty('nav_active',nav)
         self.setProperty('is_home','yes' if view=='home' else '')
         self.setProperty('section_label',{
-            'home':'DOMŮ','movies':'FILMY','shows':'SERIÁLY','premieres':'PREMIÉRY',
+            'home':'DOPORUČENO PRO TEBE','movies':'FILMY · KVALITA A ČEŠTINA','shows':'SERIÁLY · KVALITA A ČEŠTINA','premieres':'PREMIÉRY',
             'bluey':'BLUEY',
             'search':'VYHLEDÁVÁNÍ','seasons':'SÉRIE','episodes':'EPIZODY',
             'files':'VÝBĚR KVALITY',
