@@ -1081,7 +1081,7 @@ def webshare_search_suggestions(token,what,limit=8):
         return []
     try:
         response=_session.post(API+'suggest/',
-            data={'what':what,'limit':max(1,min(int(limit),10)),'wst':token},
+            data={'what':what,'limit':max(1,min(int(limit),10))},
             timeout=(3,5))
         response.raise_for_status()
         xml=ET.fromstring(response.content)
