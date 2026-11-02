@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="KIVORA" version="0.37.1" provider-name="KIVORA Community">
+<addon id="plugin.video.fckyo" name="KIVORA" version="0.37.2" provider-name="KIVORA Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -22,6 +22,11 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.37.2 České verze a nejlepší dostupná kvalita jako první[/B]
+- Filmy i epizody: české označené zvukové verze před ostatními, nejlepší rozlišení v rámci CZ přednostně
+- Stejné pořadí při kontrole dostupnosti, ručním výběru i následující epizodě
+- Ostatní jazykové varianty zůstávají dostupné; CZ je odhad podle názvu souboru, nikoliv jistota dabingu
+
 [B]0.37.1 Stabilita spuštění přehrávání Android TV[/B]
 - Spuštění filmu/epizody probíhá až po uzavření modálního okna KIVORA
 - Předchází spuštění PlayMedia uvnitř obsluhy kliknutí dialogu
