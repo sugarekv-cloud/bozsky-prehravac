@@ -203,8 +203,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self.setFocusId(focus_target)
         except (RuntimeError,AttributeError,TypeError):
             pass
-        self._update_hero()
-        # Never block Android TV while looking up missing Czech synopses.
+        # Start the first batch before drawing the hero, so one focused
+        # title cannot starve the other visible posters from enrichment.
         warm=getattr(getattr(self,'service',None),'start_csfd_description_refresh',None)
         if callable(warm):
             visible=[card for row in self.rail_items[:5] for card in row[:8]]
@@ -212,6 +212,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 warm(visible,limit=12)
             except Exception as exc:
                 self._catalog_problem('ČSFD popisy',exc)
+        self._update_hero()
 
     def _selected(self,control_id=None):
         try:
@@ -301,6 +302,15 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self._set_hero_property('hero_info','  ·  '.join(x for x in text if x)[:115])
         plot=self._csfd_description(c)
         if not plot:
+            # The first batch covers the first visible shelves. When moving
+            # deeper into a long catalogue, request only that focused title.
+            # One background worker at a time prevents stutter on Android TV.
+            warm=getattr(getattr(self,'service',None),'start_csfd_description_refresh',None)
+            if callable(warm) and c.get('ident') and c.get('files'):
+                try:
+                    warm([c],limit=1)
+                except Exception as exc:
+                    self._catalog_problem('ČSFD titul',exc)
             plot='Popis z ČSFD zatím není dostupný.'
         # The first two sentences are enough for a legible TV hero.
         import re
