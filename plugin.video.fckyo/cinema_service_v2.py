@@ -19,7 +19,7 @@ from cinema_dedupe import (consolidate, unify_sections, unique_home_rails,
                            identity)
 from cinema_search_v3 import (MOVIE_SEEDS, SHOW_SEEDS, candidate_names,
                               query_plan, matching_files, seed_batch, localized_title,
-                               search_intent)
+                               search_intent,episode_query_plan,search_suggestions)
 
 
 class WebshareSearchUnavailable(Exception):
@@ -35,9 +35,11 @@ class CinemaService:
             time.sleep(0.08)
         return self.fetch(token,offset,what,sort=sort)
 
-    def __init__(self, token, fetch, availability, catalogue=None, calendar=None, profile=None):
+    def __init__(self, token, fetch, availability, catalogue=None, calendar=None, profile=None, suggest_fetch=None):
         self.token=token
         self.fetch=fetch
+        self.suggest_fetch=suggest_fetch
+        self.suggestion_cache={}
         self.availability=availability
         self.metadata=catalogue
         self.calendar=calendar
@@ -942,6 +944,31 @@ class CinemaService:
         finally:
             CinemaService._foreground_search.clear()
 
+    def suggestions(self, query):
+        term=(query or '').strip()
+        if len(normalize(term))<4:
+            return []
+        key=normalize(term)
+        cached=self.suggestion_cache.get(key)
+        if cached and time.time()-cached[0]<600:
+            return list(cached[1])
+        remote=[]
+        if self.suggest_fetch is not None:
+            try:
+                remote=self.suggest_fetch(self.token,term,8) or []
+            except Exception:
+                pass
+        found=search_suggestions(term,remote,self.home_fast(),limit=5)
+        if len(self.suggestion_cache)>=30:
+            self.suggestion_cache.clear()
+        self.suggestion_cache[key]=(time.time(),found)
+        return found
+
+    def search_progress(self, query, kind='all'):
+        state=self.search_scan.get((normalize((query or '').strip()),kind))
+        return {'pages':max(0,state['attempted']-state['failed']),
+                'pending':len(state['plan'])-len(state['done'])} if state else {'pages':0,'pending':0}
+
     def search_has_more(self, query, kind='all'):
         key=(normalize((query or '').strip()),kind)
         state=self.search_scan.get(key)
@@ -965,14 +992,21 @@ class CinemaService:
             names=candidate_names(title,md)
             cached_aliases=cached_title_aliases(title,self.home_fast())
             names=list(dict.fromkeys(names+cached_aliases))
-            plan=query_plan(title,md,limit=18)
+            plan=(episode_query_plan(title,requested_season,requested_episode,md,limit=18)
+                  if requested_episode is not None else query_plan(title,md,limit=18))
             # Prefer explicit localized/original names; include cached aliases.
             plan=list(dict.fromkeys(plan[:2]+cached_aliases[:3]+plan[2:]))[:18]
             state={'plan':plan,'offsets':{},'done':set(),'cursor':0,
-                   'matches':{},'attempted':0,'failed':0,
+                   'matches':{},'cards':[],'attempted':0,'failed':0,
+                   'started':time.time(),
                    'names':names,'metadata':md,
                    'title':title,'year':requested_year,
                    'season':requested_season,'episode':requested_episode}
+            # Keep only recent searches in memory; very large result sets do
+            # not survive indefinitely on low-memory Android TV devices.
+            if len(self.search_scan)>=8:
+                oldest=min(self.search_scan,key=lambda k:self.search_scan[k].get('started',0))
+                self.search_scan.pop(oldest,None)
             self.search_scan[key]=state
         plan=state['plan']
         names=state['names']
@@ -984,6 +1018,7 @@ class CinemaService:
         # request returning hundreds or thousands of pages.
         budget=12 if more else 11
         steps=0
+        fresh=[]
         while steps<budget and len(state['done'])<len(plan):
             index=state['cursor']%len(plan)
             state['cursor']+=1
@@ -1014,7 +1049,10 @@ class CinemaService:
                     parsed.get('season')==requested_season and
                     parsed.get('episode')==requested_episode):
                     continue
-                state['matches'][str(f['ident'])]=f
+                ident=str(f['ident'])
+                if ident not in state['matches']:
+                    state['matches'][ident]=f
+                    fresh.append(f)
             next_offset=offset+100
             try:
                 end=(len(page)<100 or bool(total) and next_offset>=int(total))
@@ -1029,14 +1067,16 @@ class CinemaService:
         if state['attempted'] and state['failed']==state['attempted']:
             raise WebshareSearchUnavailable(
                 'Vyhledávání Webshare právě neodpovídá. Zkus to znovu.')
-        matches=state['matches']
-        combined=[]
+        # Verify only NEW files discovered by this batch. Previously validated
+        # cards remain in the session. Without this, the old maximum=28
+        # always verified the FIRST 28 titles and hid deeper results forever.
+        additions=[]
         for mode in ('movie','show'):
             if kind in ('movie','show') and kind!=mode:
                 continue
-            candidates=groups(list(matches.values()),mode)
+            candidates=groups(fresh,mode)
             candidates=verified_groups(candidates,self.availability,
-                                       maximum=28,checked=44)
+                                       maximum=90,checked=135)
             add_metadata(candidates,self.metadata,maximum=6)
             for group in candidates:
                 # A metadata match for Avengers (2012) must never relabel
@@ -1048,8 +1088,10 @@ class CinemaService:
                 if not group.get('metadata'):
                     group['metadata']=localized_title(
                         group['title'],mode,group.get('year'))
-                combined.append(self._decorate(group,group.get('metadata')))
-        combined=consolidate(combined)
+                additions.append(self._decorate(group,group.get('metadata')))
+        if additions:
+            state['cards']=consolidate(state['cards']+additions)
+        combined=list(state['cards'])
         targets={normalize(x) for x in names}
         def rank(card):
             raw=normalize(card.get('raw') or '')
@@ -1064,9 +1106,11 @@ class CinemaService:
                 rating=float(card.get('rating') or 0)
             except (ValueError,TypeError):
                 rating=0
+            from catalog_engine import file_score
+            best=max((file_score(f) for f in card.get('files') or []),default=0)
             return (0 if specific else 1,0 if exact else 1,
                     0 if year_match else 1,
-                    -rating,displayed,str(card.get('year') or ''))
+                    -best,-rating,displayed,str(card.get('year') or ''))
         combined.sort(key=rank)
         # Preserve empty searches only after all aliases have really been
         # queried; later "load more" can still find titles on deep pages.
