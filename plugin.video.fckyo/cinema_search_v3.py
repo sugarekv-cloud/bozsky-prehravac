@@ -99,8 +99,8 @@ def title_and_year(query):
 
 
 _SEARCH_EPISODE = re.compile(
-    r'(?i)(?<![a-z0-9])s(\\d{1,2})[ ._-]*e(\\d{1,3})(?!\\d)|'
-    r'(?i:(?<![a-z0-9])(\\d{1,2})x(\\d{1,3})(?!\\d))')
+    r'(?i)(?<![a-z0-9])s(\d{1,2})[ ._-]*e(\d{1,3})(?!\d)|'
+    r'(?i:(?<![a-z0-9])(\d{1,2})x(\d{1,3})(?!\d))')
 
 
 def search_intent(query):
