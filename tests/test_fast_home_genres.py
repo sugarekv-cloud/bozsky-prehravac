@@ -174,7 +174,7 @@ class TvNavigationTests(unittest.TestCase):
         self.assertIn('self._schedule_home_discovery()',method)
         self.assertNotIn('most_watched_movies(',method)
         self.assertNotIn('self._loading(',method)
-        self.assertIn("NEJLÉPE HODNOCENÉ SERIÁLY · ČSFD",method)
+        self.assertIn("honest_ranked_shelf(all_shows,'show'",method)
         self.assertIn("TIPY NA SLEDOVÁNÍ",method)
 
 
