@@ -64,8 +64,18 @@ class SortingTests(unittest.TestCase):
         self.b=file('2','Film.2025.2160p.WEB-DL.HEVC.mkv',14)
         self.c=file('3','Film.2025.1080p.CZ.Dabing.BluRay.mkv',9)
 
-    def test_best_available_first(self):
-        self.assertEqual(sort_files([self.a,self.b,self.c])[0]['ident'],'2')
+    def test_czech_dubbing_precedes_higher_resolution_foreign_release(self):
+        ordered=sort_files([self.a,self.b,self.c])
+        self.assertEqual([f['ident'] for f in ordered],['3','1','2'])
+        self.assertGreater(file_score(self.c),file_score(self.b))
+
+    def test_best_czech_quality_first_then_fallback_to_non_czech(self):
+        fourth=file('4','Film.2025.2160p.CZ.WEB-DL.mkv',18)
+        subtitles=file('5','Film.2025.2160p.CZSUB.WEB-DL.mkv',22)
+        ordered=sort_files([subtitles,self.b,self.a,self.c,fourth])
+        self.assertEqual(ordered[0]['ident'],'4')
+        self.assertEqual([f['ident'] for f in ordered[:3]],['4','3','1'])
+        self.assertFalse(prefers_cz(subtitles))
 
     def test_filter_quality_and_cz(self):
         groups=[group('Film','2025',[self.a,self.b,self.c])]
