@@ -1147,7 +1147,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         actions=['Přidat / odebrat z oblíbených',
                  'Označit jako dokoukáno',
                  'Odebrat z rozkoukaných',
-                 'Otevřít titul']
+                 'Otevřít titul',
+                 'Vyhledat trailer na YouTube']
         selected=xbmcgui.Dialog().select(card.get('title') or 'Film',actions)
         if selected==0:
             enabled=store.toggle_favorite(card)
@@ -1167,6 +1168,31 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 self._refresh('files',(card,None,None))
             else:
                 self._refresh('seasons',card)
+        elif selected==4:
+            self._open_trailer_search(card)
+
+    def _open_trailer_search(self,card):
+        """Search YouTube trailers without scraping, tokens or autoplay.
+
+        Kodi closes its modal window before entering the external add-on.
+        """
+        import xbmcaddon
+        from urllib.parse import quote_plus
+        try:
+            xbmcaddon.Addon('plugin.video.youtube')
+        except Exception:
+            xbmcgui.Dialog().notification('KIVORA – trailery',
+                'Nainstaluj doplněk YouTube z repozitáře Kodi.')
+            return
+        title=str(card.get('original') or card.get('title') or '').strip()
+        if not title:
+            return
+        year=str(card.get('year') or '').strip()
+        query=' '.join(x for x in (title,year,'official trailer') if x)
+        self.destination='plugin://plugin.video.youtube/search/?q='+quote_plus(query)
+        self.is_play=False
+        self._external_nav_pending=True
+        self.close()
 
     def _start_playback(self,url):
         """Defer PlayMedia until Kodi has fully closed WindowXMLDialog.
