@@ -187,16 +187,23 @@ def god_portrait(size=360):
 def make_brand():
     MEDIA.mkdir(parents=True,exist_ok=True)
     god=god_portrait(410)
-    # Restrained masthead: small familiar god emblem, confident typographic wordmark.
-    # Keep the full deity portrait on Kodi's square app icon.
+    # New cinematic logotype: restrained geometric K monogram, fewer details,
+    # strong letterform hierarchy and subtle warm-brass single accent.
+    # The user's original deity motif stays on the square Kodi app icon.
     im=Image.new('RGBA',(1150,275),(0,0,0,0))
-    im.alpha_composite(god.resize((136,136),Image.Resampling.LANCZOS),(28,67))
     d=ImageDraw.Draw(im)
-    gold=(181,155,113,255)
-    champagne=(246,244,236,255)
-    d.text((186,30),'KIVORA',font=font(163),fill=champagne)
-    d.text((196,221),'FILMY  /  SERIÁLY',font=font(25),fill=gold)
-    d.line((184,208,885,208),fill=(135,134,128,110),width=2)
+    ivory=(248,246,239,255)
+    bronze=(194,167,117,255)
+    # Monogram: square frame and K, visible even on a small Android TV toolbar.
+    d.rounded_rectangle((26,38,196,208),radius=20,
+                        outline=bronze,width=7)
+    d.line([(82,70),(82,177)],fill=ivory,width=13)
+    d.line([(161,70),(88,125),(168,177)],fill=ivory,width=13,
+           joint='curve')
+    d.text((240,17),'KIVORA',font=font(174),fill=ivory)
+    d.line((244,220,1045,220),fill=(160,154,144,115),width=2)
+    d.text((247,231),'CINEMA  /  FILMY A SERIÁLY',font=font(22),
+           fill=bronze)
     im.save(MEDIA/'brand.png',optimize=True)
 
     # Kodi's square add-on icon: same recognizable portrait, no unrelated logo.
@@ -207,8 +214,8 @@ def make_brand():
     icon.alpha_composite(god.resize((440,440),Image.Resampling.LANCZOS),
                          (37,10))
     base=ImageDraw.Draw(icon)
-    base.rounded_rectangle((48,427,464,494),radius=18,fill=(11,15,20,244))
-    base.text((121,435),'KIVORA',font=font(43),
+    base.rounded_rectangle((44,422,468,499),radius=14,fill=(9,13,19,246))
+    base.text((130,431),'KIVORA',font=font(44),
               fill=(232,222,203,255))
     icon.save(MEDIA/'icon.png',optimize=True)
     make_menu_icons()

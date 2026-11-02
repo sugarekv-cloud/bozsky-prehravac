@@ -72,12 +72,12 @@ class Cinema039LayoutTests(unittest.TestCase):
     def test_masthead_preserves_identity_and_balances_title(self):
         code=BRAND.read_text(encoding='utf-8')
         self.assertIn('god_portrait(410)',code)
-        self.assertIn("d.text((186,30),'KIVORA'",code)
-        self.assertIn("god.resize((136,136)",code)
+        self.assertIn("d.text((240,17),'KIVORA'",code)
+        self.assertIn("d.rounded_rectangle((26,38,196,208)",code)
         addon=ET.parse(ADDON).getroot()
         self.assertEqual(addon.get('id'),'plugin.video.fckyo')
         self.assertEqual(addon.get('name'),'KIVORA')
-        self.assertEqual(addon.get('version'),'0.44.0')
+        self.assertEqual(addon.get('version'),'0.45.0')
 
     def test_remote_and_artwork_controls_remain_compatible(self):
         for cid in (101,102,103,104,105,106,107,108,109,110):

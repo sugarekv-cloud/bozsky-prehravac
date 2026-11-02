@@ -16,7 +16,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.44.0'
+VERSION='0.45.0'
 
 
 def tile(name,kind,**extra):
@@ -140,7 +140,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         return d
 
     def _fill(self,title1,cards1,title2,cards2,status='',extra_rows=()):
-        rows=[(title1,cards1),(title2,cards2)]+list(extra_rows)
+        from cinema_content_filter import filter_cards
+        rows=[(heading,filter_cards(cards)) for heading,cards in
+              [(title1,cards1),(title2,cards2)]+list(extra_rows)]
         while len(rows)<len(ROW_IDS):
             rows.append(('',[]))
         self.rail_items=[cards or [] for heading,cards in rows[:len(ROW_IDS)]]
@@ -170,7 +172,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 item.setProperty('has_fanart','yes' if item_fanart else '')
                 item.setProperty('is_more','yes' if c.get('kind') in ('most_watched','load_more','catalog_open','catalog_more','search_more','csfd_ranked','tips_retry') else '')
                 item.setProperty('quality',str(c.get('quality') or ''))
-                item.setProperty('year',str(c.get('year') or ''))
+                item.setProperty('year',str(c.get('year') or c.get('file_year') or ''))
+                item.setProperty('hide_caption','yes' if c.get('_hide_caption') else '')
                 item.setProperty('progress',str(c.get('progress') or '0'))
                 item.setProperty('is_resume','yes' if c.get('_continue') else '')
                 source=str(c.get('rating_source') or '').casefold()
@@ -181,7 +184,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 # Zero means unknown; never advertise a fabricated ČSFD 0%.
                 if label and label.startswith('ČSFD 0 %'):
                     label=''
-                item.setProperty('rating_label',str(c.get('_tip') or label))
+                item.setProperty('rating_label',label)
                 li.append(item)
             if li:
                 lst.addItems(li)
@@ -193,8 +196,12 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             focus_target=next((rid for rid,cards in zip(ROW_IDS,self.rail_items)
                                if cards),107)
         try:
+            if focus_target in ROW_IDS:
+                row=self.rail_items[ROW_IDS.index(focus_target)]
+                if row:
+                    self.getControl(focus_target).selectItem(0)
             self.setFocusId(focus_target)
-        except (RuntimeError,AttributeError):
+        except (RuntimeError,AttributeError,TypeError):
             pass
         self._update_hero()
 
@@ -267,9 +274,18 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 pass
         self._set_hero_property('hero_info','  ·  '.join(x for x in text if x)[:115])
         plot=str(c.get('plot') or '').strip()
-        if (not plot or plot.casefold().startswith('soubor nalezen na webshare')):
-            plot='Film nebo seriál je dostupný · zvol si jazyk a kvalitu.'
-        self._set_hero_property('hero_plot',plot[:255])
+        if not plot or plot.casefold().startswith('soubor nalezen na webshare') or plot.casefold().startswith('film nebo seriál je dostupný'):
+            lookup=getattr(self.service,'_cached_description',None)
+            if callable(lookup):
+                plot=lookup(c.get('raw') or c.get('title') or '',
+                            c.get('year') or '',c.get('kind') or 'movie')
+        if not plot or plot.casefold().startswith('soubor nalezen'):
+            plot='Popis tohoto titulu zatím není v metadatech k dispozici.'
+        # The first two sentences are enough for a legible TV hero.
+        import re
+        summary=re.split(r'(?<=[.!?])\s+(?=[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ])',plot.strip())
+        summary=' '.join(summary[:2])
+        self._set_hero_property('hero_plot',summary[:265])
         # Never stretch a vertical, low-res Webshare poster across the TV hero.
         self._set_hero_property('hero_art',str(c.get('fanart') or ''))
         self._set_hero_property('hero_poster',str(c.get('poster') or ''))
@@ -349,7 +365,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                     good.append(c)
                     seen.add(identity(c))
                 if len(good)>=limit:break
-            return [dict(c,_tip=tag) for c in consolidate(good)[:limit]]
+            return [dict(c,_tip=tag,_hide_caption=True)
+                    for c in consolidate(good)[:limit]]
         return fill(chosen,'TIP PRO TEBE'),fill(weekly,'TIP TÝDNE')
 
     def _schedule_home_discovery(self):
@@ -439,7 +456,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         from cinema_catalog_v2 import sort_cards,choose_files
         from cinema_genres import genre_matches
         selected=[]
-        for c in cards:
+        from cinema_content_filter import filter_cards
+        for c in filter_cards(cards):
             if c.get('kind') not in ('movie','show'):
                 selected.append(c)
                 continue
@@ -465,7 +483,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         self.setProperty('nav_active',nav)
         self.setProperty('is_home','yes' if view=='home' else '')
         self.setProperty('section_label',{
-            'home':'DOMŮ','movies':'FILMY','shows':'SERIÁLY','premieres':'PREMIÉRY',
+            'home':'DOPORUČENO PRO TEBE','movies':'FILMY · KVALITA A ČEŠTINA','shows':'SERIÁLY · KVALITA A ČEŠTINA','premieres':'PREMIÉRY',
             'bluey':'BLUEY',
             'search':'VYHLEDÁVÁNÍ','seasons':'SÉRIE','episodes':'EPIZODY',
             'files':'VÝBĚR KVALITY',
