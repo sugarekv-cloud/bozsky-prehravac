@@ -47,6 +47,7 @@ class CinemaService:
         self.artwork=Artwork(profile, budget=12)
         self.search_cache={}
         self.search_cache_time={}
+        self.search_scan={}
         self.series_cache={}
         self.last_diagnostics=''
         self.hits_path=os.path.join(profile,'cinema-v3-hits.json') if profile else None
@@ -845,7 +846,7 @@ class CinemaService:
         """
         if kind not in ('movie','show'):
             raise ValueError('Unsupported catalogue kind')
-        wanted=max(1,min(int(requested),1500))
+        wanted=max(1,min(int(requested),10000))
         if kind not in self._browse_streams:
             home=self.home()
             originals=(home.get('_all_movies') if kind=='movie'
@@ -911,8 +912,6 @@ class CinemaService:
                        for index,g in enumerate(checked)]
             if additions:
                 stream['cards']=consolidate(stream['cards']+additions)
-            if len(stream['cards'])>=1500:
-                stream['done']=True
         return (sort_cards(filtered(),sort)[:wanted],
                 not stream['done'])
 
@@ -931,89 +930,106 @@ class CinemaService:
                                                     quality,language)]
         return sort_cards(consolidate(filtered),sort)
 
-    def search(self, query, kind='all'):
-        """Prioritize direct title searches over catalogue background refresh."""
+    def search(self, query, kind='all', more=False):
+        """Scan ALL matching Webshare pages across repeated small TV-safe batches.
+
+        Each user-triggered batch advances per-query cursors; no arbitrary
+        global page cap. No attempt to enumerate unrelated Webshare content.
+        """
         CinemaService._foreground_search.set()
         try:
-            return self._search_impl(query,kind)
+            return self._search_impl(query,kind,more=more)
         finally:
             CinemaService._foreground_search.clear()
 
-    def _search_impl(self, query, kind='all'):
-        """Search both localized and original filenames, including older pages.
+    def search_has_more(self, query, kind='all'):
+        key=(normalize((query or '').strip()),kind)
+        state=self.search_scan.get(key)
+        return bool(state and len(state['done'])<len(state['plan']))
 
-        A film can only appear after Webshare returned a matching file and the
-        availability checker validated it. No metadata-only 'ghost' posters.
-        """
+    def _search_impl(self, query, kind='all', more=False):
         term=(query or '').strip()
         if not term:
             return []
         title,requested_year,requested_season,requested_episode=search_intent(term)
         if not title:
             return []
-        # The same text can be searched in movie, show or all categories.
-        # Cached movie-only results must never hide valid series episodes.
         key=(normalize(term),kind)
-        if key in self.search_cache:
-            if time.time()-self.search_cache_time.get(key,0)<300:
-                return list(self.search_cache[key])
-            self.search_cache.pop(key,None)
-            self.search_cache_time.pop(key,None)
-        md=self.metadata.lookup(title,requested_year) if self.metadata else None
-        from cinema_search_v3 import cached_title_aliases
-        names=candidate_names(title,md)
-        cached_aliases=cached_title_aliases(title,self.home_fast())
-        names=list(dict.fromkeys(names+cached_aliases))
-        plan=query_plan(title,md,limit=14)
-        # First query Czech/original names; then dotted filenames. Bound
-        # requests so a missing title cannot appear to freeze the television.
-        dotted=[alias.replace(' ','.') for alias in names[:2] if ' ' in alias]
-        plan=list(dict.fromkeys(plan[:1]+cached_aliases[:2]+plan[1:7]+dotted))[:9]
-        matches={}
-        # Ensure the English alias and individual franchise installments are
-        # considered before giving attention to punctuation/spelling variants.
-        core_count=min(len(names),len(plan))
-        successful=0
-        failed=0
-        for index,attempt in enumerate(plan):
-            # Scan beyond the first 100 broad Webshare hits to avoid a search
-            # dominated by unrelated filenames or different resolutions.
-            max_pages=2 if index<2 else 1
-            page=collect_pages(self.fetch,self.token,attempt,
-                               max_pages=max_pages,
-                               sort='rating' if index<core_count else 'recent')
-            if page is None:
-                failed+=1
+        if not more and key in self.search_cache and (
+                time.time()-self.search_cache_time.get(key,0)<300):
+            return list(self.search_cache[key])
+        state=self.search_scan.get(key) if more else None
+        if not state:
+            md=self.metadata.lookup(title,requested_year) if self.metadata else None
+            from cinema_search_v3 import cached_title_aliases
+            names=candidate_names(title,md)
+            cached_aliases=cached_title_aliases(title,self.home_fast())
+            names=list(dict.fromkeys(names+cached_aliases))
+            plan=query_plan(title,md,limit=18)
+            # Prefer explicit localized/original names; include cached aliases.
+            plan=list(dict.fromkeys(plan[:2]+cached_aliases[:3]+plan[2:]))[:18]
+            state={'plan':plan,'offsets':{},'done':set(),'cursor':0,
+                   'matches':{},'attempted':0,'failed':0,
+                   'names':names,'metadata':md,
+                   'title':title,'year':requested_year,
+                   'season':requested_season,'episode':requested_episode}
+            self.search_scan[key]=state
+        plan=state['plan']
+        names=state['names']
+        md=state['metadata']
+        requested_year=state['year']
+        requested_season=state['season']
+        requested_episode=state['episode']
+        # At most 12 API pages per click; do not freeze Android TV on a
+        # request returning hundreds or thousands of pages.
+        budget=12 if more else 11
+        steps=0
+        while steps<budget and len(state['done'])<len(plan):
+            index=state['cursor']%len(plan)
+            state['cursor']+=1
+            if index in state['done']:
                 continue
-            valid=matching_files(page,names,
-                                 kind=kind if kind in ('movie','show') else None,
-                                 year=requested_year)
-            if requested_episode is not None:
-                valid=[f for f in valid if
-                       (lambda p: p and p.get('kind')=='episode' and
-                        p.get('season')==requested_season and
-                        p.get('episode')==requested_episode)(
-                            parse_video_name(f.get('name') or ''))]
-            if requested_year:
-                # Explicitly selecting a release year must not silently
-                # attach an undated remake to another movie.
-                valid=[f for f in valid if
-                       (parse_video_name(f.get('name') or '') or {}).get('year')
-                       ==requested_year]
-            for entry in valid:
-                matches[str(entry['ident'])]=entry
-            if valid:
-                successful+=1
-            # Always attempt every core alias when feasible. For a generic
-            # query, cap expensive round trips once plenty of releases exist.
-            if len(matches)>=90:
-                break
-            if successful>=3 and len(matches)>=30:
-                break
-        if failed and failed==len(plan):
+            attempt=plan[index]
+            offset=state['offsets'].get(index,0)
+            steps+=1
+            try:
+                page,total=self.fetch(self.token,offset,attempt,
+                     sort='rating' if index<2 else 'recent')
+            except Exception:
+                page=None
+            state['attempted']+=1
+            if page is None:
+                state['failed']+=1
+                # Preserve cursor for retry later; do not mark a broken
+                # Webshare page as complete or treat it as no results.
+                continue
+            for f in matching_files(page,names,
+                    kind=kind if kind in ('movie','show') else None,
+                    year=requested_year):
+                parsed=parse_video_name(f.get('name','')) or {}
+                if requested_year and parsed.get('year')!=requested_year:
+                    continue
+                if requested_episode is not None and not (
+                    parsed.get('kind')=='episode' and
+                    parsed.get('season')==requested_season and
+                    parsed.get('episode')==requested_episode):
+                    continue
+                state['matches'][str(f['ident'])]=f
+            next_offset=offset+100
+            try:
+                end=(len(page)<100 or bool(total) and next_offset>=int(total))
+            except (ValueError,TypeError):
+                end=len(page)<100
+            if end:
+                state['done'].add(index)
+            else:
+                # No arbitrary max page number: successive clicks continue
+                # to the end returned by Webshare for this exact alias.
+                state['offsets'][index]=next_offset
+        if state['attempted'] and state['failed']==state['attempted']:
             raise WebshareSearchUnavailable(
-                'Vyhledávání Webshare právě neodpovídá. Ověř připojení a účet, '
-                'potom použij Hledat znovu.')
+                'Vyhledávání Webshare právě neodpovídá. Zkus to znovu.')
+        matches=state['matches']
         combined=[]
         for mode in ('movie','show'):
             if kind in ('movie','show') and kind!=mode:
@@ -1052,7 +1068,9 @@ class CinemaService:
                     0 if year_match else 1,
                     -rating,displayed,str(card.get('year') or ''))
         combined.sort(key=rank)
-        if combined:
+        # Preserve empty searches only after all aliases have really been
+        # queried; later "load more" can still find titles on deep pages.
+        if combined or len(state['done'])==len(plan):
             self.search_cache[key]=list(combined)
             self.search_cache_time[key]=time.time()
         return [c for c in combined if kind=='all' or c['kind']==kind]

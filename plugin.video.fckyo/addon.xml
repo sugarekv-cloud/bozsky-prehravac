@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="KIVORA" version="0.41.0" provider-name="KIVORA Community">
+<addon id="plugin.video.fckyo" name="KIVORA" version="0.42.0" provider-name="KIVORA Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -22,7 +22,16 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
-[B]0.41.0 Rychlejší a přesnější vyhledávání Webshare[/B]
+[B]0.42.0 Rozšířené stránkování Webshare a oprava zobrazování hodnocení[/B]
+- Přímé hledání prochází všechny dostupné stránky daného dotazu postupnými dávkami přes Načíst další stránky
+- Stejná práce s každým českým a původním názvem, zachování kurzorů a spojení výsledků bez duplicit
+- Úplný katalog pokračuje napříč stránkami bez předchozího skrytého limitu 1500 ověřených titulů
+- ČSFD/CZDB po výpadku zopakuje spojení bez restartu a neuloží chybu jako trvale nenalezený film
+- Když není ČSFD hodnocení k dispozici, ukáže se jasně označené IMDb nebo ověřený katalog, nikoli prázdná karta ČSFD
+- Metadatové obohacení zachová dříve načtená data při překročení rozpočtu požadavků
+
+
+[B]0.42.0 Rychlejší a přesnější vyhledávání Webshare[/B]
 - Rozlišena cache hledání filmů a seriálů (nepřepisují si výsledky)
 - Přímé zadání epizody S01E02 nebo 1x03 filtruje správnou epizodu
 - Přednost českému a původnímu názvu před méně užitečnými variantami
@@ -31,7 +40,7 @@
 - Výsledky dotazů se po pěti minutách znovu ověří
 
 
-[B]0.41.0 Opravy podle skutečného snímku z Android TV[/B]
+[B]0.42.0 Opravy podle skutečného snímku z Android TV[/B]
 - Tlačítko PŘEHRÁT má vždy čitelný bílý text na tmavém podkladu
 - Odstraněny vložené duplicitní náhledy plakátů ve filmových kartách
 - Názvy filmů jsou pod fotografiemi, ne přes světlé/tmavé části obrázku
@@ -39,7 +48,7 @@
 - Výraznější viditelnost filmových fotografií a nové lokální textury
 
 
-[B]0.41.0 KIVORA Cinema – přepracovaná kompozice televizní obrazovky[/B]
+[B]0.42.0 KIVORA Cinema – přepracovaná kompozice televizní obrazovky[/B]
 - Hlavní film má samostatnou velkou obrazovou plochu a přehledné ovládání
 - Filmové řady začínají výše; banner už nezabírá většinu obrazovky
 - Duplicitní boční nabídka je skrytá a objeví se při přechodu doleva
@@ -47,14 +56,14 @@
 - Zachované sekce, Webshare, vyhledávání, jazykové preference i přehrávání
 
 
-[B]0.41.0 KIVORA Atelier – nadčasové televizní rozhraní[/B]
+[B]0.42.0 KIVORA Atelier – nadčasové televizní rozhraní[/B]
 - Nová grafitová barevnost, teplá slonová kost a decentní bronzové zvýraznění
 - Čitelnější titulky, filmové fotografie, plakáty a ovládací tlačítka
 - Zklidněné rozhraní, nové textury a nové ikony 24 žánrů
 - Zachovány všechny navigační prvky a výběr Webshare souborů i přehrávání
 
 
-[B]0.41.0 Jazykové pořadí: český dabing → CZ zvuk → CZ titulky → ostatní[/B]
+[B]0.42.0 Jazykové pořadí: český dabing → CZ zvuk → CZ titulky → ostatní[/B]
 - Rozlišuje explicitní označení dabingu, obecnou značku CZ a CZSUB/CZ.Subs/CZ.Titulky
 - V každé jazykové skupině zobrazuje nejvyšší dostupné rozlišení jako první
 - Shodné řazení u filmů, epizod, výběru souboru a automatického pokračování
