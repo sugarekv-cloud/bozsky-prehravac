@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Screenshot-driven KIVORA 0.47.2 TV regression checks.
+"""Screenshot-driven KIVORA 0.47.3 TV regression checks.
 
 Android TV screenshot showed unreadable Play text, image-in-image covers,
 titles hidden on top of video stills and an overlapping footer.
@@ -79,7 +79,7 @@ class ScreenshotFixes040Tests(unittest.TestCase):
         addon = ET.parse(ADDON / 'addon.xml').getroot()
         self.assertEqual(addon.get('name'), 'KIVORA')
         self.assertEqual(addon.get('id'), 'plugin.video.fckyo')
-        self.assertEqual(addon.get('version'), '0.47.2')
+        self.assertEqual(addon.get('version'), '0.47.3')
         for ident in (101, 102, 103, 104, 105, 106, 107, 108, 109, 110):
             self.assertIsNotNone(self.skin.find(".//control[@id='%s']" % ident))
         for ident in range(401,414):
