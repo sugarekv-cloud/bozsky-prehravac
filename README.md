@@ -4,6 +4,19 @@ KIVORA je neoficiální komunitní doplněk Kodi s vyhledáváním Webshare, met
 
 **Technické ID zůstává `plugin.video.fckyo`:** KIVORA je nový zobrazovaný název původního doplňku FCKYO. Verze KIVORA 0.37.1 a repozitář 1.0.1 upravují i název přímo v instalačních metadatech Kodi. Historie přehrávání, účet i nastavení této instalace zůstávají zachované. Starší samostatný doplněk `plugin.video.yawsp` není touto aktualizací dotčen.
 
+## Struktura repozitáře
+
+Hlavní větev obsahuje pouze soubory potřebné pro **Kodi KIVORA**, jeho testování a vydávání aktualizací:
+
+- `plugin.video.fckyo/` – samotný Kodi doplněk, včetně modulů, lokalizací, skinů a licence. Technické ID zůstává kvůli kompatibilitě.
+- `tests/` – regresní testy pro přehrávání, televizní rozhraní, katalog a vyhledávání. Některé testy záměrně ověřují i starší kompatibilní obrazovku.
+- `tools/` – nástroje pro generování grafiky a audit sestavení.
+- `build_repo.py` – generátor Kodi repozitáře a instalačních ZIPů.
+- `.github/workflows/publish-kivora.yml` – testy a publikování GitHub Pages.
+- `.github/workflows/cinema-100-full.yml` – volitelný rozšířený audit.
+
+**Samostatná Windows/Electron aplikace neslouží k běhu Kodi.** Její původní zdrojové soubory a sestavovací workflow zůstávají dostupné v archivní větvi [archive/standalone-desktop-20261102](https://github.com/sugarekv-cloud/bozsky-prehravac/tree/archive/standalone-desktop-20261102). Na hlavní větvi byly odstraněny také duplicitní importní archiv `desktop-source.b64` a zastaralý workflow pro návrhovou větev Cinema 0.36.
+
 ## Instalace přes repozitář
 
 GitHub Pages: https://sugarekv-cloud.github.io/bozsky-prehravac/
