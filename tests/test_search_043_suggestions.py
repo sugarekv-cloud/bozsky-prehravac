@@ -101,7 +101,7 @@ class SmartSearch043Tests(unittest.TestCase):
         self.assertEqual(progress['pending'],0)
 
     def test_czech_quality_is_priority_within_same_title(self):
-        svc=service(lambda t,o,q,s:(
+        svc=service(lambda t,o,q,sort='recent':(
             [f('en4k','Matrix.1999.2160p.EN.mkv'),
              f('cz1080','Matrix.1999.1080p.CZ.mkv'),
              f('dub4k','Matrix.1999.2160p.CZDAB.mkv')],3))
