@@ -7,24 +7,24 @@
         <posy>0</posy>
     </coordinates>
     <controls>
-        <!-- KIVORA CINEMA 0.37: minimal charcoal/red, TV-first browsing and consistent art rails. -->
+        <!-- KIVORA 0.38 / ATELIER: editorial graphite, ivory and antique brass. Focus-first TV navigation. -->
         <control type="image">
             <left>0</left><top>0</top><width>1920</width><height>1080</height>
             <texture>$INFO[Window.Property(cinema_background)]</texture>
             <aspectratio>stretch</aspectratio>
         </control>
-        <!-- Cinematic backdrop and atmospheric poster fallback. -->
+        <!-- Uninterrupted theatrical backdrop, with dark left-hand reading area. -->
         <control type="image">
-            <left>365</left><top>96</top><width>1555</width><height>635</height>
+            <left>365</left><top>103</top><width>1555</width><height>604</height>
             <texture>$INFO[Window.Property(hero_art)]</texture>
             <aspectratio>scale</aspectratio>
             <visible>!String.IsEmpty(Window.Property(hero_art))</visible>
         </control>
         <control type="image">
-            <left>850</left><top>96</top><width>1070</width><height>638</height>
+            <left>850</left><top>103</top><width>1070</width><height>604</height>
             <texture>$INFO[Window.Property(hero_poster)]</texture>
             <aspectratio>scale</aspectratio>
-            <colordiffuse>88FFFFFF</colordiffuse>
+            <colordiffuse>A8FFFFFF</colordiffuse>
             <visible>String.IsEmpty(Window.Property(hero_art)) + !String.IsEmpty(Window.Property(hero_poster))</visible>
         </control>
         <control type="image">
@@ -34,27 +34,27 @@
         </control>
         <!-- Visible build identity makes stale installations easy to diagnose. -->
         <control type="label">
-            <left>125</left><top>177</top><width>1090</width><height>34</height>
-            <font>font12</font><textcolor>FFD7D6DD</textcolor>
+            <left>125</left><top>170</top><width>1090</width><height>34</height>
+            <font>font12</font><textcolor>FFC7AD7D</textcolor>
             <label>$INFO[Window.Property(section_label)]  ·  $INFO[Window.Property(app_version)]</label>
         </control>
         <!-- Bespoke wide PNG brand, not a plain text label. -->
         <control type="image">
-            <left>103</left><top>4</top><width>438</width><height>86</height>
+            <left>106</left><top>8</top><width>401</width><height>77</height>
             <texture>$INFO[Window.Property(cinema_brand)]</texture>
             <aspectratio>keep</aspectratio>
         </control>
         <control type="image">
-            <left>107</left><top>93</top><width>1758</width><height>2</height>
+            <left>109</left><top>94</top><width>1758</width><height>1</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
-            <colordiffuse>44E50914</colordiffuse>
+            <colordiffuse>337B817C</colordiffuse>
         </control>
         <!-- Remote-friendly horizontal top navigation -->
         <control type="button" id="106">
             <left>556</left><top>27</top><width>110</width><height>61</height>
             <label>DOMŮ</label><font>font13</font>
             <align>center</align><aligny>center</aligny>
-            <textcolor>FFF0F0F2</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <textcolor>FFBBBFC1</textcolor><focusedcolor>FFF7F5EF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <ondown condition="!String.IsEmpty(Window.Property(row1_heading))">401</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + !String.IsEmpty(Window.Property(row2_heading))">402</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + !String.IsEmpty(Window.Property(row3_heading))">403</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + !String.IsEmpty(Window.Property(row4_heading))">404</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + !String.IsEmpty(Window.Property(row5_heading))">405</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row6_heading))">406</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row7_heading))">407</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + !String.IsEmpty(Window.Property(row8_heading))">408</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + !String.IsEmpty(Window.Property(row9_heading))">409</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + !String.IsEmpty(Window.Property(row10_heading))">410</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + !String.IsEmpty(Window.Property(row11_heading))">411</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + !String.IsEmpty(Window.Property(row12_heading))">412</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + String.IsEmpty(Window.Property(row12_heading)) + !String.IsEmpty(Window.Property(row13_heading))">413</ondown><ondown>401</ondown><onright>101</onright><onleft>107</onleft>
@@ -63,7 +63,7 @@
             <left>675</left><top>27</top><width>128</width><height>61</height>
             <label>FILMY</label><font>font13</font>
             <align>center</align><aligny>center</aligny>
-            <textcolor>FFF0F0F2</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <textcolor>FFBBBFC1</textcolor><focusedcolor>FFF7F5EF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <ondown condition="!String.IsEmpty(Window.Property(row1_heading))">401</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + !String.IsEmpty(Window.Property(row2_heading))">402</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + !String.IsEmpty(Window.Property(row3_heading))">403</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + !String.IsEmpty(Window.Property(row4_heading))">404</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + !String.IsEmpty(Window.Property(row5_heading))">405</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row6_heading))">406</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row7_heading))">407</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + !String.IsEmpty(Window.Property(row8_heading))">408</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + !String.IsEmpty(Window.Property(row9_heading))">409</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + !String.IsEmpty(Window.Property(row10_heading))">410</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + !String.IsEmpty(Window.Property(row11_heading))">411</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + !String.IsEmpty(Window.Property(row12_heading))">412</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + String.IsEmpty(Window.Property(row12_heading)) + !String.IsEmpty(Window.Property(row13_heading))">413</ondown><ondown>401</ondown><onright>102</onright><onleft>106</onleft>
@@ -72,7 +72,7 @@
             <left>809</left><top>27</top><width>135</width><height>61</height>
             <label>SERIÁLY</label><font>font13</font>
             <align>center</align><aligny>center</aligny>
-            <textcolor>FFF0F0F2</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <textcolor>FFBBBFC1</textcolor><focusedcolor>FFF7F5EF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <ondown condition="!String.IsEmpty(Window.Property(row1_heading))">401</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + !String.IsEmpty(Window.Property(row2_heading))">402</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + !String.IsEmpty(Window.Property(row3_heading))">403</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + !String.IsEmpty(Window.Property(row4_heading))">404</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + !String.IsEmpty(Window.Property(row5_heading))">405</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row6_heading))">406</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row7_heading))">407</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + !String.IsEmpty(Window.Property(row8_heading))">408</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + !String.IsEmpty(Window.Property(row9_heading))">409</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + !String.IsEmpty(Window.Property(row10_heading))">410</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + !String.IsEmpty(Window.Property(row11_heading))">411</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + !String.IsEmpty(Window.Property(row12_heading))">412</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + String.IsEmpty(Window.Property(row12_heading)) + !String.IsEmpty(Window.Property(row13_heading))">413</ondown><ondown>401</ondown><onleft>101</onleft><onright>103</onright>
@@ -81,7 +81,7 @@
             <left>950</left><top>27</top><width>139</width><height>61</height>
             <label>HLEDAT</label><font>font13</font>
             <align>center</align><aligny>center</aligny>
-            <textcolor>FFF0F0F2</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <textcolor>FFBBBFC1</textcolor><focusedcolor>FFF7F5EF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <ondown condition="!String.IsEmpty(Window.Property(row1_heading))">401</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + !String.IsEmpty(Window.Property(row2_heading))">402</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + !String.IsEmpty(Window.Property(row3_heading))">403</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + !String.IsEmpty(Window.Property(row4_heading))">404</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + !String.IsEmpty(Window.Property(row5_heading))">405</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row6_heading))">406</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row7_heading))">407</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + !String.IsEmpty(Window.Property(row8_heading))">408</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + !String.IsEmpty(Window.Property(row9_heading))">409</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + !String.IsEmpty(Window.Property(row10_heading))">410</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + !String.IsEmpty(Window.Property(row11_heading))">411</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + !String.IsEmpty(Window.Property(row12_heading))">412</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + String.IsEmpty(Window.Property(row12_heading)) + !String.IsEmpty(Window.Property(row13_heading))">413</ondown><ondown>401</ondown><onleft>102</onleft><onright>104</onright>
@@ -90,7 +90,7 @@
             <left>1095</left><top>27</top><width>160</width><height>61</height>
             <label>PREMIÉRY</label><font>font13</font>
             <align>center</align><aligny>center</aligny>
-            <textcolor>FFF0F0F2</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <textcolor>FFBBBFC1</textcolor><focusedcolor>FFF7F5EF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <ondown condition="!String.IsEmpty(Window.Property(row1_heading))">401</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + !String.IsEmpty(Window.Property(row2_heading))">402</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + !String.IsEmpty(Window.Property(row3_heading))">403</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + !String.IsEmpty(Window.Property(row4_heading))">404</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + !String.IsEmpty(Window.Property(row5_heading))">405</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row6_heading))">406</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row7_heading))">407</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + !String.IsEmpty(Window.Property(row8_heading))">408</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + !String.IsEmpty(Window.Property(row9_heading))">409</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + !String.IsEmpty(Window.Property(row10_heading))">410</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + !String.IsEmpty(Window.Property(row11_heading))">411</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + !String.IsEmpty(Window.Property(row12_heading))">412</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + String.IsEmpty(Window.Property(row12_heading)) + !String.IsEmpty(Window.Property(row13_heading))">413</ondown><ondown>401</ondown><onleft>103</onleft><onright>105</onright>
@@ -99,7 +99,7 @@
             <left>1265</left><top>27</top><width>146</width><height>61</height>
             <label>ŽÁNRY</label><font>font13</font>
             <align>center</align><aligny>center</aligny>
-            <textcolor>FFF0F0F2</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <textcolor>FFBBBFC1</textcolor><focusedcolor>FFF7F5EF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <ondown condition="!String.IsEmpty(Window.Property(row1_heading))">401</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + !String.IsEmpty(Window.Property(row2_heading))">402</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + !String.IsEmpty(Window.Property(row3_heading))">403</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + !String.IsEmpty(Window.Property(row4_heading))">404</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + !String.IsEmpty(Window.Property(row5_heading))">405</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row6_heading))">406</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row7_heading))">407</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + !String.IsEmpty(Window.Property(row8_heading))">408</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + !String.IsEmpty(Window.Property(row9_heading))">409</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + !String.IsEmpty(Window.Property(row10_heading))">410</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + !String.IsEmpty(Window.Property(row11_heading))">411</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + !String.IsEmpty(Window.Property(row12_heading))">412</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + String.IsEmpty(Window.Property(row12_heading)) + !String.IsEmpty(Window.Property(row13_heading))">413</ondown><ondown>401</ondown><onleft>104</onleft><onright>109</onright>
@@ -108,7 +108,7 @@
             <left>1423</left><top>27</top><width>156</width><height>61</height>
             <label>BLUEY</label><font>font13</font>
             <align>center</align><aligny>center</aligny>
-            <textcolor>FFF0F0F2</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <textcolor>FFBBBFC1</textcolor><focusedcolor>FFF7F5EF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <ondown condition="!String.IsEmpty(Window.Property(row1_heading))">401</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + !String.IsEmpty(Window.Property(row2_heading))">402</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + !String.IsEmpty(Window.Property(row3_heading))">403</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + !String.IsEmpty(Window.Property(row4_heading))">404</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + !String.IsEmpty(Window.Property(row5_heading))">405</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row6_heading))">406</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row7_heading))">407</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + !String.IsEmpty(Window.Property(row8_heading))">408</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + !String.IsEmpty(Window.Property(row9_heading))">409</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + !String.IsEmpty(Window.Property(row10_heading))">410</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + !String.IsEmpty(Window.Property(row11_heading))">411</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + !String.IsEmpty(Window.Property(row12_heading))">412</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + String.IsEmpty(Window.Property(row12_heading)) + !String.IsEmpty(Window.Property(row13_heading))">413</ondown><ondown>401</ondown><onleft>105</onleft><onright>107</onright>
@@ -124,7 +124,7 @@
             <description>Ozubené kolečko – nastavení a filtry</description>
             <label> </label><font>font13</font>
             <align>center</align><aligny>center</aligny>
-            <textcolor>FFF0F0F2</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <textcolor>FFBBBFC1</textcolor><focusedcolor>FFF7F5EF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <ondown condition="!String.IsEmpty(Window.Property(row1_heading))">401</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + !String.IsEmpty(Window.Property(row2_heading))">402</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + !String.IsEmpty(Window.Property(row3_heading))">403</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + !String.IsEmpty(Window.Property(row4_heading))">404</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + !String.IsEmpty(Window.Property(row5_heading))">405</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row6_heading))">406</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row7_heading))">407</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + !String.IsEmpty(Window.Property(row8_heading))">408</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + !String.IsEmpty(Window.Property(row9_heading))">409</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + !String.IsEmpty(Window.Property(row10_heading))">410</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + !String.IsEmpty(Window.Property(row11_heading))">411</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + !String.IsEmpty(Window.Property(row12_heading))">412</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + String.IsEmpty(Window.Property(row12_heading)) + !String.IsEmpty(Window.Property(row13_heading))">413</ondown><ondown>401</ondown><onleft>109</onleft><onright>106</onright>
@@ -145,71 +145,71 @@
 
         <!-- Persistent current-section line and vivid remote-focus marker. -->
         <control type="image">
-            <left>563</left><top>86</top><width>96</width><height>5</height>
+            <left>563</left><top>87</top><width>96</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
-            <colordiffuse>FFE50914</colordiffuse>
+            <colordiffuse>FFC9AA71</colordiffuse>
             <visible>Control.HasFocus(106) | String.IsEqual(Window.Property(nav_active),home)</visible>
         </control>
 
         <control type="image">
-            <left>682</left><top>86</top><width>114</width><height>5</height>
+            <left>682</left><top>87</top><width>114</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
-            <colordiffuse>FFE50914</colordiffuse>
+            <colordiffuse>FFC9AA71</colordiffuse>
             <visible>Control.HasFocus(101) | String.IsEqual(Window.Property(nav_active),movies)</visible>
         </control>
 
         <control type="image">
-            <left>816</left><top>86</top><width>121</width><height>5</height>
+            <left>816</left><top>87</top><width>121</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
-            <colordiffuse>FFE50914</colordiffuse>
+            <colordiffuse>FFC9AA71</colordiffuse>
             <visible>Control.HasFocus(102) | String.IsEqual(Window.Property(nav_active),shows)</visible>
         </control>
 
         <control type="image">
-            <left>957</left><top>86</top><width>125</width><height>5</height>
+            <left>957</left><top>87</top><width>125</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
-            <colordiffuse>FFE50914</colordiffuse>
+            <colordiffuse>FFC9AA71</colordiffuse>
             <visible>Control.HasFocus(103) | String.IsEqual(Window.Property(nav_active),search)</visible>
         </control>
 
         <control type="image">
-            <left>1102</left><top>86</top><width>146</width><height>5</height>
+            <left>1102</left><top>87</top><width>146</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
-            <colordiffuse>FFE50914</colordiffuse>
+            <colordiffuse>FFC9AA71</colordiffuse>
             <visible>Control.HasFocus(104) | String.IsEqual(Window.Property(nav_active),premieres)</visible>
         </control>
 
         <control type="image">
-            <left>1272</left><top>86</top><width>132</width><height>5</height>
+            <left>1272</left><top>87</top><width>132</width><height>3</height>
             <texture>$INFO[Window.Property(cinema_focus)]</texture>
-            <colordiffuse>FFE50914</colordiffuse>
+            <colordiffuse>FFC9AA71</colordiffuse>
             <visible>Control.HasFocus(105) | String.IsEqual(Window.Property(nav_active),genres)</visible>
         </control>
 
 
         <!-- Featured title changes as the user moves over posters. -->
         <control type="label">
-            <left>119</left><top>223</top><width>1120</width><height>91</height>
+            <left>119</left><top>225</top><width>1090</width><height>90</height>
             <font>font45_title</font><textcolor>FFFFFFFF</textcolor>
             <label>$INFO[Window.Property(hero_title)]</label>
             <scroll>false</scroll>
         </control>
         <control type="label">
-            <left>125</left><top>323</top><width>950</width><height>43</height>
-            <font>font13</font><textcolor>FFE8E8ED</textcolor>
+            <left>125</left><top>323</top><width>945</width><height>43</height>
+            <font>font13</font><textcolor>FFE2E1DB</textcolor>
             <label>$INFO[Window.Property(hero_info)]</label>
             <scroll>true</scroll>
         </control>
         <control type="textbox">
-            <left>125</left><top>382</top><width>860</width><height>95</height>
-            <font>font13</font><textcolor>FFE6E6EA</textcolor>
+            <left>125</left><top>384</top><width>840</width><height>91</height>
+            <font>font13</font><textcolor>FFBEC2C3</textcolor>
             <label>$INFO[Window.Property(hero_plot)]</label>
             <autoscroll time="4000" delay="8000" repeat="10000">false</autoscroll>
         </control>
         <control type="label">
-            <left>670</left><top>508</top><width>610</width><height>30</height>
-            <font>font12</font><textcolor>FFB5B5BC</textcolor>
-            <label>OK = VYBRAT   ·   ŠIPKY = PROHLÍŽET   ·   ZPĚT = PŘEDCHOZÍ</label>
+            <left>681</left><top>507</top><width>765</width><height>30</height>
+            <font>font12</font><textcolor>FF969D9D</textcolor>
+            <label>OK  VÝBĚR     ·     ŠIPKY  PROCHÁZENÍ     ·     ZPĚT  NÁVRAT</label>
             <visible>String.IsEmpty(Window.Property(hero_action))</visible>
         </control>
         <!-- The featured movie remains selectable without opening a separate menu. -->
@@ -217,7 +217,7 @@
             <left>125</left><top>488</top><width>294</width><height>64</height>
             <font>font13</font><label>▶  PŘEHRÁT</label>
             <align>center</align><aligny>center</aligny>
-            <textcolor>FFFFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <textcolor>FF161A20</textcolor><focusedcolor>FF111419</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_cta_focus)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_cta)]</texturenofocus>
             <onup>106</onup><ondown condition="!String.IsEmpty(Window.Property(row1_heading))">401</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + !String.IsEmpty(Window.Property(row2_heading))">402</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + !String.IsEmpty(Window.Property(row3_heading))">403</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + !String.IsEmpty(Window.Property(row4_heading))">404</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + !String.IsEmpty(Window.Property(row5_heading))">405</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + !String.IsEmpty(Window.Property(row6_heading))">406</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + !String.IsEmpty(Window.Property(row7_heading))">407</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + !String.IsEmpty(Window.Property(row8_heading))">408</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + !String.IsEmpty(Window.Property(row9_heading))">409</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + !String.IsEmpty(Window.Property(row10_heading))">410</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + !String.IsEmpty(Window.Property(row11_heading))">411</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + !String.IsEmpty(Window.Property(row12_heading))">412</ondown><ondown condition="String.IsEmpty(Window.Property(row1_heading)) + String.IsEmpty(Window.Property(row2_heading)) + String.IsEmpty(Window.Property(row3_heading)) + String.IsEmpty(Window.Property(row4_heading)) + String.IsEmpty(Window.Property(row5_heading)) + String.IsEmpty(Window.Property(row6_heading)) + String.IsEmpty(Window.Property(row7_heading)) + String.IsEmpty(Window.Property(row8_heading)) + String.IsEmpty(Window.Property(row9_heading)) + String.IsEmpty(Window.Property(row10_heading)) + String.IsEmpty(Window.Property(row11_heading)) + String.IsEmpty(Window.Property(row12_heading)) + !String.IsEmpty(Window.Property(row13_heading))">413</ondown><ondown>401</ondown>
@@ -225,24 +225,24 @@
             <visible>String.IsEqual(Window.Property(hero_action),yes)</visible>
         </control>
 
-        <!-- Secondary Netflix-like film detail button; 108 opens playable title. -->
+        <!-- Quiet secondary detail action; playback is always explicit. -->
         <control type="button" id="110">
             <left>434</left><top>488</top><width>218</width><height>64</height>
             <font>font13</font><label>ℹ  DETAIL</label>
             <align>center</align><aligny>center</aligny>
-            <textcolor>FFE9E9ED</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <textcolor>FFE0E0DA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <onup>106</onup><ondown>401</ondown>
             <onleft>108</onleft><onright>401</onright>
             <visible>String.IsEqual(Window.Property(hero_action),yes)</visible>
         </control>
-        <control type="image"><left>0</left><top>96</top><width>89</width><height>984</height><texture>$INFO[Window.Property(cinema_button)]</texture><colordiffuse>EB090B12</colordiffuse></control>
-        <control type="image"><left>87</left><top>96</top><width>1</width><height>984</height><texture>$INFO[Window.Property(cinema_focus)]</texture><colordiffuse>66E50914</colordiffuse></control>
+        <control type="image"><left>0</left><top>96</top><width>89</width><height>984</height><texture>$INFO[Window.Property(cinema_button)]</texture><colordiffuse>F0080B10</colordiffuse></control>
+        <control type="image"><left>87</left><top>96</top><width>1</width><height>984</height><texture>$INFO[Window.Property(cinema_focus)]</texture><colordiffuse>445A605E</colordiffuse></control>
         <control type="button" id="201">
             <left>12</left><top>146</top><width>66</width><height>58</height>
             <font>font12</font><description>DOMŮ</description><label> </label><align>left</align><aligny>center</aligny>
-            <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <textcolor>FFB7BBB9</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <onup>106</onup><ondown>208</ondown><onright>401</onright>
@@ -258,7 +258,7 @@
         <control type="button" id="202">
             <left>12</left><top>294</top><width>66</width><height>58</height>
             <font>font12</font><description>ROZKOUKANÉ</description><label> </label><align>left</align><aligny>center</aligny>
-            <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <textcolor>FFB7BBB9</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <onup>208</onup><ondown>203</ondown><onright>401</onright>
@@ -274,7 +274,7 @@
         <control type="button" id="203">
             <left>12</left><top>368</top><width>66</width><height>58</height>
             <font>font12</font><description>OBLÍBENÉ</description><label> </label><align>left</align><aligny>center</aligny>
-            <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <textcolor>FFB7BBB9</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <onup>202</onup><ondown>204</ondown><onright>401</onright>
@@ -290,7 +290,7 @@
         <control type="button" id="204">
             <left>12</left><top>442</top><width>66</width><height>58</height>
             <font>font12</font><description>ŽÁNRY</description><label> </label><align>left</align><aligny>center</aligny>
-            <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <textcolor>FFB7BBB9</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <onup>203</onup><ondown>205</ondown><onright>401</onright>
@@ -306,7 +306,7 @@
         <control type="button" id="205">
             <left>12</left><top>516</top><width>66</width><height>58</height>
             <font>font12</font><description>TOP ČSFD</description><label> </label><align>left</align><aligny>center</aligny>
-            <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <textcolor>FFB7BBB9</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <onup>204</onup><ondown>206</ondown><onright>401</onright>
@@ -322,7 +322,7 @@
         <control type="button" id="206">
             <left>12</left><top>590</top><width>66</width><height>58</height>
             <font>font12</font><description>PREMIÉRY</description><label> </label><align>left</align><aligny>center</aligny>
-            <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <textcolor>FFB7BBB9</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <onup>205</onup><ondown>207</ondown><onright>401</onright>
@@ -338,7 +338,7 @@
         <control type="button" id="207">
             <left>12</left><top>664</top><width>66</width><height>58</height>
             <font>font12</font><description>NASTAVENÍ</description><label> </label><align>left</align><aligny>center</aligny>
-            <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <textcolor>FFB7BBB9</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <onup>206</onup><ondown>207</ondown><onright>401</onright>
@@ -355,7 +355,7 @@
             <left>12</left><top>220</top><width>66</width><height>58</height>
             <font>font12</font><description>TIPY PRO TEBE</description><label> </label>
             <align>left</align><aligny>center</aligny>
-            <textcolor>FFE4E4EA</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+            <textcolor>FFB7BBB9</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
             <texturefocus>$INFO[Window.Property(cinema_nav_hover)]</texturefocus>
             <texturenofocus>$INFO[Window.Property(cinema_button)]</texturenofocus>
             <onup>201</onup><ondown>202</ondown><onright>401</onright>
@@ -374,7 +374,7 @@
         <control type="image">
             <left>92</left><top>151</top><width>245</width><height>49</height>
             <texture>$INFO[Window.Property(cinema_nav_hover)]</texture>
-            <colordiffuse>F5FFFFFF</colordiffuse>
+            <colordiffuse>EEFFFFFF</colordiffuse>
             <visible>Control.HasFocus(201)</visible>
         </control>
         <control type="label">
@@ -385,7 +385,7 @@
         <control type="image">
             <left>92</left><top>225</top><width>245</width><height>49</height>
             <texture>$INFO[Window.Property(cinema_nav_hover)]</texture>
-            <colordiffuse>F5FFFFFF</colordiffuse>
+            <colordiffuse>EEFFFFFF</colordiffuse>
             <visible>Control.HasFocus(208)</visible>
         </control>
         <control type="label">
@@ -396,7 +396,7 @@
         <control type="image">
             <left>92</left><top>299</top><width>245</width><height>49</height>
             <texture>$INFO[Window.Property(cinema_nav_hover)]</texture>
-            <colordiffuse>F5FFFFFF</colordiffuse>
+            <colordiffuse>EEFFFFFF</colordiffuse>
             <visible>Control.HasFocus(202)</visible>
         </control>
         <control type="label">
@@ -407,7 +407,7 @@
         <control type="image">
             <left>92</left><top>373</top><width>245</width><height>49</height>
             <texture>$INFO[Window.Property(cinema_nav_hover)]</texture>
-            <colordiffuse>F5FFFFFF</colordiffuse>
+            <colordiffuse>EEFFFFFF</colordiffuse>
             <visible>Control.HasFocus(203)</visible>
         </control>
         <control type="label">
@@ -418,7 +418,7 @@
         <control type="image">
             <left>92</left><top>447</top><width>245</width><height>49</height>
             <texture>$INFO[Window.Property(cinema_nav_hover)]</texture>
-            <colordiffuse>F5FFFFFF</colordiffuse>
+            <colordiffuse>EEFFFFFF</colordiffuse>
             <visible>Control.HasFocus(204)</visible>
         </control>
         <control type="label">
@@ -429,7 +429,7 @@
         <control type="image">
             <left>92</left><top>521</top><width>245</width><height>49</height>
             <texture>$INFO[Window.Property(cinema_nav_hover)]</texture>
-            <colordiffuse>F5FFFFFF</colordiffuse>
+            <colordiffuse>EEFFFFFF</colordiffuse>
             <visible>Control.HasFocus(205)</visible>
         </control>
         <control type="label">
@@ -440,7 +440,7 @@
         <control type="image">
             <left>92</left><top>595</top><width>245</width><height>49</height>
             <texture>$INFO[Window.Property(cinema_nav_hover)]</texture>
-            <colordiffuse>F5FFFFFF</colordiffuse>
+            <colordiffuse>EEFFFFFF</colordiffuse>
             <visible>Control.HasFocus(206)</visible>
         </control>
         <control type="label">
@@ -451,7 +451,7 @@
         <control type="image">
             <left>92</left><top>669</top><width>245</width><height>49</height>
             <texture>$INFO[Window.Property(cinema_nav_hover)]</texture>
-            <colordiffuse>F5FFFFFF</colordiffuse>
+            <colordiffuse>EEFFFFFF</colordiffuse>
             <visible>Control.HasFocus(207)</visible>
         </control>
         <control type="label">
@@ -461,28 +461,28 @@
         </control>
         <control type="label">
             <left>125</left><top>123</top><width>360</width><height>29</height>
-            <font>font12</font><textcolor>FFEBEBEF</textcolor>
-            <label>●  VÝBĚR KIVORA</label>
+            <font>font12</font><textcolor>FFE6D5B6</textcolor>
+            <label>VÝBĚR KIVORA  /  DOPORUČUJEME</label>
             <visible>String.IsEqual(Window.Property(hero_action),yes) + String.IsEqual(Window.Property(nav_active),home)</visible>
         </control>
-        <!-- Netflix-inspired full-poster horizontal rails. -->
+        <!-- Editorial shelves: uncluttered artwork, clear focus and reading hierarchy. -->
         <control type="grouplist" id="610">
-            <left>113</left><top>582</top><width>1784</width><height>443</height>
+            <left>113</left><top>574</top><width>1784</width><height>451</height>
             <orientation>vertical</orientation>
-            <itemgap>18</itemgap>
-            <scrolltime>290</scrolltime>
+            <itemgap>22</itemgap>
+            <scrolltime>230</scrolltime>
             <defaultcontrol>401</defaultcontrol>
             <control type="group">
                 <width>1755</width><height>303</height>
                 <visible>!String.IsEmpty(Window.Property(row1_heading))</visible>
                 <control type="image">
-                    <left>0</left><top>6</top><width>5</width><height>29</height>
+                    <left>0</left><top>9</top><width>3</width><height>23</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture>
                     <visible>Control.HasFocus(401)</visible>
                 </control>
                 <control type="label">
-                    <left>4</left><top>0</top><width>1690</width><height>39</height>
-                    <font>font32</font><textcolor>FFF5F5F7</textcolor>
+                    <left>14</left><top>0</top><width>1678</width><height>39</height>
+                    <font>font32</font><textcolor>FFECEAE3</textcolor>
                     <label>$INFO[Window.Property(row1_heading)]</label>
                 </control>
         <control type="list" id="401">
@@ -505,7 +505,7 @@
                 <control type="image">
                     <left>7</left><top>7</top><width>344</width><height>196</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
-                    <aspectratio>scale</aspectratio><colordiffuse>77FFFFFF</colordiffuse>
+                    <aspectratio>scale</aspectratio><colordiffuse>D9FFFFFF</colordiffuse>
                     <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
@@ -524,7 +524,7 @@
                 <control type="label">
                     <left>14</left><top>72</top>
                     <width>325</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -532,7 +532,7 @@
                 <control type="label">
                     <left>20</left><top>43</top>
                     <width>318</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -560,7 +560,7 @@
                 <control type="label">
                     <left>16</left><top>158</top><width>327</width><height>39</height>
                     <font>font13</font>
-                    <textcolor>FFE5E5E8</textcolor>
+                    <textcolor>FFE5E5E1</textcolor>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>false</scroll>
                 
@@ -569,7 +569,7 @@
                 <control type="label">
                     <left>16</left><top>208</top>
                     <width>326</width><height>22</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
@@ -582,7 +582,7 @@
                     
                 </control>
                 <control type="image">
-                    <left>3</left><top>3</top><width>353</width><height>208</height>
+                    <left>3</left><top>3</top><width>353</width><height>206</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(401)</visible>
                 </control>
@@ -594,7 +594,7 @@
                 <control type="image">
                     <left>7</left><top>7</top><width>344</width><height>196</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
-                    <aspectratio>scale</aspectratio><colordiffuse>77FFFFFF</colordiffuse>
+                    <aspectratio>scale</aspectratio><colordiffuse>D9FFFFFF</colordiffuse>
                     <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
@@ -613,7 +613,7 @@
                 <control type="label">
                     <left>14</left><top>72</top>
                     <width>325</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -621,7 +621,7 @@
                 <control type="label">
                     <left>20</left><top>43</top>
                     <width>318</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -658,12 +658,12 @@
                 <control type="label">
                     <left>16</left><top>208</top>
                     <width>326</width><height>22</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>9</left><top>203</top><width>340</width><height>3</height>
+                    <left>9</left><top>203</top><width>340</width><height>2</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(401)</visible>
                 </control>
@@ -674,13 +674,13 @@
                 <width>1755</width><height>303</height>
                 <visible>!String.IsEmpty(Window.Property(row2_heading))</visible>
                 <control type="image">
-                    <left>0</left><top>6</top><width>5</width><height>29</height>
+                    <left>0</left><top>9</top><width>3</width><height>23</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture>
                     <visible>Control.HasFocus(402)</visible>
                 </control>
                 <control type="label">
-                    <left>4</left><top>0</top><width>1690</width><height>39</height>
-                    <font>font32</font><textcolor>FFF5F5F7</textcolor>
+                    <left>14</left><top>0</top><width>1678</width><height>39</height>
+                    <font>font32</font><textcolor>FFECEAE3</textcolor>
                     <label>$INFO[Window.Property(row2_heading)]</label>
                 </control>
         <control type="list" id="402">
@@ -703,7 +703,7 @@
                 <control type="image">
                     <left>7</left><top>7</top><width>344</width><height>196</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
-                    <aspectratio>scale</aspectratio><colordiffuse>77FFFFFF</colordiffuse>
+                    <aspectratio>scale</aspectratio><colordiffuse>D9FFFFFF</colordiffuse>
                     <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
@@ -722,7 +722,7 @@
                 <control type="label">
                     <left>14</left><top>72</top>
                     <width>325</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -730,7 +730,7 @@
                 <control type="label">
                     <left>20</left><top>43</top>
                     <width>318</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -758,7 +758,7 @@
                 <control type="label">
                     <left>16</left><top>158</top><width>327</width><height>39</height>
                     <font>font13</font>
-                    <textcolor>FFE5E5E8</textcolor>
+                    <textcolor>FFE5E5E1</textcolor>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>false</scroll>
                 
@@ -767,7 +767,7 @@
                 <control type="label">
                     <left>16</left><top>208</top>
                     <width>326</width><height>22</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
@@ -780,7 +780,7 @@
                     
                 </control>
                 <control type="image">
-                    <left>3</left><top>3</top><width>353</width><height>208</height>
+                    <left>3</left><top>3</top><width>353</width><height>206</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(402)</visible>
                 </control>
@@ -792,7 +792,7 @@
                 <control type="image">
                     <left>7</left><top>7</top><width>344</width><height>196</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
-                    <aspectratio>scale</aspectratio><colordiffuse>77FFFFFF</colordiffuse>
+                    <aspectratio>scale</aspectratio><colordiffuse>D9FFFFFF</colordiffuse>
                     <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
@@ -811,7 +811,7 @@
                 <control type="label">
                     <left>14</left><top>72</top>
                     <width>325</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -819,7 +819,7 @@
                 <control type="label">
                     <left>20</left><top>43</top>
                     <width>318</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -856,12 +856,12 @@
                 <control type="label">
                     <left>16</left><top>208</top>
                     <width>326</width><height>22</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>9</left><top>203</top><width>340</width><height>3</height>
+                    <left>9</left><top>203</top><width>340</width><height>2</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(402)</visible>
                 </control>
@@ -872,13 +872,13 @@
                 <width>1755</width><height>399</height>
                 <visible>!String.IsEmpty(Window.Property(row3_heading))</visible>
                 <control type="image">
-                    <left>0</left><top>6</top><width>5</width><height>29</height>
+                    <left>0</left><top>9</top><width>3</width><height>23</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture>
                     <visible>Control.HasFocus(403)</visible>
                 </control>
                 <control type="label">
-                    <left>4</left><top>0</top><width>1690</width><height>39</height>
-                    <font>font32</font><textcolor>FFF5F5F7</textcolor>
+                    <left>14</left><top>0</top><width>1678</width><height>39</height>
+                    <font>font32</font><textcolor>FFECEAE3</textcolor>
                     <label>$INFO[Window.Property(row3_heading)]</label>
                 </control>
         <control type="list" id="403">
@@ -907,7 +907,7 @@
                 <control type="label">
                     <left>14</left><top>117</top>
                     <width>211</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -915,7 +915,7 @@
                 <control type="label">
                     <left>20</left><top>116</top>
                     <width>198</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -944,14 +944,14 @@
                     <left>9</left><top>310</top>
                     <width>219</width><height>35</height>
                     <font>font13</font>
-                    <textcolor>FFE5E5E8</textcolor>
+                    <textcolor>FFE5E5E1</textcolor>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>false</scroll>
                 </control>
                 <control type="label">
                     <left>9</left><top>338</top>
                     <width>218</width><height>19</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
@@ -964,7 +964,7 @@
                     
                 </control>
                 <control type="image">
-                    <left>3</left><top>3</top><width>236</width><height>307</height>
+                    <left>3</left><top>3</top><width>233</width><height>301</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(403)</visible>
                 </control>
@@ -982,7 +982,7 @@
                 <control type="label">
                     <left>14</left><top>117</top>
                     <width>211</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -990,7 +990,7 @@
                 <control type="label">
                     <left>20</left><top>116</top>
                     <width>198</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1026,12 +1026,12 @@
                 <control type="label">
                     <left>9</left><top>338</top>
                     <width>218</width><height>19</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>9</left><top>304</top><width>218</width><height>3</height>
+                    <left>9</left><top>304</top><width>218</width><height>2</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(403)</visible>
                 </control>
@@ -1042,13 +1042,13 @@
                 <width>1755</width><height>399</height>
                 <visible>!String.IsEmpty(Window.Property(row4_heading))</visible>
                 <control type="image">
-                    <left>0</left><top>6</top><width>5</width><height>29</height>
+                    <left>0</left><top>9</top><width>3</width><height>23</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture>
                     <visible>Control.HasFocus(404)</visible>
                 </control>
                 <control type="label">
-                    <left>4</left><top>0</top><width>1690</width><height>39</height>
-                    <font>font32</font><textcolor>FFF5F5F7</textcolor>
+                    <left>14</left><top>0</top><width>1678</width><height>39</height>
+                    <font>font32</font><textcolor>FFECEAE3</textcolor>
                     <label>$INFO[Window.Property(row4_heading)]</label>
                 </control>
         <control type="list" id="404">
@@ -1077,7 +1077,7 @@
                 <control type="label">
                     <left>14</left><top>117</top>
                     <width>211</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1085,7 +1085,7 @@
                 <control type="label">
                     <left>20</left><top>116</top>
                     <width>198</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1114,14 +1114,14 @@
                     <left>9</left><top>310</top>
                     <width>219</width><height>35</height>
                     <font>font13</font>
-                    <textcolor>FFE5E5E8</textcolor>
+                    <textcolor>FFE5E5E1</textcolor>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>false</scroll>
                 </control>
                 <control type="label">
                     <left>9</left><top>338</top>
                     <width>218</width><height>19</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
@@ -1134,7 +1134,7 @@
                     
                 </control>
                 <control type="image">
-                    <left>3</left><top>3</top><width>236</width><height>307</height>
+                    <left>3</left><top>3</top><width>233</width><height>301</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(404)</visible>
                 </control>
@@ -1152,7 +1152,7 @@
                 <control type="label">
                     <left>14</left><top>117</top>
                     <width>211</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1160,7 +1160,7 @@
                 <control type="label">
                     <left>20</left><top>116</top>
                     <width>198</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1196,12 +1196,12 @@
                 <control type="label">
                     <left>9</left><top>338</top>
                     <width>218</width><height>19</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>9</left><top>304</top><width>218</width><height>3</height>
+                    <left>9</left><top>304</top><width>218</width><height>2</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(404)</visible>
                 </control>
@@ -1212,13 +1212,13 @@
                 <width>1755</width><height>303</height>
                 <visible>!String.IsEmpty(Window.Property(row5_heading))</visible>
                 <control type="image">
-                    <left>0</left><top>6</top><width>5</width><height>29</height>
+                    <left>0</left><top>9</top><width>3</width><height>23</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture>
                     <visible>Control.HasFocus(405)</visible>
                 </control>
                 <control type="label">
-                    <left>4</left><top>0</top><width>1690</width><height>39</height>
-                    <font>font32</font><textcolor>FFF5F5F7</textcolor>
+                    <left>14</left><top>0</top><width>1678</width><height>39</height>
+                    <font>font32</font><textcolor>FFECEAE3</textcolor>
                     <label>$INFO[Window.Property(row5_heading)]</label>
                 </control>
         <control type="list" id="405">
@@ -1241,7 +1241,7 @@
                 <control type="image">
                     <left>7</left><top>7</top><width>344</width><height>196</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
-                    <aspectratio>scale</aspectratio><colordiffuse>77FFFFFF</colordiffuse>
+                    <aspectratio>scale</aspectratio><colordiffuse>D9FFFFFF</colordiffuse>
                     <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
@@ -1260,7 +1260,7 @@
                 <control type="label">
                     <left>14</left><top>72</top>
                     <width>325</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1268,7 +1268,7 @@
                 <control type="label">
                     <left>20</left><top>43</top>
                     <width>318</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1296,7 +1296,7 @@
                 <control type="label">
                     <left>16</left><top>158</top><width>327</width><height>39</height>
                     <font>font13</font>
-                    <textcolor>FFE5E5E8</textcolor>
+                    <textcolor>FFE5E5E1</textcolor>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>false</scroll>
                 
@@ -1305,7 +1305,7 @@
                 <control type="label">
                     <left>16</left><top>208</top>
                     <width>326</width><height>22</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
@@ -1318,7 +1318,7 @@
                     
                 </control>
                 <control type="image">
-                    <left>3</left><top>3</top><width>353</width><height>208</height>
+                    <left>3</left><top>3</top><width>353</width><height>206</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(405)</visible>
                 </control>
@@ -1330,7 +1330,7 @@
                 <control type="image">
                     <left>7</left><top>7</top><width>344</width><height>196</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
-                    <aspectratio>scale</aspectratio><colordiffuse>77FFFFFF</colordiffuse>
+                    <aspectratio>scale</aspectratio><colordiffuse>D9FFFFFF</colordiffuse>
                     <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
@@ -1349,7 +1349,7 @@
                 <control type="label">
                     <left>14</left><top>72</top>
                     <width>325</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1357,7 +1357,7 @@
                 <control type="label">
                     <left>20</left><top>43</top>
                     <width>318</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1394,12 +1394,12 @@
                 <control type="label">
                     <left>16</left><top>208</top>
                     <width>326</width><height>22</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>9</left><top>203</top><width>340</width><height>3</height>
+                    <left>9</left><top>203</top><width>340</width><height>2</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(405)</visible>
                 </control>
@@ -1410,13 +1410,13 @@
                 <width>1755</width><height>303</height>
                 <visible>!String.IsEmpty(Window.Property(row6_heading))</visible>
                 <control type="image">
-                    <left>0</left><top>6</top><width>5</width><height>29</height>
+                    <left>0</left><top>9</top><width>3</width><height>23</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture>
                     <visible>Control.HasFocus(406)</visible>
                 </control>
                 <control type="label">
-                    <left>4</left><top>0</top><width>1690</width><height>39</height>
-                    <font>font32</font><textcolor>FFF5F5F7</textcolor>
+                    <left>14</left><top>0</top><width>1678</width><height>39</height>
+                    <font>font32</font><textcolor>FFECEAE3</textcolor>
                     <label>$INFO[Window.Property(row6_heading)]</label>
                 </control>
         <control type="list" id="406">
@@ -1439,7 +1439,7 @@
                 <control type="image">
                     <left>7</left><top>7</top><width>344</width><height>196</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
-                    <aspectratio>scale</aspectratio><colordiffuse>77FFFFFF</colordiffuse>
+                    <aspectratio>scale</aspectratio><colordiffuse>D9FFFFFF</colordiffuse>
                     <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
@@ -1458,7 +1458,7 @@
                 <control type="label">
                     <left>14</left><top>72</top>
                     <width>325</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1466,7 +1466,7 @@
                 <control type="label">
                     <left>20</left><top>43</top>
                     <width>318</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1494,7 +1494,7 @@
                 <control type="label">
                     <left>16</left><top>158</top><width>327</width><height>39</height>
                     <font>font13</font>
-                    <textcolor>FFE5E5E8</textcolor>
+                    <textcolor>FFE5E5E1</textcolor>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>false</scroll>
                 
@@ -1503,7 +1503,7 @@
                 <control type="label">
                     <left>16</left><top>208</top>
                     <width>326</width><height>22</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
@@ -1516,7 +1516,7 @@
                     
                 </control>
                 <control type="image">
-                    <left>3</left><top>3</top><width>353</width><height>208</height>
+                    <left>3</left><top>3</top><width>353</width><height>206</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(406)</visible>
                 </control>
@@ -1528,7 +1528,7 @@
                 <control type="image">
                     <left>7</left><top>7</top><width>344</width><height>196</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
-                    <aspectratio>scale</aspectratio><colordiffuse>77FFFFFF</colordiffuse>
+                    <aspectratio>scale</aspectratio><colordiffuse>D9FFFFFF</colordiffuse>
                     <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
@@ -1547,7 +1547,7 @@
                 <control type="label">
                     <left>14</left><top>72</top>
                     <width>325</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1555,7 +1555,7 @@
                 <control type="label">
                     <left>20</left><top>43</top>
                     <width>318</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1592,12 +1592,12 @@
                 <control type="label">
                     <left>16</left><top>208</top>
                     <width>326</width><height>22</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>9</left><top>203</top><width>340</width><height>3</height>
+                    <left>9</left><top>203</top><width>340</width><height>2</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(406)</visible>
                 </control>
@@ -1608,13 +1608,13 @@
                 <width>1755</width><height>303</height>
                 <visible>!String.IsEmpty(Window.Property(row7_heading))</visible>
                 <control type="image">
-                    <left>0</left><top>6</top><width>5</width><height>29</height>
+                    <left>0</left><top>9</top><width>3</width><height>23</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture>
                     <visible>Control.HasFocus(407)</visible>
                 </control>
                 <control type="label">
-                    <left>4</left><top>0</top><width>1690</width><height>39</height>
-                    <font>font32</font><textcolor>FFF5F5F7</textcolor>
+                    <left>14</left><top>0</top><width>1678</width><height>39</height>
+                    <font>font32</font><textcolor>FFECEAE3</textcolor>
                     <label>$INFO[Window.Property(row7_heading)]</label>
                 </control>
         <control type="list" id="407">
@@ -1637,7 +1637,7 @@
                 <control type="image">
                     <left>7</left><top>7</top><width>344</width><height>196</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
-                    <aspectratio>scale</aspectratio><colordiffuse>77FFFFFF</colordiffuse>
+                    <aspectratio>scale</aspectratio><colordiffuse>D9FFFFFF</colordiffuse>
                     <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
@@ -1656,7 +1656,7 @@
                 <control type="label">
                     <left>14</left><top>72</top>
                     <width>325</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1664,7 +1664,7 @@
                 <control type="label">
                     <left>20</left><top>43</top>
                     <width>318</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1692,7 +1692,7 @@
                 <control type="label">
                     <left>16</left><top>158</top><width>327</width><height>39</height>
                     <font>font13</font>
-                    <textcolor>FFE5E5E8</textcolor>
+                    <textcolor>FFE5E5E1</textcolor>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>false</scroll>
                 
@@ -1701,7 +1701,7 @@
                 <control type="label">
                     <left>16</left><top>208</top>
                     <width>326</width><height>22</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
@@ -1714,7 +1714,7 @@
                     
                 </control>
                 <control type="image">
-                    <left>3</left><top>3</top><width>353</width><height>208</height>
+                    <left>3</left><top>3</top><width>353</width><height>206</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(407)</visible>
                 </control>
@@ -1726,7 +1726,7 @@
                 <control type="image">
                     <left>7</left><top>7</top><width>344</width><height>196</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
-                    <aspectratio>scale</aspectratio><colordiffuse>77FFFFFF</colordiffuse>
+                    <aspectratio>scale</aspectratio><colordiffuse>D9FFFFFF</colordiffuse>
                     <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
@@ -1745,7 +1745,7 @@
                 <control type="label">
                     <left>14</left><top>72</top>
                     <width>325</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1753,7 +1753,7 @@
                 <control type="label">
                     <left>20</left><top>43</top>
                     <width>318</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1790,12 +1790,12 @@
                 <control type="label">
                     <left>16</left><top>208</top>
                     <width>326</width><height>22</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>9</left><top>203</top><width>340</width><height>3</height>
+                    <left>9</left><top>203</top><width>340</width><height>2</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(407)</visible>
                 </control>
@@ -1806,13 +1806,13 @@
                 <width>1755</width><height>399</height>
                 <visible>!String.IsEmpty(Window.Property(row8_heading))</visible>
                 <control type="image">
-                    <left>0</left><top>6</top><width>5</width><height>29</height>
+                    <left>0</left><top>9</top><width>3</width><height>23</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture>
                     <visible>Control.HasFocus(408)</visible>
                 </control>
                 <control type="label">
-                    <left>4</left><top>0</top><width>1690</width><height>39</height>
-                    <font>font32</font><textcolor>FFF5F5F7</textcolor>
+                    <left>14</left><top>0</top><width>1678</width><height>39</height>
+                    <font>font32</font><textcolor>FFECEAE3</textcolor>
                     <label>$INFO[Window.Property(row8_heading)]</label>
                 </control>
         <control type="list" id="408">
@@ -1841,7 +1841,7 @@
                 <control type="label">
                     <left>14</left><top>117</top>
                     <width>211</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1849,7 +1849,7 @@
                 <control type="label">
                     <left>20</left><top>116</top>
                     <width>198</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1878,14 +1878,14 @@
                     <left>9</left><top>310</top>
                     <width>219</width><height>35</height>
                     <font>font13</font>
-                    <textcolor>FFE5E5E8</textcolor>
+                    <textcolor>FFE5E5E1</textcolor>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>false</scroll>
                 </control>
                 <control type="label">
                     <left>9</left><top>338</top>
                     <width>218</width><height>19</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
@@ -1898,7 +1898,7 @@
                     
                 </control>
                 <control type="image">
-                    <left>3</left><top>3</top><width>236</width><height>307</height>
+                    <left>3</left><top>3</top><width>233</width><height>301</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(408)</visible>
                 </control>
@@ -1916,7 +1916,7 @@
                 <control type="label">
                     <left>14</left><top>117</top>
                     <width>211</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1924,7 +1924,7 @@
                 <control type="label">
                     <left>20</left><top>116</top>
                     <width>198</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -1960,12 +1960,12 @@
                 <control type="label">
                     <left>9</left><top>338</top>
                     <width>218</width><height>19</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>9</left><top>304</top><width>218</width><height>3</height>
+                    <left>9</left><top>304</top><width>218</width><height>2</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(408)</visible>
                 </control>
@@ -1976,13 +1976,13 @@
                 <width>1755</width><height>303</height>
                 <visible>!String.IsEmpty(Window.Property(row9_heading))</visible>
                 <control type="image">
-                    <left>0</left><top>6</top><width>5</width><height>29</height>
+                    <left>0</left><top>9</top><width>3</width><height>23</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture>
                     <visible>Control.HasFocus(409)</visible>
                 </control>
                 <control type="label">
-                    <left>4</left><top>0</top><width>1690</width><height>39</height>
-                    <font>font32</font><textcolor>FFF5F5F7</textcolor>
+                    <left>14</left><top>0</top><width>1678</width><height>39</height>
+                    <font>font32</font><textcolor>FFECEAE3</textcolor>
                     <label>$INFO[Window.Property(row9_heading)]</label>
                 </control>
         <control type="list" id="409">
@@ -2005,7 +2005,7 @@
                 <control type="image">
                     <left>7</left><top>7</top><width>344</width><height>196</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
-                    <aspectratio>scale</aspectratio><colordiffuse>77FFFFFF</colordiffuse>
+                    <aspectratio>scale</aspectratio><colordiffuse>D9FFFFFF</colordiffuse>
                     <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
@@ -2024,7 +2024,7 @@
                 <control type="label">
                     <left>14</left><top>72</top>
                     <width>325</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -2032,7 +2032,7 @@
                 <control type="label">
                     <left>20</left><top>43</top>
                     <width>318</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -2060,7 +2060,7 @@
                 <control type="label">
                     <left>16</left><top>158</top><width>327</width><height>39</height>
                     <font>font13</font>
-                    <textcolor>FFE5E5E8</textcolor>
+                    <textcolor>FFE5E5E1</textcolor>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>false</scroll>
                 
@@ -2069,7 +2069,7 @@
                 <control type="label">
                     <left>16</left><top>208</top>
                     <width>326</width><height>22</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
@@ -2082,7 +2082,7 @@
                     
                 </control>
                 <control type="image">
-                    <left>3</left><top>3</top><width>353</width><height>208</height>
+                    <left>3</left><top>3</top><width>353</width><height>206</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(409)</visible>
                 </control>
@@ -2094,7 +2094,7 @@
                 <control type="image">
                     <left>7</left><top>7</top><width>344</width><height>196</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
-                    <aspectratio>scale</aspectratio><colordiffuse>77FFFFFF</colordiffuse>
+                    <aspectratio>scale</aspectratio><colordiffuse>D9FFFFFF</colordiffuse>
                     <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
@@ -2113,7 +2113,7 @@
                 <control type="label">
                     <left>14</left><top>72</top>
                     <width>325</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -2121,7 +2121,7 @@
                 <control type="label">
                     <left>20</left><top>43</top>
                     <width>318</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -2158,12 +2158,12 @@
                 <control type="label">
                     <left>16</left><top>208</top>
                     <width>326</width><height>22</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>9</left><top>203</top><width>340</width><height>3</height>
+                    <left>9</left><top>203</top><width>340</width><height>2</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(409)</visible>
                 </control>
@@ -2174,13 +2174,13 @@
                 <width>1755</width><height>303</height>
                 <visible>!String.IsEmpty(Window.Property(row10_heading))</visible>
                 <control type="image">
-                    <left>0</left><top>6</top><width>5</width><height>29</height>
+                    <left>0</left><top>9</top><width>3</width><height>23</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture>
                     <visible>Control.HasFocus(410)</visible>
                 </control>
                 <control type="label">
-                    <left>4</left><top>0</top><width>1690</width><height>39</height>
-                    <font>font32</font><textcolor>FFF5F5F7</textcolor>
+                    <left>14</left><top>0</top><width>1678</width><height>39</height>
+                    <font>font32</font><textcolor>FFECEAE3</textcolor>
                     <label>$INFO[Window.Property(row10_heading)]</label>
                 </control>
         <control type="list" id="410">
@@ -2203,7 +2203,7 @@
                 <control type="image">
                     <left>7</left><top>7</top><width>344</width><height>196</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
-                    <aspectratio>scale</aspectratio><colordiffuse>77FFFFFF</colordiffuse>
+                    <aspectratio>scale</aspectratio><colordiffuse>D9FFFFFF</colordiffuse>
                     <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
@@ -2222,7 +2222,7 @@
                 <control type="label">
                     <left>14</left><top>72</top>
                     <width>325</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -2230,7 +2230,7 @@
                 <control type="label">
                     <left>20</left><top>43</top>
                     <width>318</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -2258,7 +2258,7 @@
                 <control type="label">
                     <left>16</left><top>158</top><width>327</width><height>39</height>
                     <font>font13</font>
-                    <textcolor>FFE5E5E8</textcolor>
+                    <textcolor>FFE5E5E1</textcolor>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>false</scroll>
                 
@@ -2267,7 +2267,7 @@
                 <control type="label">
                     <left>16</left><top>208</top>
                     <width>326</width><height>22</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
@@ -2280,7 +2280,7 @@
                     
                 </control>
                 <control type="image">
-                    <left>3</left><top>3</top><width>353</width><height>208</height>
+                    <left>3</left><top>3</top><width>353</width><height>206</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(410)</visible>
                 </control>
@@ -2292,7 +2292,7 @@
                 <control type="image">
                     <left>7</left><top>7</top><width>344</width><height>196</height>
                     <texture>$INFO[ListItem.Art(poster)]</texture>
-                    <aspectratio>scale</aspectratio><colordiffuse>77FFFFFF</colordiffuse>
+                    <aspectratio>scale</aspectratio><colordiffuse>D9FFFFFF</colordiffuse>
                     <visible>String.IsEmpty(ListItem.Art(fanart)) + !String.IsEmpty(ListItem.Art(poster)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
@@ -2311,7 +2311,7 @@
                 <control type="label">
                     <left>14</left><top>72</top>
                     <width>325</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -2319,7 +2319,7 @@
                 <control type="label">
                     <left>20</left><top>43</top>
                     <width>318</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -2356,12 +2356,12 @@
                 <control type="label">
                     <left>16</left><top>208</top>
                     <width>326</width><height>22</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>9</left><top>203</top><width>340</width><height>3</height>
+                    <left>9</left><top>203</top><width>340</width><height>2</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(410)</visible>
                 </control>
@@ -2372,13 +2372,13 @@
                 <width>1755</width><height>399</height>
                 <visible>!String.IsEmpty(Window.Property(row11_heading))</visible>
                 <control type="image">
-                    <left>0</left><top>6</top><width>5</width><height>29</height>
+                    <left>0</left><top>9</top><width>3</width><height>23</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture>
                     <visible>Control.HasFocus(411)</visible>
                 </control>
                 <control type="label">
-                    <left>4</left><top>0</top><width>1690</width><height>39</height>
-                    <font>font32</font><textcolor>FFF5F5F7</textcolor>
+                    <left>14</left><top>0</top><width>1678</width><height>39</height>
+                    <font>font32</font><textcolor>FFECEAE3</textcolor>
                     <label>$INFO[Window.Property(row11_heading)]</label>
                 </control>
         <control type="list" id="411">
@@ -2407,7 +2407,7 @@
                 <control type="label">
                     <left>14</left><top>117</top>
                     <width>211</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -2415,7 +2415,7 @@
                 <control type="label">
                     <left>20</left><top>116</top>
                     <width>198</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -2444,14 +2444,14 @@
                     <left>9</left><top>310</top>
                     <width>219</width><height>35</height>
                     <font>font13</font>
-                    <textcolor>FFE5E5E8</textcolor>
+                    <textcolor>FFE5E5E1</textcolor>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>false</scroll>
                 </control>
                 <control type="label">
                     <left>9</left><top>338</top>
                     <width>218</width><height>19</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
@@ -2464,7 +2464,7 @@
                     
                 </control>
                 <control type="image">
-                    <left>3</left><top>3</top><width>236</width><height>307</height>
+                    <left>3</left><top>3</top><width>233</width><height>301</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(411)</visible>
                 </control>
@@ -2482,7 +2482,7 @@
                 <control type="label">
                     <left>14</left><top>117</top>
                     <width>211</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -2490,7 +2490,7 @@
                 <control type="label">
                     <left>20</left><top>116</top>
                     <width>198</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -2526,12 +2526,12 @@
                 <control type="label">
                     <left>9</left><top>338</top>
                     <width>218</width><height>19</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>9</left><top>304</top><width>218</width><height>3</height>
+                    <left>9</left><top>304</top><width>218</width><height>2</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(411)</visible>
                 </control>
@@ -2542,13 +2542,13 @@
                 <width>1755</width><height>399</height>
                 <visible>!String.IsEmpty(Window.Property(row12_heading))</visible>
                 <control type="image">
-                    <left>0</left><top>6</top><width>5</width><height>29</height>
+                    <left>0</left><top>9</top><width>3</width><height>23</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture>
                     <visible>Control.HasFocus(412)</visible>
                 </control>
                 <control type="label">
-                    <left>4</left><top>0</top><width>1690</width><height>39</height>
-                    <font>font32</font><textcolor>FFF5F5F7</textcolor>
+                    <left>14</left><top>0</top><width>1678</width><height>39</height>
+                    <font>font32</font><textcolor>FFECEAE3</textcolor>
                     <label>$INFO[Window.Property(row12_heading)]</label>
                 </control>
         <control type="list" id="412">
@@ -2577,7 +2577,7 @@
                 <control type="label">
                     <left>14</left><top>117</top>
                     <width>211</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -2585,7 +2585,7 @@
                 <control type="label">
                     <left>20</left><top>116</top>
                     <width>198</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -2614,14 +2614,14 @@
                     <left>9</left><top>310</top>
                     <width>219</width><height>35</height>
                     <font>font13</font>
-                    <textcolor>FFE5E5E8</textcolor>
+                    <textcolor>FFE5E5E1</textcolor>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>false</scroll>
                 </control>
                 <control type="label">
                     <left>9</left><top>338</top>
                     <width>218</width><height>19</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
@@ -2634,7 +2634,7 @@
                     
                 </control>
                 <control type="image">
-                    <left>3</left><top>3</top><width>236</width><height>307</height>
+                    <left>3</left><top>3</top><width>233</width><height>301</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(412)</visible>
                 </control>
@@ -2652,7 +2652,7 @@
                 <control type="label">
                     <left>14</left><top>117</top>
                     <width>211</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -2660,7 +2660,7 @@
                 <control type="label">
                     <left>20</left><top>116</top>
                     <width>198</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -2696,12 +2696,12 @@
                 <control type="label">
                     <left>9</left><top>338</top>
                     <width>218</width><height>19</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>9</left><top>304</top><width>218</width><height>3</height>
+                    <left>9</left><top>304</top><width>218</width><height>2</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(412)</visible>
                 </control>
@@ -2712,13 +2712,13 @@
                 <width>1755</width><height>399</height>
                 <visible>!String.IsEmpty(Window.Property(row13_heading))</visible>
                 <control type="image">
-                    <left>0</left><top>6</top><width>5</width><height>29</height>
+                    <left>0</left><top>9</top><width>3</width><height>23</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture>
                     <visible>Control.HasFocus(413)</visible>
                 </control>
                 <control type="label">
-                    <left>4</left><top>0</top><width>1690</width><height>39</height>
-                    <font>font32</font><textcolor>FFF5F5F7</textcolor>
+                    <left>14</left><top>0</top><width>1678</width><height>39</height>
+                    <font>font32</font><textcolor>FFECEAE3</textcolor>
                     <label>$INFO[Window.Property(row13_heading)]</label>
                 </control>
         <control type="list" id="413">
@@ -2747,7 +2747,7 @@
                 <control type="label">
                     <left>14</left><top>117</top>
                     <width>211</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -2755,7 +2755,7 @@
                 <control type="label">
                     <left>20</left><top>116</top>
                     <width>198</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -2784,14 +2784,14 @@
                     <left>9</left><top>310</top>
                     <width>219</width><height>35</height>
                     <font>font13</font>
-                    <textcolor>FFE5E5E8</textcolor>
+                    <textcolor>FFE5E5E1</textcolor>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>false</scroll>
                 </control>
                 <control type="label">
                     <left>9</left><top>338</top>
                     <width>218</width><height>19</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
@@ -2804,7 +2804,7 @@
                     
                 </control>
                 <control type="image">
-                    <left>3</left><top>3</top><width>236</width><height>307</height>
+                    <left>3</left><top>3</top><width>233</width><height>301</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(413)</visible>
                 </control>
@@ -2822,7 +2822,7 @@
                 <control type="label">
                     <left>14</left><top>117</top>
                     <width>211</width><height>54</height>
-                    <font>font13</font><textcolor>FFC2C2C8</textcolor>
+                    <font>font13</font><textcolor>FFC4C6C3</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <visible>String.IsEmpty(ListItem.Art(poster)) + String.IsEmpty(ListItem.Art(fanart)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -2830,7 +2830,7 @@
                 <control type="label">
                     <left>20</left><top>116</top>
                     <width>198</width><height>88</height>
-                    <font>font40_title</font><textcolor>FFE50914</textcolor>
+                    <font>font40_title</font><textcolor>FFD2B889</textcolor>
                     <align>center</align><aligny>center</aligny>
                     <label>+</label>
                     <visible>String.IsEqual(ListItem.Property(is_more),yes)</visible>
@@ -2866,12 +2866,12 @@
                 <control type="label">
                     <left>9</left><top>338</top>
                     <width>218</width><height>19</height>
-                    <font>font12</font><textcolor>FFB5B5BD</textcolor>
+                    <font>font12</font><textcolor>FF939A9E</textcolor>
                     <label>$INFO[ListItem.Property(year)]</label>
                     <visible>!String.IsEmpty(ListItem.Property(year)) + !String.IsEqual(ListItem.Property(is_more),yes)</visible>
                 </control>
                 <control type="image">
-                    <left>9</left><top>304</top><width>218</width><height>3</height>
+                    <left>9</left><top>304</top><width>218</width><height>2</height>
                     <texture>$INFO[Window.Property(cinema_focus)]</texture><aspectratio>stretch</aspectratio>
                     <visible>Control.HasFocus(413)</visible>
                 </control>
@@ -2881,7 +2881,7 @@
         </control>
         <control type="label">
             <left>120</left><top>1035</top><width>1680</width><height>30</height>
-            <font>font12</font><textcolor>FF8B8B91</textcolor>
+            <font>font12</font><textcolor>FF969C9C</textcolor>
             <label>$INFO[Window.Property(ui_status)]</label>
             <scroll>true</scroll>
         </control>

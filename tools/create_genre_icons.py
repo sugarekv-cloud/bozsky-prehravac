@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Build neon/cinematic PNG genre cover art for KIVORA (build time only).
+"""Build restrained editorial PNG genre cover art for KIVORA (build time only).
 
 All 24 pieces are self-contained, work offline in Kodi, and share a consistent
 dark streaming-service palette. Requires Pillow only during the build.
@@ -22,8 +22,8 @@ ART={
     'sport': 'trophy', 'biography': 'person', 'disaster': 'volcano',
     'psychological': 'mind', 'kids': 'teddy', 'short': 'clapper',
 }
-VIOLET=(176,107,255,255)
-WHITE=(251,246,255,255)
+BRASS=(197,169,117,255)
+WHITE=(239,233,220,255)
 
 
 def background(salt):
@@ -37,15 +37,15 @@ def background(salt):
             dist=min(1.0,math.hypot((x-cx)/(w*.9),(y-cy)/(h*.8)))
             vignette=max(0.0,1-dist)
             glow=vignette**2
-            px[x,y]=(int(10+13*glow),int(10+6*glow),
-                      int(18+34*glow),255)
+            px[x,y]=(int(12+9*glow),int(16+8*glow),
+                      int(21+6*glow),255)
     d=ImageDraw.Draw(im)
     for r in (93,126,163):
-        d.ellipse((w//2-r,185-r,w//2+r,185+r),outline=(44,24,66,110),width=2)
+        d.ellipse((w//2-r,185-r,w//2+r,185+r),outline=(55,56,53,74),width=2)
     for x in (18,w-19):
-        d.line((x,24,x,h-24),fill=(64,43,102,150),width=1)
-    d.rounded_rectangle((12,12,w-13,h-13),radius=13,outline=(67,44,103,255),width=2)
-    d.rectangle((35,h-22,w-35,h-19),fill=(146,84,227,255))
+        d.line((x,24,x,h-24),fill=(82,79,70,136),width=1)
+    d.rounded_rectangle((12,12,w-13,h-13),radius=13,outline=(75,73,66,215),width=2)
+    d.rectangle((35,h-22,w-35,h-19),fill=(186,157,112,255))
     return im
 
 
@@ -215,15 +215,15 @@ def make_genre_icons():
     for i,(name,art) in enumerate(ART.items()):
         im=background(i)
         vector=artwork(art)
-        glow=vector.filter(ImageFilter.GaussianBlur(14))
-        glow.putalpha(glow.getchannel('A').point(lambda v:int(v*.45)))
-        purple=Image.new('RGBA',SIZE,VIOLET)
-        purple.putalpha(glow.getchannel('A'))
-        im=Image.alpha_composite(im,purple)
-        narrow=vector.filter(ImageFilter.GaussianBlur(3))
-        violet=Image.new('RGBA',SIZE,(176,91,255,255))
-        violet.putalpha(narrow.getchannel('A'))
-        im=Image.alpha_composite(im,violet)
+        glow=vector.filter(ImageFilter.GaussianBlur(8))
+        glow.putalpha(glow.getchannel('A').point(lambda v:int(v*.18)))
+        bronze=Image.new('RGBA',SIZE,BRASS)
+        bronze.putalpha(glow.getchannel('A'))
+        im=Image.alpha_composite(im,bronze)
+        narrow=vector.filter(ImageFilter.GaussianBlur(2))
+        warm=Image.new('RGBA',SIZE,(184,153,105,255))
+        warm.putalpha(narrow.getchannel('A'))
+        im=Image.alpha_composite(im,warm)
         im=Image.alpha_composite(im,vector)
         im.save(DEST/(name+'.png'),optimize=True)
     return [DEST/(name+'.png') for name in ART]

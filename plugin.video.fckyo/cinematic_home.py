@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""TV-first, remote-friendly Kodi home window for Božský přehrávač.
+"""TV-first, remote-friendly Kodi home window for KIVORA.
 
 Only navigates into the existing playback/search handlers. Playback remains
 manual and Webshare credentials never leave the add-on.
@@ -41,12 +41,12 @@ def _rgba_png(path, width, height, kind):
         for x in range(width):
             if kind == 'background':
                 h = y / float(max(1,height-1))
-                color = (int(7+3*h),int(7+3*h),int(9+5*h),255)
+                color = (int(9+4*h),int(12+5*h),int(17+7*h),255)
             elif kind == 'fade':
-                edge = 249-231*x/float(max(1,width-1))
-                bottom = 252*(y/float(max(1,height-1)))**3
+                edge = 253-241*x/float(max(1,width-1))
+                bottom = 254*(y/float(max(1,height-1)))**2.4
                 a = int(min(255,max(edge,bottom)))
-                color = (7,7,10,a)
+                color = (9,12,17,a)
             elif kind in ('gear','gear_dark'):
                 # Crisp 8-tooth settings icon with a transparent center.
                 cx=(x-(width-1)/2.0)/(min(width,height))
@@ -55,21 +55,21 @@ def _rgba_png(path, width, height, kind):
                 theta=math.atan2(cy,cx)
                 outer=0.39 if math.cos(8*theta)>0.28 else 0.305
                 if 0.132 < radial <= outer:
-                    color = (18,18,23,255) if kind=='gear_dark' else (238,238,241,255)
+                    color = (14,17,22,255) if kind=='gear_dark' else (226,224,220,255)
                 else:
                     color = (0,0,0,0)
             elif kind == 'focus':
-                color = (229,9,20,255)
+                color = (201,170,113,255)
             elif kind == 'chip':
-                color = (8,8,10,236)
+                color = (8,11,15,235)
             elif kind == 'cardfade':
                 a = int(248 * (y/float(max(1,height-1)))**1.6)
-                color = (5,5,7,a)
+                color = (8,11,15,a)
             elif kind == 'nav_hover':
-                color = (40,40,44,245)
+                color = (40,44,48,244)
             elif kind == 'tile':
                 # Matte charcoal surfaces: restrained black edges, never purple glow.
-                radius=8
+                radius=5
                 dx=max(radius-x,0,x-(width-radius-1))
                 dy=max(radius-y,0,y-(height-radius-1))
                 outside=(dx*dx+dy*dy)>radius*radius
@@ -80,17 +80,17 @@ def _rgba_png(path, width, height, kind):
                     edge=(x<=1 or x>=width-2 or y<=1 or y>=height-2)
                     accent=max(0,1-math.hypot(x-width*.74,y-height*.20)/
                                         float(max(1,width)))
-                    color=(int(15+5*top+2*accent),
-                           int(15+5*top+2*accent),
-                           int(18+6*top+2*accent),255)
+                    color=(int(18+3*top+accent),
+                           int(21+4*top+accent),
+                           int(27+5*top+accent),255)
                     if edge:
-                        color=(39,39,43,230)
+                        color=(45,48,52,232)
             elif kind == 'cta':
-                color = (215,13,25,255)
+                color = (239,231,217,255)
             elif kind == 'cta_focus':
-                color = (245,28,43,255)
+                color = (255,243,218,255)
             else:
-                color = (28,28,32,255)
+                color = (17,21,26,255)
             raw.extend(color)
     header = b'\x89PNG\r\n\x1a\n'
     ihdr = struct.pack('>IIBBBBB', width, height, 8, 6, 0, 0, 0)
@@ -116,7 +116,7 @@ def ensure_textures(profile):
              'cardfade':(128,84)}
     result = {}
     for kind,(w,h) in specs.items():
-        result[kind] = _rgba_png(os.path.join(folder,'stream_v9_'+kind+'.png'),w,h,kind)
+        result[kind] = _rgba_png(os.path.join(folder,'stream_v10_'+kind+'.png'),w,h,kind)
     return result
 
 
@@ -132,7 +132,7 @@ class CinemaWindow(xbmcgui.WindowXMLDialog):
         textures = self.textures
         for kind,path in textures.items():
             self.setProperty('cinema_'+kind,path)
-        self.setProperty('hero_title','Božský přehrávač')
+        self.setProperty('hero_title','KIVORA')
         self.setProperty('hero_info','Všechny dostupné filmy na jednom místě')
         self.setProperty('hero_plot','Pohyb šipkami • OK pro výběr • Zpět pro návrat')
         self.setProperty('hero_art','')
@@ -237,7 +237,7 @@ def launch(addon, profile, get_url, revalidate, search_page, catalogue_factory):
         progress=None
         try:
             progress=xbmcgui.DialogProgress()
-            progress.create('Božský přehrávač', 'Načítám dostupné filmy z Webshare…')
+            progress.create('KIVORA', 'Načítám dostupné filmy z Webshare…')
             token=revalidate()
             if token:
                 recent,popular,stats=discover(token,search_page)
