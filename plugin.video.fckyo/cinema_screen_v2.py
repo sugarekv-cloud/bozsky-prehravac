@@ -16,7 +16,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.45.0'
+VERSION='0.46.0'
 
 
 def tile(name,kind,**extra):
@@ -204,6 +204,14 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         except (RuntimeError,AttributeError,TypeError):
             pass
         self._update_hero()
+        # Never block Android TV while looking up missing Czech synopses.
+        warm=getattr(self.service,'start_csfd_description_refresh',None)
+        if callable(warm):
+            visible=[card for row in self.rail_items[:5] for card in row[:8]]
+            try:
+                warm(visible,limit=12)
+            except Exception as exc:
+                self._catalog_problem('ČSFD popisy',exc)
 
     def _selected(self,control_id=None):
         try:
@@ -229,6 +237,24 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             return
         self.setProperty(name,value)
         cache[name]=value
+
+    def _csfd_description(self,card):
+        """Hero and film/series detail share the SAME Czech-source synopsis."""
+        if not isinstance(card,dict):
+            return ''
+        from cinema_csfd_plot import csfd_plot
+        getter=getattr(self.service,'_cached_description',None)
+        if callable(getter):
+            try:
+                result=getter(card.get('raw') or card.get('title') or '',
+                              card.get('year') or '',
+                              card.get('kind') or 'movie',
+                              card.get('original') or '')
+                if result:
+                    return result
+            except (AttributeError,TypeError,ValueError):
+                pass
+        return csfd_plot(card)
 
     def _update_hero(self):
         c=self._selected()
@@ -273,14 +299,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             except (ValueError,TypeError):
                 pass
         self._set_hero_property('hero_info','  ·  '.join(x for x in text if x)[:115])
-        plot=str(c.get('plot') or '').strip()
-        if not plot or plot.casefold().startswith('soubor nalezen na webshare') or plot.casefold().startswith('film nebo seriál je dostupný'):
-            lookup=getattr(self.service,'_cached_description',None)
-            if callable(lookup):
-                plot=lookup(c.get('raw') or c.get('title') or '',
-                            c.get('year') or '',c.get('kind') or 'movie')
-        if not plot or plot.casefold().startswith('soubor nalezen'):
-            plot='Popis tohoto titulu zatím není v metadatech k dispozici.'
+        plot=self._csfd_description(c)
+        if not plot:
+            plot='Popis z ČSFD zatím není dostupný.'
         # The first two sentences are enough for a legible TV hero.
         import re
         summary=re.split(r'(?<=[.!?])\s+(?=[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ])',plot.strip())
@@ -1034,7 +1055,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 summary='\n'.join(x for x in (
                     str(selected.get('year') or ''),
                     str(selected.get('genre') or ''),
-                    str(selected.get('plot') or 'Popis není dostupný.')
+                    self._csfd_description(selected) or
+                    'Popis z ČSFD zatím není dostupný.'
                 ) if x)
                 xbmcgui.Dialog().textviewer(str(selected.get('title') or 'Detail'),
                                             summary)
