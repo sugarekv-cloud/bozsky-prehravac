@@ -1070,6 +1070,29 @@ def novinky_search_page(token, offset=0, what='', sort='recent'):
 
 
 
+def webshare_search_suggestions(token,what,limit=8):
+    """Use the official Webshare /suggest endpoint for filename suggestions.
+
+    Suggestions are never treated as playable results and carry no
+    credentials or stream URLs into user-visible labels.
+    """
+    what=str(what or '').strip()
+    if not what or not token:
+        return []
+    try:
+        response=_session.post(API+'suggest/',
+            data={'what':what,'limit':max(1,min(int(limit),10))},
+            timeout=(3,5))
+        response.raise_for_status()
+        xml=ET.fromstring(response.content)
+        if not is_ok(xml):
+            return []
+        return [item.text.strip()[:180] for item in xml.findall('.//suggestion/value')
+                if item.text and item.text.strip()][:10]
+    except Exception:
+        return []
+
+
 # Catalog navigation: metadata is decoration; only Webshare-confirmed files are shown.
 def catalog_home(params):
     kind=params.get('kind','movie')
@@ -1813,7 +1836,8 @@ def cinematic_menu():
         if _addon.getSetting('wsuser') and _addon.getSetting('wspass'):
             token=revalidate()
         destination,is_play=launch(_addon,_profile,get_url,token,
-            novinky_search_page,_csfd_client,_premiere_client,revalidate)
+            novinky_search_page,_csfd_client,_premiere_client,revalidate,
+            suggest_provider=webshare_search_suggestions)
     except Exception:
         traceback.print_exc()
         popinfo('Filmové rozhraní nelze spustit. Podrobnosti jsou v Kodi logu.',
