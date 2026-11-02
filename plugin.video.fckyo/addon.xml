@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="Božský přehrávač" version="0.36.0" provider-name="Božský přehrávač Community">
+<addon id="plugin.video.fckyo" name="KIVORA" version="0.37.0" provider-name="KIVORA Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -10,7 +10,7 @@
     </extension>
     <extension point="xbmc.service" library="service.py" start="startup" />
     <extension point="xbmc.addon.metadata">
-        <summary>Božský přehrávač – filmy a seriály v Kodi</summary>
+        <summary>KIVORA – filmy a seriály v Kodi</summary>
         <disclaimer lang="en_GB">The plugin does not provide any content, it is only a simulation of the browser of a publicly available web site. I am not responsible for the content provided by this site.</disclaimer>
         <disclaimer lang="sk_SK">Plugin neposkytuje žiaden obsah, je to len simulácia prehliadača verejne dostupnej web stránky. Nie som zodpovedný za obsah, ktorý táto stránka poskytuje.</disclaimer>
         <disclaimer lang="cs_CZ">Plugin neposkytuje žádný obsah, je to jen simulace prohlížeče veřejně dostupné web stránky. Nejsem zodpovědný za obsah, který tato stránka poskytuje.</disclaimer>
@@ -22,6 +22,12 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.37.0 KIVORA – aktualizace názvu a loga[/B]
+- Sjednocen název doplňku a repozitáře na KIVORA
+- Aktualizován televizní banner, ikona, nápisy a informační dialogy
+- Zachována technická ID a data předchozí instalace, bez nutnosti odinstalace
+- Automatické přehrání další epizody je pro nové instalace výchozím nastavením vypnuto
+
 [B]0.36.0 NOVÝ CINEMA TV DESIGN[/B]
 - Filmy mají sjednocené Netflix-inspirované kartičky bez duplicitních popisků
 - Grafitově černá paleta, čistá červená pro aktivní položky a tlačítko Přehrát
