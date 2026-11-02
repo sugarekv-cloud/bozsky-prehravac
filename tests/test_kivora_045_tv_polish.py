@@ -93,7 +93,7 @@ class TvPolishTests(unittest.TestCase):
                 self.assertLessEqual(int(year.findtext('top'))+
                                      int(year.findtext('height')),
                                      int(item.get('height')))
-                self.assertIn('hide_caption',year.findtext('visible'))
+                self.assertNotIn('hide_caption',year.findtext('visible'))
                 self.assertEqual(year.findtext('textcolor'),'FFCED2CF')
 
     def test_all_shelves_hide_unneeded_tip_captions(self):
