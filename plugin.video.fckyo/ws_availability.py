@@ -7,7 +7,7 @@ import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from xml.etree import ElementTree as ET
-from novinky_catalogue import quality_score
+from catalog_engine import file_score
 import requests
 
 TTL_OK = 600
@@ -49,10 +49,10 @@ class Availability:
         return ok
 
     def check_groups(self, groups, max_workers=4):
-        """Check best quality first, stop at first downloadable file per movie."""
+        """Check CZ-preferred highest-quality releases first for movies and shows."""
         groups=[g for g in groups if g.get('files')]
         def confirm(g):
-            for file in sorted(g['files'],key=quality_score,reverse=True)[:3]:
+            for file in sorted(g['files'],key=file_score,reverse=True)[:3]:
                 ident=str(file.get('ident') or '')
                 if ident and self._check(ident):
                     result=dict(g)

@@ -154,6 +154,22 @@ class DataLayer(unittest.TestCase):
         self.assertEqual(len(choose_files(entries,quality='4k',language='cz')),0)
         self.assertEqual(len(choose_files(entries,quality='all',language='cz')),1)
 
+    def test_movie_and_episode_variants_are_czech_first(self):
+        movie_versions=[ws('foreign4k','Film.2025.2160p.MULTI.mkv'),
+                        ws('czfullhd','Film.2025.1080p.CZ.Dabing.mkv'),
+                        ws('czultra','Film.2025.2160p.CZ.mkv'),
+                        ws('czsubs','Film.2025.2160p.CZSUB.mkv')]
+        self.assertEqual([f['ident'] for f in choose_files(movie_versions)],
+                         ['czultra','czfullhd','foreign4k','czsubs'])
+        episodes=[ws('en4k','Show.S01E02.2160p.EN.mkv'),
+                  ws('cz1080','Show.S01E02.1080p.CZ.mkv'),
+                  ws('cz720','Show.S01E02.720p.CZ.mkv')]
+        grouped=grouped_episodes(episodes,'Show')
+        self.assertEqual([f['ident'] for f in grouped[1][2]],
+                         ['cz1080','cz720','en4k'])
+        self.assertEqual([f['ident'] for f in choose_files(grouped[1][2])],
+                         ['cz1080','cz720','en4k'])
+
     def test_sort_rating_vs_alphabetically(self):
         a={'title':'Z', 'rating':80, 'files':[], 'year':'2020'}
         b={'title':'A', 'rating':70, 'files':[], 'year':'2026'}

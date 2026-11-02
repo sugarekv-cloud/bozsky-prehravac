@@ -96,8 +96,11 @@ def quality_score(file):
         size = int(file.get('size') or 0)
     except (ValueError, TypeError):
         size = 0
-    return (resolution(name) * 10 + (220 if is_czech_audio_marked(name) else 0)
-            + (60 if is_hdr(name) else 0) + min(size // (1024**3), 60))
+    # The classic Webshare listing uses the same CZ-first priority as Cinema.
+    # 4K without CZ tags remains visible after CZ 1080p/720p variants.
+    return ((100000 if is_czech_audio_marked(name) else 0) +
+            resolution(name) * 10 + (60 if is_hdr(name) else 0) +
+            min(size // (1024**3), 60))
 
 
 def matching(file, item, minimum=0, only_cz=False, only_hdr=False, year=''):
