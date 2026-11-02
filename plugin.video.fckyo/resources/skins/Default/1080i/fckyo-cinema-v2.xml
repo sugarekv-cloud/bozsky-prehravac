@@ -27,7 +27,7 @@
             <visible>!String.IsEmpty(Window.Property(hero_art))</visible>
         </control>
         <control type="image">
-            <left>1020</left><top>96</top><width>900</width><height>436</height>
+            <left>900</left><top>96</top><width>1020</width><height>436</height>
             <texture>$INFO[Window.Property(hero_poster)]</texture>
             <aspectratio>scale</aspectratio>
             <colordiffuse>A8FFFFFF</colordiffuse>
