@@ -81,8 +81,13 @@ def file_score(file):
         size=int(file.get('size') or 0)
     except (ValueError, TypeError):
         size=0
-    return (d['resolution']*10 + (260 if prefers_cz(file) else 0) +
-            (35 if d['hdr'] else 0)+src+min(size//(1024**3),60))
+    # Language is a preference, not a hard filter: show every verified
+    # release, but put CZ-marked audio before any unmarked/foreign version.
+    # Within each language tier favor resolution, then HDR/source/size.
+    # Filename tags are only hints; actual audio tracks are not verified.
+    return ((100000 if d['language']=='CZ (název)' else 0) +
+            d['resolution']*10 + (35 if d['hdr'] else 0) +
+            src + min(size//(1024**3),60))
 
 
 def file_label(file):
