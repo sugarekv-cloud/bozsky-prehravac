@@ -89,7 +89,7 @@ class AtelierTVTests(unittest.TestCase):
 
     def test_no_bright_red_or_purple_glows_in_skin(self):
         source = SKIN.read_text(encoding='utf-8')
-        self.assertIn('KIVORA 0.45 / TV POLISH', source)
+        self.assertIn('KIVORA CINEMA 2.0', source)
         self.assertNotIn('FFE50914', source)
         self.assertIn('FFC9AA71', source)
 
@@ -109,8 +109,8 @@ class AtelierTVTests(unittest.TestCase):
         brand = (ROOT / 'tools/create_brand.py').read_text(encoding='utf-8')
         self.assertIn('god_portrait', brand)
         textures = (PLUGIN / 'cinematic_home.py').read_text(encoding='utf-8')
-        self.assertIn('stream_v11_', textures)
-        self.assertIn('color = (201,170,113,255)', textures)
+        self.assertIn('stream_v12_cinema2_', textures)
+        self.assertIn('color = (221,179,106,255)', textures)
         metadata = ET.parse(PLUGIN / 'addon.xml').getroot()
         self.assertEqual(metadata.get('name'), 'KIVORA')
         self.assertEqual(metadata.get('version'), '0.47.0')
