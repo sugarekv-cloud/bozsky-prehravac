@@ -52,6 +52,12 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         for cid,icon_path in getattr(self,'icon_paths',{}).items():
             self.setProperty('side_icon_'+str(cid),icon_path)
         self.setProperty('app_version','v'+VERSION)
+        try:
+            from cinema_profiles import active_profile
+            self.setProperty('active_profile_name',
+                             active_profile(self.return_profile)['name'])
+        except Exception:
+            self.setProperty('active_profile_name','Hlavní')
         self.setProperty('section_label','ÚVOD')
         self.setProperty('ui_status','Šipky = pohyb, OK = výběr, Zpět = předchozí obrazovka')
         self.setProperty('hero_title','KIVORA')
@@ -944,7 +950,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 else 'VYPNUTO'),
             'Diagnostika a stav doplňku',
             'Zálohovat oblíbené a rozkoukané',
-            'Obnovit oblíbené a rozkoukané ze zálohy'
+            'Obnovit oblíbené a rozkoukané ze zálohy',
+            'Uživatelské profily'
         ])
         if selected==0:
             self._open_settings()
@@ -973,6 +980,53 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self._library_backup(False)
         elif selected==9:
             self._library_backup(True)
+        elif selected==10:
+            self._profiles_menu()
+
+    def _profiles_menu(self):
+        """Keep viewing history and favorites separate on a shared Kodi TV."""
+        from cinema_profiles import (list_profiles,active_profile,add_profile,
+            activate_profile,delete_profile)
+        from cinema_user_state import WatchStore
+        dialog=xbmcgui.Dialog()
+        profile=self.return_profile
+        people=list_profiles(profile)
+        current=active_profile(profile)['id']
+        labels=[('✓  ' if p['id']==current else '     ')+p['name']
+                for p in people]
+        choice=dialog.select('KIVORA · vyber profil',labels+[
+            '+ Vytvořit nový profil','Odstranit jiný profil'])
+        if choice<0:
+            return
+        try:
+            if choice<len(people):
+                activate_profile(profile,people[choice]['id'])
+            elif choice==len(people):
+                name=dialog.input('Název profilu',type=xbmcgui.INPUT_ALPHANUM)
+                if not name:
+                    return
+                add_profile(profile,name)
+            else:
+                removable=[p for p in people if p['id'] not in ('main',current)]
+                if not removable:
+                    dialog.notification('KIVORA','Není co odstranit.')
+                    return
+                n=dialog.select('Odstranit profil', [p['name'] for p in removable])
+                if n<0:
+                    return
+                chosen=removable[n]
+                if not dialog.yesno('Odstranit profil',
+                    'Smazat profil %s včetně jeho historie a oblíbených?'%chosen['name']):
+                    return
+                delete_profile(profile,chosen['id'])
+                dialog.notification('KIVORA','Profil odstraněn.')
+                return
+            self.watch_store=WatchStore(profile)
+            self.setProperty('active_profile_name',active_profile(profile)['name'])
+            self.stack=[]
+            self._screen('home',stack=False)
+        except (OSError,ValueError,TypeError) as exc:
+            dialog.ok('KIVORA – profily',str(exc)[:250])
 
     def _library_backup(self,restore=False):
         """Manual local export/import. No Webshare login data is included."""
