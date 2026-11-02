@@ -79,7 +79,7 @@ jobs:
           python build_repo.py --owner sugarekv-cloud --output site
           python - <<'PY'
           import pathlib, zipfile
-          path=pathlib.Path('site/plugin.video.fckyo/plugin.video.fckyo-0.39.0.zip')
+          path=pathlib.Path('site/plugin.video.fckyo/plugin.video.fckyo-0.40.0.zip')
           assert path.is_file() and path.stat().st_size>100000
           with zipfile.ZipFile(path) as z:
               assert z.testzip() is None
