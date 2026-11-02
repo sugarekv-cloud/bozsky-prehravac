@@ -55,7 +55,7 @@ def main():
     make_brand()
     from tools.create_live_tv_icons import make_live_tv_icons
     live_art=make_live_tv_icons()
-    assert len(live_art)==3 and all(p.is_file() and p.stat().st_size>1000
+    assert len(live_art)==5 and all(p.is_file() and p.stat().st_size>1000
                                     for p in live_art)
     genre_art=make_genre_icons()
     assert len(genre_art)==24 and all(p.is_file() and p.stat().st_size>1000
