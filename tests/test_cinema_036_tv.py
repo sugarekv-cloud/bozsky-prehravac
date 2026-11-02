@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Guard the 0.36.0 TV redesign against unusable or visually inconsistent Kodi XML.
+"""Guard the TV redesign against unusable or visually inconsistent Kodi XML.
 
 This runs without Kodi: checks declarative geometry, interaction routing and artwork
 fallback. A real Android TV smoke test is still required after installation.
@@ -27,9 +27,9 @@ class CinemaTV036Tests(unittest.TestCase):
 
     def test_version_and_preserved_plugin_identity(self):
         addon = ET.parse(PLUGIN / 'addon.xml').getroot()
-        self.assertEqual(addon.get('version'), '0.36.0')
+        self.assertEqual(addon.get('version'), '0.37.0')
         self.assertEqual(addon.get('id'), 'plugin.video.fckyo')
-        self.assertEqual(addon.get('name'), 'Božský přehrávač')
+        self.assertEqual(addon.get('name'), 'KIVORA')
 
     def test_remote_navigation_buttons_and_bluey(self):
         for ident in (101, 102, 103, 104, 105, 106, 107, 109, 108, 110):
@@ -125,7 +125,7 @@ class CinemaTV036Tests(unittest.TestCase):
 
     def test_show_search_and_playback_logic_intact(self):
         logic = (PLUGIN / 'cinema_screen_v2.py').read_text(encoding='utf8')
-        for fragment in ("VERSION='0.36.0'", "'bluey_search'", "'genre_open'",
+        for fragment in ("VERSION='0.37.0'", "'bluey_search'", "'genre_open'",
                          "'catalog_more'", "'file'", "'movie'", "'show'",
                          'self._play_saved(c)', "self._refresh('files'"):
             self.assertIn(fragment, logic)

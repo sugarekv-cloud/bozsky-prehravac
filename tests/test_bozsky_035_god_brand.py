@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""The Božský přehrávač rebrand changes only names and original god artwork."""
+"""The KIVORA rebrand changes only names and original god artwork."""
 from pathlib import Path
 import tempfile
 import unittest
@@ -13,11 +13,11 @@ PLUGIN=ROOT/'plugin.video.fckyo'
 class DivineBrandingTests(unittest.TestCase):
     def test_chosen_kodi_name_and_permanent_technical_id(self):
         root=ET.parse(PLUGIN/'addon.xml').getroot()
-        self.assertEqual(root.get('name'),'Božský přehrávač')
-        self.assertEqual(root.get('version'),'0.36.0')
+        self.assertEqual(root.get('name'),'KIVORA')
+        self.assertEqual(root.get('version'),'0.37.0')
         self.assertEqual(root.get('id'),'plugin.video.fckyo')
         self.assertEqual(root.findtext(".//summary"),
-                         'Božský přehrávač – filmy a seriály v Kodi')
+                         'KIVORA – filmy a seriály v Kodi')
 
     def test_generated_god_emblem_and_wordmark_are_not_empty(self):
         import sys
@@ -46,8 +46,8 @@ class DivineBrandingTests(unittest.TestCase):
         script=(ROOT/'build_repo.py').read_text(encoding='utf8')
         self.assertIn("REPO_ID='repository.bozskyprehravac'",script)
         self.assertIn("PLUGIN_ID='plugin.video.fckyo'",script)
-        self.assertIn("REPO_NAME='Božský přehrávač – repozitář'",script)
-        self.assertIn('Božský přehrávač',script)
+        self.assertIn("REPO_NAME='KIVORA – repozitář'",script)
+        self.assertIn('KIVORA',script)
 
     def test_real_navigation_and_bluey_preserved(self):
         skin=ET.parse(PLUGIN/'resources'/'skins'/'Default'/
