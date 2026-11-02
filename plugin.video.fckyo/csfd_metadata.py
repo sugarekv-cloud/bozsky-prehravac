@@ -135,7 +135,12 @@ def parse_entry(entry):
         uid = ''
     poster = _image(_get(entry, 'poster', 'poster_url', 'posterUrl', 'image', 'img', 'obrazek', 'obrázek', 'thumbnail'))
     backdrop = _image(_get(entry, 'backdrop', 'fanart', 'background', 'backdrop_url'))
-    description = _as_string(_get(entry, 'description', 'plot', 'overview', 'content', 'obsah', 'synopsis', 'anotace', 'text'))
+    description = _as_string(_get(entry, 'description', 'plot', 'plots',
+        'overview', 'content', 'contents', 'obsah', 'synopsis', 'anotace', 'text'))
+    # Keep text from the film synopsis, not an HTML fragment.
+    if description:
+        description = re.sub(r'<[^>]+>', ' ', description)
+        description = re.sub(r'\\s+', ' ', description).strip()
     if len(description) > 1600:
         description = description[:1597]+'...'
     rating = _rating(_get(entry, 'rating', 'csfd_rating', 'rating_percent', 'rating_percentage', 'hodnoceni', 'hodnocení', 'score', 'percent'))
@@ -145,7 +150,8 @@ def parse_entry(entry):
             'fanart': backdrop, 'plot': description, 'rating': rating,
             'genres': genre, 'runtime': duration, 'uid': uid,
             'csfd_url': ('https://www.csfd.cz/film/' + uid + '/' if uid else direct_url if 'csfd.cz/film/' in direct_url else ''),
-            'rating_source': 'ČSFD' if rating is not None else ''}
+            'rating_source': 'ČSFD' if rating is not None else '',
+            'plot_source': 'ČSFD/CZDB' if description and uid else 'CZDB' if description else ''}
 
 
 def select_match(payload, title, year=''):
@@ -193,6 +199,22 @@ class Catalogue:
 
     def _key(self, title, year):
         return '%s@%s' % (norm(title)[:130], year or '')
+
+    def peek(self, title, year=''):
+        """Read previously fetched metadata only: safe on Kodi's GUI thread."""
+        self._load()
+        key=self._key(title,year)
+        with self._mutex:
+            for candidate in (key,self._key(title,'')):
+                item=self._cache.get(candidate)
+                if not isinstance(item,dict):
+                    continue
+                if time.time()-float(item.get('time') or 0) >= TTL_POSITIVE:
+                    continue
+                metadata=item.get('metadata')
+                if metadata:
+                    return metadata
+        return None
 
     def lookup(self, title, year=''):
         self._load()
