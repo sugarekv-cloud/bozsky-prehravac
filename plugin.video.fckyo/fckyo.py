@@ -745,28 +745,51 @@ def _smart_results(term, aliases=()):
         return None
     result = {}
     queries = []
-    for name in [term] + list(aliases or ()):
-        for variant in search_variants(name):
-            if variant and variant.casefold() not in [x.casefold() for x in queries]:
-                queries.append(variant)
-    for q in queries[:6]:
-        try:
-            response = _session.post(API + 'search/', data={
-                'what': q, 'category': 'video', 'sort': 'rating', 'limit': 100,
-                'offset': 0, 'wst': token}, timeout=(3, 8))
-            response.raise_for_status()
-            xml = ET.fromstring(response.content)
-            if not is_ok(xml):
-                continue
-            for entry in xml.iter('file'):
-                f = todict(entry)
-                ident = f.get('ident')
-                if ident and f.get('name') and ident not in result:
-                    # No credentials or Webshare token stored in cache.
-                    result[ident] = {k:f[k] for k in ('ident','name','size','img',
-                        'password','removed','available','copyrighted') if k in f}
-        except Exception:
-            traceback.print_exc()
+    seen_queries = set()
+    names = [term] + list(aliases or ())
+    # Search all language aliases FIRST, before spending the request budget
+    # on spelling variations of only the Czech name.
+    for name in names:
+        name=str(name or '').strip()
+        key=name.casefold()
+        if name and key not in seen_queries:
+            queries.append(name)
+            seen_queries.add(key)
+    for name in names:
+        for spelling in search_variants(name)[1:]:
+            key=spelling.casefold()
+            if key not in seen_queries:
+                queries.append(spelling)
+                seen_queries.add(key)
+    successful=0
+    # 8 distinct terms maximum; load page 2 only when the first page is full.
+    for index,q in enumerate(queries[:8]):
+        for offset in (0, 100) if index < 2 else (0,):
+            try:
+                response = _session.post(API + 'search/', data={
+                    'what': q, 'category': 'video', 'sort': 'rating',
+                    'limit': 100, 'offset': offset, 'wst': token}, timeout=(3, 8))
+                response.raise_for_status()
+                xml = ET.fromstring(response.content)
+                if not is_ok(xml):
+                    break
+                successful+=1
+                page = [todict(entry) for entry in xml.iter('file')]
+                for f in page:
+                    ident=f.get('ident')
+                    if ident and f.get('name') and ident not in result:
+                        # Cache metadata only; never cache a session token or URL.
+                        result[ident] = {k:f[k] for k in ('ident','name','size','img',
+                            'password','removed','available','copyrighted','adult')
+                            if k in f}
+                if len(page)<100:
+                    break
+            except Exception:
+                traceback.print_exc()
+                break
+    if not successful:
+        # A network/API failure is not the same as a genuine empty search.
+        return None
     files = list(result.values())
     try:
         if not os.path.exists(_profile):
