@@ -967,7 +967,8 @@ class CinemaService:
     def search_progress(self, query, kind='all'):
         state=self.search_scan.get((normalize((query or '').strip()),kind))
         return {'pages':max(0,state['attempted']-state['failed']),
-                'pending':len(state['plan'])-len(state['done'])} if state else {'pages':0,'pending':0}
+                'pending':(len(state['plan'])-len(state['done'])+
+                           sum(len(g) for g in state.get('pending',{}).values()))} if state else {'pages':0,'pending':0}
 
     def search_has_more(self, query, kind='all'):
         key=(normalize((query or '').strip()),kind)
@@ -1018,7 +1019,7 @@ class CinemaService:
         requested_episode=state['episode']
         # At most 12 API pages per click; do not freeze Android TV on a
         # request returning hundreds or thousands of pages.
-        budget=12 if more else 11
+        budget=12 if more else 7
         steps=0
         fresh=[]
         while steps<budget and len(state['done'])<len(plan):
