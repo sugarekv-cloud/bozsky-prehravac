@@ -1800,6 +1800,10 @@ def cinematic_menu():
     xbmcplugin.endOfDirectory(_handle,succeeded=False,cacheToDisc=False)
     if destination:
         if is_play:
+            logger=getattr(xbmc,'log',None)
+            if callable(logger):
+                logger('KIVORA playback: dialog closed; starting player',
+                       getattr(xbmc,'LOGINFO',0))
             xbmc.executebuiltin('PlayMedia(%s)' % destination)
         else:
             xbmc.executebuiltin('ActivateWindow(Videos,%s,return)' % destination)
