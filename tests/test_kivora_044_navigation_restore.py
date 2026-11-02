@@ -13,6 +13,12 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'plugin.video.fckyo'))
 from cinema_navigation import save,consume,discard,FILENAME
+if 'xbmcgui' not in sys.modules:
+    sys.modules['xbmcgui']=types.ModuleType('xbmcgui')
+if not hasattr(sys.modules['xbmcgui'],'WindowXMLDialog'):
+    sys.modules['xbmcgui'].WindowXMLDialog=type('WindowXMLDialog',(),{})
+if 'xbmc' not in sys.modules:
+    sys.modules['xbmc']=types.ModuleType('xbmc')
 from cinema_screen_v2 import CinemaScreen
 
 
@@ -91,7 +97,7 @@ class OneShotReturnTests(unittest.TestCase):
 
     def test_back_from_episode_details_reverses_navigation(self):
         win=CinemaScreen.__new__(CinemaScreen)
-        win.stack=[('shows',None,402,1)]
+        win.stack=[('shows',None,401,1)]
         win.rail_items=[[{'ident':'a'},{'ident':'b'},{'ident':'c'}]]+[[] for _ in range(12)]
         win._screen=lambda view,ctx:None
         selected=[]
@@ -99,7 +105,7 @@ class OneShotReturnTests(unittest.TestCase):
         win.getControl=lambda cid:types.SimpleNamespace(selectItem=lambda index:selected.append(index))
         win._update_hero=lambda:None
         win._go_back()
-        self.assertEqual(selected,[402,0]) if False else None
+        self.assertEqual(selected,[401,1])
         self.assertEqual(win.stack,[])
 
     def test_no_sensitive_stream_url_or_credentials_written(self):
