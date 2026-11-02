@@ -62,3 +62,29 @@ def csfd_only(cards, kind='movie', year=None, limit=35):
               if str(card.get('rating_source') or '').strip().casefold()
                  in ('čsfd','csfd','czdb')]
     return ranked_cards(matching,kind,year=year,limit=limit)
+
+
+def ranked_by_source(cards, kind='movie', source='IMDb', year=None, limit=35):
+    """Rank real checked Webshare cards by one explicitly named rating source.
+
+    Never present IMDb, TMDb or Webshare search order as a ČSFD score.
+    """
+    desired=str(source or '').strip().casefold()
+    matching=[c for c in (cards or []) if
+              str(c.get('rating_source') or '').strip().casefold()==desired]
+    return ranked_cards(matching,kind,year=year,limit=limit)
+
+
+def honest_ranked_shelf(cards, kind='movie', year=None, limit=35):
+    """Return (heading source, cards), gracefully degrade without fake ratings."""
+    actual=csfd_only(cards,kind,year,limit)
+    if actual:
+        return 'ČSFD',actual
+    imdb=ranked_by_source(cards,kind,'IMDb',year,limit)
+    if imdb:
+        return 'IMDb',imdb
+    # Verified files are better than a huge dead placeholder. This is NOT
+    # displayed as a ranking: there are no verified rating percentages.
+    return 'KATALOG WEBSHARE',[c for c in (cards or [])
+        if c.get('kind')==kind and c.get('ident') and c.get('files') and
+        (year is None or str(c.get('year') or '')==str(year))][:limit]
