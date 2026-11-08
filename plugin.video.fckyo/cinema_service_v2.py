@@ -1314,8 +1314,11 @@ class CinemaService:
             choose_files(found,quality,language),limit=30)
 
     def file_rows(self, files, poster=''):
+        from cinema_content_filter import safe_file
         rows=[]
         for f in files:
+            if not safe_file(f):
+                continue
             rows.append({
                 'kind':'file', 'title':file_label(f), 'raw':f['name'],
                 'ident':f['ident'], 'files':[f], 'year':'','genre':'',

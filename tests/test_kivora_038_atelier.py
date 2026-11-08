@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""KIVORA Atelier / 0.47.2 visual-system and remote-navigation regression."""
+"""KIVORA Atelier / 0.47.4 visual-system and remote-navigation regression."""
 from pathlib import Path
 from xml.etree import ElementTree as ET
 import sys
@@ -71,7 +71,7 @@ class AtelierTVTests(unittest.TestCase):
             tabs = [node for node in self.root.findall(".//control[@type='image']")
                     if node.findtext('visible') and
                     'Control.HasFocus(%s)' % ident in node.findtext('visible')
-                    and node.findtext('top') == '87']
+                    and node.findtext('top') == '105']
             self.assertEqual(len(tabs), 1, 'Missing refined tab focus %s' % ident)
             self.assertEqual(tabs[0].findtext('height'), '3')
 
@@ -109,11 +109,11 @@ class AtelierTVTests(unittest.TestCase):
         brand = (ROOT / 'tools/create_brand.py').read_text(encoding='utf-8')
         self.assertIn('god_portrait', brand)
         textures = (PLUGIN / 'cinematic_home.py').read_text(encoding='utf-8')
-        self.assertIn('stream_v12_cinema2_', textures)
-        self.assertIn('color = (221,179,106,255)', textures)
+        self.assertIn('stream_v13_netflix_', textures)
+        self.assertIn('color = (245,245,245,255)', textures)
         metadata = ET.parse(PLUGIN / 'addon.xml').getroot()
         self.assertEqual(metadata.get('name'), 'KIVORA')
-        self.assertEqual(metadata.get('version'), '0.47.2')
+        self.assertEqual(metadata.get('version'), '0.47.4')
 
 
 if __name__ == '__main__':

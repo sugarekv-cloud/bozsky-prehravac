@@ -51,3 +51,24 @@ KIVORA obsahuje samostatnou záložku **ŽIVÁ TV** s několika bezplatně dostu
 Pro živou Českou televizi a archiv slouží položka **ČESKÁ TELEVIZE · iVysílání**, která otevírá samostatný doplněk Kodi `plugin.video.ivysilani.cz`, pokud už je instalován. KIVORA automaticky neinstaluje ani nepřepisuje jiné doplňky.
 
 Streamy mohou časem změnit adresy nebo dostupnost; některé mohou být geograficky omezené. První verze nemá vlastní EPG a neumožňuje sledování placených televizí bez oprávnění.
+
+
+### Připravená verze 0.47.4 – čitelnost a seriály
+
+Navazuje na 0.47.2 a zachovává technické ID, Webshare, popisy z ČSFD,
+živou TV, profily, oblíbené a historii. Horní nabídka má větší horní odstup;
+nápověda je mimo tlačítka a názvy karet, rok a kvalita mají samostatné místo.
+Výběr má bílý rámeček po všech stranách a hlavní tlačítko červené zvýraznění.
+Série i epizody přebírají obrázky a popis seriálu, epizody se řadí číselně
+a stejný ident Webshare se nepočítá jako více verzí. Výběr souboru epizody
+ponechává aktivní záložku Seriály.
+
+Filtr explicitního obsahu je zapojen také do hledání jednotlivých souborů
+a jejich výpisu; zachovává příznaky adult z metadat. Kontroluje příznaky,
+kategorii a silné signály v názvu, nikoli sexuální témata v synopsi.
+Neoznačený obsah s neutrálním názvem nelze tímto filtrem spolehlivě rozpoznat.
+
+Ověření: 382 automatických testů, kompilace Pythonu a sestavení repozitáře.
+Před vydáním zbývá kontrola v Kodi na TV: horní menu a dlouhé české názvy,
+pohyb mezi kartami a tlačítky, návrat epizoda → soubory → přehrávání → epizody,
+zobrazení ČSFD popisu a obnova vygenerovaných textur po aktualizaci.

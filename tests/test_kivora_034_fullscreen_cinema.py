@@ -91,15 +91,15 @@ class FullScreenStreamingUI(unittest.TestCase):
 
     def test_release_uses_fresh_gradients_and_real_metadata(self):
         addon=ET.parse(os.path.join(PLUGIN,'addon.xml')).getroot()
-        self.assertEqual(addon.get('version'),'0.47.2')
+        self.assertEqual(addon.get('version'),'0.47.4')
         with open(os.path.join(PLUGIN,'cinematic_home.py'),encoding='utf8') as f:
             generator=f.read()
-        self.assertIn('stream_v12_cinema2_',generator)
+        self.assertIn('stream_v13_netflix_',generator)
         self.assertIn("kind == 'cardfade'",generator)
         with open(os.path.join(PLUGIN,'cinema_screen_v2.py'),encoding='utf8') as f:
             logic=f.read()
         self.assertIn('if rating>0:',logic)
-        self.assertIn("VERSION='0.47.2'",logic)
+        self.assertIn("VERSION='0.47.4'",logic)
 
 
 if __name__=='__main__':

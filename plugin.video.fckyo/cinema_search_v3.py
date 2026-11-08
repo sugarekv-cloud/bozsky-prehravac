@@ -293,8 +293,11 @@ def is_title_match(parsed, names, kind=None, year=None):
 
 
 def matching_files(files, names, kind=None, year=None):
+    from cinema_content_filter import safe_file
     output=[];seen=set()
     for f in files or []:
+        if not safe_file(f):
+            continue
         ident=str(f.get('ident') or '')
         if not ident or ident in seen or str(f.get('password','0'))=='1':
             continue

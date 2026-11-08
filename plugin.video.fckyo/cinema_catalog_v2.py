@@ -68,6 +68,8 @@ def card(group, tag=''):
     description=csfd_plot(meta)
     best=group['best']
     return {
+        'adult':meta.get('adult', False),
+        'is_adult':meta.get('is_adult', False),
         'title':meta.get('title') or group['title'],
         'raw':group['title'], 'year':meta.get('year') or group.get('year') or '',
         'file_year':group.get('year') or '',
@@ -98,12 +100,16 @@ def grouped_episodes(files, title, aliases=()):
     """Sort by numeric season+episode, deduplicate different quality versions."""
     wanted={normalize(name) for name in (title,)+tuple(aliases) if name}
     result={}
+    seen=set()
     for f in files:
         if not acceptable(f):
             continue
         p=parse_video_name(f['name'])
         if p['kind']!='episode' or normalize(p['title']) not in wanted:
             continue
+        if f['ident'] in seen:
+            continue
+        seen.add(f['ident'])
         k=(p['season'],p['episode'])
         result.setdefault(k,[]).append(f)
     output=OrderedDict()
