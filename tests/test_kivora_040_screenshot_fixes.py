@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Screenshot-driven KIVORA 0.47.2 TV regression checks.
+"""Screenshot-driven KIVORA 0.47.4 TV regression checks.
 
 Android TV screenshot showed unreadable Play text, image-in-image covers,
 titles hidden on top of video stills and an overlapping footer.
@@ -64,8 +64,8 @@ class ScreenshotFixes040Tests(unittest.TestCase):
         self.assertIn('hero_action', bg.findtext('visible'))
         tex = (ADDON / 'cinematic_home.py').read_text(encoding='utf-8')
         self.assertIn('color = (43,49,57,255)', tex)
-        self.assertIn('color = (112,80,39,255)', tex)
-        self.assertIn('stream_v12_cinema2_', tex)
+        self.assertIn('color = (229,9,20,255)', tex)
+        self.assertIn('stream_v13_netflix_', tex)
 
     def test_normal_home_does_not_put_status_over_second_row(self):
         statuses = [x for x in self.skin.findall(".//control[@type='label']")
@@ -79,7 +79,7 @@ class ScreenshotFixes040Tests(unittest.TestCase):
         addon = ET.parse(ADDON / 'addon.xml').getroot()
         self.assertEqual(addon.get('name'), 'KIVORA')
         self.assertEqual(addon.get('id'), 'plugin.video.fckyo')
-        self.assertEqual(addon.get('version'), '0.47.2')
+        self.assertEqual(addon.get('version'), '0.47.4')
         for ident in (101, 102, 103, 104, 105, 106, 107, 108, 109, 110):
             self.assertIsNotNone(self.skin.find(".//control[@id='%s']" % ident))
         for ident in range(401,414):

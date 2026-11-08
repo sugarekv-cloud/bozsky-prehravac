@@ -150,10 +150,10 @@ class StreamingSkinTests(unittest.TestCase):
 
     def test_new_version_and_cached_textures(self):
         addon=ET.parse(os.path.join(PLUGIN,'addon.xml')).getroot()
-        self.assertEqual(addon.get('version'),'0.47.2')
+        self.assertEqual(addon.get('version'),'0.47.4')
         with open(os.path.join(PLUGIN,'cinematic_home.py'),encoding='utf8') as f:
             src=f.read()
-        self.assertIn('stream_v12_cinema2_',src)
+        self.assertIn('stream_v13_netflix_',src)
 
 
 if __name__=='__main__':

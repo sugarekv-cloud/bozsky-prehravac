@@ -85,7 +85,7 @@ class NetflixPosterLayoutTests(unittest.TestCase):
     def test_dark_look_is_new_versioned_texture(self):
         with open(os.path.join(PLUGIN,'cinematic_home.py'),encoding='utf8') as f:
             code=f.read()
-        self.assertIn('stream_v12_cinema2_',code)
+        self.assertIn('stream_v13_netflix_',code)
         self.assertIn('int(7+4*h)',code)
         self.assertIn('int(18+3*top',code)
 

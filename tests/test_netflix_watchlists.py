@@ -169,7 +169,7 @@ class NetflixSkinTests(unittest.TestCase):
         service=root.find("./extension[@point='xbmc.service']")
         self.assertIsNotNone(service)
         self.assertEqual(service.get('library'),'service.py')
-        self.assertEqual(root.get('version'),'0.47.2')
+        self.assertEqual(root.get('version'),'0.47.4')
 
 
 if __name__=='__main__':

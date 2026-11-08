@@ -13,7 +13,8 @@ import unicodedata
 
 _EXPLICIT = re.compile(
     r'(?<![a-z0-9])(?:'
-    r'xxx|porn(?:o|ography|ographic)?|porna|pornografie|'
+    r'xxx|porn(?:o|ography|ographic|ograficky|ograficke|ograficka)?|porna|pornografie|'
+    r'pornhub|xvideos|xnxx|redtube|youporn|brazzers|'
     r'onlyfans|hentai|hardcore|hard[ ._-]*core|'
     r'gang[ ._-]*bang|blow[ ._-]*job|'
     r'sex[ ._-]*tape|sex[ ._-]*video|sexvideo|'
@@ -50,7 +51,9 @@ def safe_file(file):
         return False
     if _adult_flag(file.get('adult')) or _adult_flag(file.get('is_adult')):
         return False
-    return not explicit_text(file.get('name') or '')
+    if folded(file.get('category')).strip() in _ADULT_GENRES:
+        return False
+    return not any(explicit_text(file.get(key) or '') for key in ('name','filename','title'))
 
 
 def safe_card(card):
@@ -62,9 +65,12 @@ def safe_card(card):
     for key in ('title','raw','original','name','genre'):
         if explicit_text(card.get(key) or ''):
             return False
+    if folded(card.get('category')).strip() in _ADULT_GENRES:
+        return False
     genres=card.get('genres') or []
     if isinstance(genres,str):
         genres=re.split(r'[,;|]',genres)
+    genres=list(genres)+re.split(r'[,;|/]',str(card.get('genre') or ''))
     for genre in genres:
         if folded(genre).strip() in _ADULT_GENRES:
             return False

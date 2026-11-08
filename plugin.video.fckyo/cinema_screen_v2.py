@@ -16,7 +16,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.47.2'
+VERSION='0.47.4'
 
 
 def tile(name,kind,**extra):
@@ -251,6 +251,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         if not isinstance(card,dict):
             return ''
         from cinema_csfd_plot import csfd_plot
+        if card.get('kind') in ('season','episode'):
+            card=card.get('show') or card
         getter=getattr(getattr(self,'service',None),'_cached_description',None)
         if callable(getter):
             try:
@@ -594,6 +596,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             'shows' if view in ('seasons','episodes') else
             'movies' if view in ('files','catalog_all','csfd_ranked','most_watched') else
             'home')
+        if view=='files' and context and context[0].get('kind')=='show':
+            nav='shows'
         self.setProperty('nav_active',nav)
         self.setProperty('is_home','yes' if view=='home' else '')
         self.setProperty('section_label',{
@@ -867,8 +871,10 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 self._fill('SÉRIE · '+context['title'],[
                     tile('SÉRIE %02d (%d epizod)'%(n,len(eps)),
                          'season',season=n,show=context,
+                         poster=context.get('poster',''),fanart=context.get('fanart',''),
+                         year=context.get('year',''),genre=context.get('genre',''),
                          plot='Epizody seřazené podle čísla, nikoliv data nahrání.')
-                    for n,eps in seasons.items()
+                    for n,eps in sorted(seasons.items())
                 ] or [tile('ŽÁDNÉ ČÍSLOVANÉ EPIZODY','none')],
                     'VYBER SÉRII',[],
                     '%d sezón dohledaných z více stránek Webshare' %len(seasons))
@@ -880,9 +886,11 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self._fill('%s · S%02d'%(show['title'],season),[
                 tile('S%02dE%02d · %d verzí'%(season,n,len(files)),
                      'episode',show=show,season=season,episode=n,
+                     poster=show.get('poster',''),fanart=show.get('fanart',''),
+                     files=files,genre=show.get('genre',''),
                      quality=str(len(files))+' verzí',
                      plot='Vyber epizodu; potom zvol soubor a kvalitu.')
-                for n,files in eps.items()
+                for n,files in sorted(eps.items())
             ] or [tile('ŽÁDNÉ EPIZODY','none')],
                 'SEŘAZENO PODLE ČÍSLA EPIZODY',[],
                 'Série %d · %d epizod v dostupných výsledcích Webshare' %(season,len(eps)))

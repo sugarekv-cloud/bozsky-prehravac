@@ -59,7 +59,7 @@ def _rgba_png(path, width, height, kind):
                 else:
                     color = (0,0,0,0)
             elif kind == 'focus':
-                color = (221,179,106,255)
+                color = (245,245,245,255)
             elif kind == 'chip':
                 color = (10,14,21,240)
             elif kind == 'cardfade':
@@ -88,7 +88,7 @@ def _rgba_png(path, width, height, kind):
             elif kind == 'cta':
                 color = (43,49,57,255)
             elif kind == 'cta_focus':
-                color = (112,80,39,255)
+                color = (229,9,20,255)
             else:
                 color = (11,15,21,255)
             raw.extend(color)
@@ -116,7 +116,7 @@ def ensure_textures(profile):
              'cardfade':(128,84)}
     result = {}
     for kind,(w,h) in specs.items():
-        result[kind] = _rgba_png(os.path.join(folder,'stream_v12_cinema2_'+kind+'.png'),w,h,kind)
+        result[kind] = _rgba_png(os.path.join(folder,'stream_v13_netflix_'+kind+'.png'),w,h,kind)
     return result
 
 

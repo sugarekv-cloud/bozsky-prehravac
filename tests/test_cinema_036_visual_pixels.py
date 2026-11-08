@@ -57,9 +57,9 @@ class CinemaRenderedAssetTests(unittest.TestCase):
                 im.verify()
 
     def test_warm_brass_focus_and_ivory_play_buttons_have_distinct_pixels(self):
-        self.assertEqual(self.sample('focus', 0, 0), (221, 179, 106, 255))
+        self.assertEqual(self.sample('focus', 0, 0), (245, 245, 245, 255))
         self.assertEqual(self.sample('cta', 0, 0), (43, 49, 57, 255))
-        self.assertEqual(self.sample('cta_focus', 0, 0), (112, 80, 39, 255))
+        self.assertEqual(self.sample('cta_focus', 0, 0), (229, 9, 20, 255))
         self.assertNotEqual(self.sample('button', 0, 0),
                             self.sample('cta', 0, 0))
 
