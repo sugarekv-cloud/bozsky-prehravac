@@ -34,7 +34,7 @@ class SettingsHub(xbmcgui.WindowXMLDialog):
             self.close()
 
 def choose_settings(addon,textures):
-    window=SettingsHub('fckyo-settings-v1.xml',addon.getAddonInfo('path'),
+    window=SettingsHub('fckyo-settings-v2.xml',addon.getAddonInfo('path'),
                        'Default','1080i')
     window.textures=textures
     window.result='back'

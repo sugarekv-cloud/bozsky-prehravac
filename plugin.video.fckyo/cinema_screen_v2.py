@@ -16,7 +16,8 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.47.4'
+VERSION='0.48.0'
+DRAWER_IDS=(201,208,202,203,205,104,105,109,107)
 
 
 def tile(name,kind,**extra):
@@ -29,6 +30,7 @@ def tile(name,kind,**extra):
 class CinemaScreen(xbmcgui.WindowXMLDialog):
     def onInit(self):
         self.stack=[]
+        self.setProperty('menu_open','')
         self.mode='home'
         self.context=None
         self.rail_items=[[] for _ in ROW_IDS]
@@ -178,6 +180,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                 item.setProperty('has_poster','yes' if c.get('poster') else '')
                 item.setProperty('has_fanart','yes' if item_fanart else '')
                 item.setProperty('is_more','yes' if c.get('kind') in ('most_watched','load_more','catalog_open','catalog_more','search_more','csfd_ranked','tips_retry') else '')
+                item.setProperty('is_file','yes' if c.get('kind')=='file' else '')
                 item.setProperty('quality',str(c.get('quality') or ''))
                 item.setProperty('year',str(c.get('year') or c.get('file_year') or ''))
                 item.setProperty('hide_caption','yes' if c.get('_hide_caption') else '')
@@ -199,9 +202,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         # Previous implementation jumped to the first poster every time.
         focus_target=getattr(self,'_nav_focus_target',None)
         self._nav_focus_target=None
-        if focus_target not in TOP_ACTIONS:
+        if focus_target not in TOP_ACTIONS and focus_target!=200:
             focus_target=next((rid for rid,cards in zip(ROW_IDS,self.rail_items)
-                               if cards),107)
+                               if cards),200)
         try:
             if focus_target in ROW_IDS:
                 row=self.rail_items[ROW_IDS.index(focus_target)]
@@ -276,6 +279,7 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         if c and wanted and c.get('kind')!=wanted:
             c=None
         if c and mode=='live_tv' and c.get('kind') in ('tv_channel','tv_addon'):
+            self._set_hero_property('hero_primary','Sledovat živě')
             self._set_hero_property('hero_media_action','')
             self.featured_card=c
             self._set_hero_property('hero_action','yes')
@@ -303,6 +307,9 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self._set_hero_property('hero_media_action','')
             return
         if c.get('kind') in ('movie','show'):
+            self._set_hero_property('hero_primary',
+                'Pokračovat' if c.get('_continue') else
+                'Vybrat epizodu' if c.get('kind')=='show' else 'Přehrát')
             self.featured_card=c
             self._set_hero_property('hero_action','yes')
             self._set_hero_property('hero_media_action','yes')
@@ -322,7 +329,10 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             except (ValueError,TypeError):
                 pass
         self._set_hero_property('hero_info','  ·  '.join(x for x in text if x)[:115])
-        plot=self._csfd_description(c)
+        if c.get('kind') in ('movie','show','season','episode'):
+            plot=self._csfd_description(c)
+        else:
+            plot=c.get('plot') or c.get('raw') or ''
         if not plot:
             # The first batch covers the first visible shelves. When moving
             # deeper into a long catalogue, request only that focused title.
@@ -1264,6 +1274,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
     def onFocus(self,control_id):
         if getattr(self,'_switching_section',False) or getattr(self,'_updating_home',False):
             return
+        if control_id not in DRAWER_IDS:
+            self.setProperty('menu_open','')
         self._apply_background_home()
         self._update_hero()
 
@@ -1365,7 +1377,11 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             if not self._live_tv_menu():
                 self._poster_menu()
         elif action.getId() in BACK_ACTIONS:
-            self._go_back()
+            if self.getFocusId() in DRAWER_IDS:
+                self.setProperty('menu_open','')
+                self.setFocusId(200)
+            else:
+                self._go_back()
         elif action.getId()==4 and self.getFocusId()==self._last_filled_rail():
             # ACTION_MOVE_DOWN on final shelf must not send focus to the menu.
             self._update_hero()
@@ -1374,6 +1390,10 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             self._update_hero()
 
     def onClick(self,control_id):
+        if control_id==200:
+            self.setProperty('menu_open','yes')
+            self.setFocusId(201)
+            return
         if control_id==112:
             chosen=getattr(self,'featured_card',None)
             if chosen and chosen.get('kind') in ('movie','show'):
@@ -1428,8 +1448,12 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             return
         if control_id in TOP_ACTIONS:
             command=TOP_ACTIONS[control_id]
-            self._nav_focus_target=control_id
             self._switching_section=True
+            self._nav_focus_target=(106 if command=='home' else 103
+                                    if command=='search' else 200) if control_id in DRAWER_IDS else control_id
+            if control_id in DRAWER_IDS:
+                self.setProperty('menu_open','')
+                self.setFocusId(self._nav_focus_target)
             try:
                 if command=='settings':
                     self._gear_menu()
@@ -1560,13 +1584,13 @@ def launch(addon,profile,get_url,token,search_page,
            suggest_provider=None):
     from cinema_service_v2 import CinemaService
     from ws_availability import Availability
-    from cinematic_home import ensure_textures
+    from cinema_theme_v3 import ensure_textures
     from cinema_user_state import WatchStore
     metadata=metadata_factory() if addon.getSetting('smart_metadata')!='false' else None
     service=CinemaService(token,search_page,Availability(profile),
                           metadata,calendar_factory(),profile=profile,
                           suggest_fetch=suggest_provider)
-    win=CinemaScreen('fckyo-cinema-v2.xml',addon.getAddonInfo('path'),'Default','1080i')
+    win=CinemaScreen('fckyo-cinema-v3.xml',addon.getAddonInfo('path'),'Default','1080i')
     win.service=service
     win.return_profile=profile
     win.watch_store=WatchStore(profile)

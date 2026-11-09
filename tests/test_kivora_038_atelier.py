@@ -113,7 +113,7 @@ class AtelierTVTests(unittest.TestCase):
         self.assertIn('color = (245,245,245,255)', textures)
         metadata = ET.parse(PLUGIN / 'addon.xml').getroot()
         self.assertEqual(metadata.get('name'), 'KIVORA')
-        self.assertEqual(metadata.get('version'), '0.47.4')
+        self.assertEqual(metadata.get('version'), '0.48.0')
 
 
 if __name__ == '__main__':

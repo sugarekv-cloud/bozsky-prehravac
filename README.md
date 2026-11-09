@@ -72,3 +72,38 @@ Ověření: 382 automatických testů, kompilace Pythonu a sestavení repozitá�
 Před vydáním zbývá kontrola v Kodi na TV: horní menu a dlouhé české názvy,
 pohyb mezi kartami a tlačítky, návrat epizoda → soubory → přehrávání → epizody,
 zobrazení ČSFD popisu a obnova vygenerovaných textur po aktualizaci.
+
+
+### 0.48.0 Cinema 3.0 – kompletní redesign (vývojová větev)
+
+Nové rozhraní používá klidnou horní navigaci Domů / Filmy / Seriály / Živá TV /
+Hledat a rozbalovací nabídku **Moje KIVORA**. V ní zůstávají Tipy, Rozkoukané,
+Oblíbené, TOP ČSFD, Premiéry, Žánry, Bluey a Nastavení. Nabídku otevře OK na
+levém tlačítku; Zpět ji zavře bez ztráty místa v katalogu. Šipka vpravo vrací
+ovládání do prvního naplněného řádku.
+
+Hlavní obrazovka má velké filmové pozadí s tmavou čtecí plochou, jednotné karty
+16:9, čtyřstranný bílý rámeček výběru a samostatný prostor pro název, rok a
+kvalitu. Názvy zůstávají viditelné i v Tipech. Detail kombinuje plakát, metadata,
+popis z ČSFD a akce; **Celý popis** otevře i dlouhé synopse. Nastavení používá
+osm přehledných kategorií ve dvou řadách. Seriály zachovávají navigaci přes
+sezóny, epizody a varianty; tlačítko u seriálu říká Vybrat epizodu, u rozkoukaného
+Pokračovat a u živé TV Sledovat živě.
+
+Webshare, metadatové zdroje, filtr explicitního obsahu, přehrávání, profily,
+historie a synchronizace se nepřepisují. Technické ID zůstává stejné.
+
+Nová okna: `fckyo-cinema-v3.xml`, `fckyo-detail-v2.xml`, `fckyo-settings-v2.xml`.
+Jejich udržovaným zdrojem je `tools/build_cinema_v3_skin.py`; po úpravě spusťte
+`python tools/build_cinema_v3_skin.py` a commitněte i generované XML. Starší
+skiny zůstávají jako kompatibilní historické podklady. Nové textury vytváří
+`cinema_theme_v3.py` pomocí standardní knihovny Pythonu, bez Pillow v Kodi.
+
+Vizualizaci lze obnovit pomocí:
+`python tools/render_cinema_v3_preview.py --download-art --output /tmp/kivora.png`.
+To je přibližné vykreslení XML s ukázkovými daty a fonty, nikoli screenshot
+z Kodi. Obrázky stáhne pouze při výslovném přepínači `--download-art`.
+
+Před produkčním vydáním je stále nutná vizuální a ovládací kontrola přímo
+v Kodi na cílové TV, zejména dlouhých názvů, fontů aktivního skinu, menu,
+prázdného katalogu a návratu z přehrávání. Automatické testy ji nenahrazují.

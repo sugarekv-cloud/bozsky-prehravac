@@ -33,6 +33,8 @@ class ImmediateTopNavigationTests(unittest.TestCase):
         self.assertEqual({k:TOP_ACTIONS[k] for k in expected},expected)
         for cid,target in expected.items():
             win=CinemaScreen.__new__(CinemaScreen)
+            win.setProperty=lambda *args:None
+            win.setFocusId=lambda *args:None
             win.stack=[('home',None,401,0)]
             events=[]
             win.service=types.SimpleNamespace(take_home_refresh=lambda:None)
@@ -42,7 +44,7 @@ class ImmediateTopNavigationTests(unittest.TestCase):
                 ('screen',view,context,stack))
             win._gear_menu=lambda:events.append(('settings',))
             win.onClick(cid)
-            self.assertEqual(win._nav_focus_target,cid)
+            self.assertEqual(win._nav_focus_target,200 if cid in (104,105,107) else cid)
             if target=='settings':
                 self.assertEqual(events,[('settings',)])
             elif target=='home':

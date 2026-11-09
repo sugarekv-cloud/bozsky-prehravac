@@ -24,6 +24,8 @@ class HomeAndTipsTests(unittest.TestCase):
     def test_home_tab_and_sidebar_return_to_home_without_stack(self):
         for control in (106,201):
             window=screen_class().__new__(screen_class())
+            window.setProperty=lambda *args:None
+            window.setFocusId=lambda *args:None
             window.stack=[('movies',None,401,6)]
             calls=[]
             window._screen=lambda *a,**k:calls.append((a,k))

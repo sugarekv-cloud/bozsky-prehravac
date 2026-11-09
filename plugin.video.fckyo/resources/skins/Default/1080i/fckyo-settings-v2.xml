@@ -1,0 +1,475 @@
+<?xml version='1.0' encoding='utf-8'?>
+<window>
+    <defaultcontrol always="true">501</defaultcontrol>
+    <coordinates>
+        <system>1</system>
+        <posx>0</posx>
+        <posy>0</posy>
+    </coordinates>
+    <controls>
+        <control type="image">
+            <left>0</left>
+            <top>0</top>
+            <width>1920</width>
+            <height>1080</height>
+            <texture>$INFO[Window.Property(settings_background)]</texture>
+            <aspectratio>stretch</aspectratio>
+        </control>
+        <control type="label">
+            <left>96</left>
+            <top>70</top>
+            <width>1000</width>
+            <height>36</height>
+            <font>font12</font>
+            <textcolor>FFB6BAC4</textcolor>
+            <label>KIVORA  /  NASTAVENÍ</label>
+            <align>left</align>
+            <aligny>center</aligny>
+            <scroll>false</scroll>
+        </control>
+        <control type="label">
+            <left>92</left>
+            <top>148</top>
+            <width>1600</width>
+            <height>90</height>
+            <font>font45_title</font>
+            <textcolor>FFF5F5F7</textcolor>
+            <label>Všechno na svém místě.</label>
+            <align>left</align>
+            <aligny>center</aligny>
+            <scroll>false</scroll>
+        </control>
+        <control type="label">
+            <left>96</left>
+            <top>250</top>
+            <width>1600</width>
+            <height>50</height>
+            <font>font13</font>
+            <textcolor>FFB6BAC4</textcolor>
+            <label>Účet, přehrávání a tvoje knihovna. Vyber oblast, kterou chceš upravit.</label>
+            <align>left</align>
+            <aligny>center</aligny>
+            <scroll>false</scroll>
+        </control>
+        <control type="button" id="501">
+            <left>96</left>
+            <top>358</top>
+            <width>408</width>
+            <height>222</height>
+            <label />
+            <font>font13</font>
+            <align>center</align>
+            <aligny>center</aligny>
+            <textcolor>FFF5F5F7</textcolor>
+            <focusedcolor>FFFFFFFF</focusedcolor>
+            <texturefocus border="10">$INFO[Window.Property(settings_cta_focus)]</texturefocus>
+            <texturenofocus border="10">$INFO[Window.Property(settings_button)]</texturenofocus>
+            <onleft>504</onleft>
+            <onright>502</onright>
+            <onup>505</onup>
+            <ondown>505</ondown>
+        </control>
+        <control type="label">
+            <left>122</left>
+            <top>380</top>
+            <width>350</width>
+            <height>28</height>
+            <font>font12</font>
+            <textcolor>FF858B98</textcolor>
+            <label>01</label>
+            <align>left</align>
+            <aligny>center</aligny>
+            <scroll>false</scroll>
+        </control>
+        <control type="label">
+            <left>122</left>
+            <top>434</top>
+            <width>350</width>
+            <height>38</height>
+            <font>font13</font>
+            <textcolor>FFF5F5F7</textcolor>
+            <label>Účet a přehrávání</label>
+            <align>left</align>
+            <aligny>center</aligny>
+            <scroll>false</scroll>
+        </control>
+        <control type="textbox">
+            <left>122</left>
+            <top>488</top>
+            <width>350</width>
+            <height>70</height>
+            <font>font12</font>
+            <textcolor>FFF5F5F7</textcolor>
+            <label>Přihlášení k Webshare a chování přehrávače.</label>
+        </control>
+        <control type="button" id="502">
+            <left>536</left>
+            <top>358</top>
+            <width>408</width>
+            <height>222</height>
+            <label />
+            <font>font13</font>
+            <align>center</align>
+            <aligny>center</aligny>
+            <textcolor>FFF5F5F7</textcolor>
+            <focusedcolor>FFFFFFFF</focusedcolor>
+            <texturefocus border="10">$INFO[Window.Property(settings_cta_focus)]</texturefocus>
+            <texturenofocus border="10">$INFO[Window.Property(settings_button)]</texturenofocus>
+            <onleft>501</onleft>
+            <onright>503</onright>
+            <onup>506</onup>
+            <ondown>506</ondown>
+        </control>
+        <control type="label">
+            <left>562</left>
+            <top>380</top>
+            <width>350</width>
+            <height>28</height>
+            <font>font12</font>
+            <textcolor>FF858B98</textcolor>
+            <label>02</label>
+            <align>left</align>
+            <aligny>center</aligny>
+            <scroll>false</scroll>
+        </control>
+        <control type="label">
+            <left>562</left>
+            <top>434</top>
+            <width>350</width>
+            <height>38</height>
+            <font>font13</font>
+            <textcolor>FFF5F5F7</textcolor>
+            <label>Filtry a katalog</label>
+            <align>left</align>
+            <aligny>center</aligny>
+            <scroll>false</scroll>
+        </control>
+        <control type="textbox">
+            <left>562</left>
+            <top>488</top>
+            <width>350</width>
+            <height>70</height>
+            <font>font12</font>
+            <textcolor>FFF5F5F7</textcolor>
+            <label>Kvalita, jazyk, řazení a dostupné tituly.</label>
+        </control>
+        <control type="button" id="503">
+            <left>976</left>
+            <top>358</top>
+            <width>408</width>
+            <height>222</height>
+            <label />
+            <font>font13</font>
+            <align>center</align>
+            <aligny>center</aligny>
+            <textcolor>FFF5F5F7</textcolor>
+            <focusedcolor>FFFFFFFF</focusedcolor>
+            <texturefocus border="10">$INFO[Window.Property(settings_cta_focus)]</texturefocus>
+            <texturenofocus border="10">$INFO[Window.Property(settings_button)]</texturenofocus>
+            <onleft>502</onleft>
+            <onright>504</onright>
+            <onup>507</onup>
+            <ondown>507</ondown>
+        </control>
+        <control type="label">
+            <left>1002</left>
+            <top>380</top>
+            <width>350</width>
+            <height>28</height>
+            <font>font12</font>
+            <textcolor>FF858B98</textcolor>
+            <label>03</label>
+            <align>left</align>
+            <aligny>center</aligny>
+            <scroll>false</scroll>
+        </control>
+        <control type="label">
+            <left>1002</left>
+            <top>434</top>
+            <width>350</width>
+            <height>38</height>
+            <font>font13</font>
+            <textcolor>FFF5F5F7</textcolor>
+            <label>Profily</label>
+            <align>left</align>
+            <aligny>center</aligny>
+            <scroll>false</scroll>
+        </control>
+        <control type="textbox">
+            <left>1002</left>
+            <top>488</top>
+            <width>350</width>
+            <height>70</height>
+            <font>font12</font>
+            <textcolor>FFF5F5F7</textcolor>
+            <label>Oddělené oblíbené a historie sledování.</label>
+        </control>
+        <control type="button" id="504">
+            <left>1416</left>
+            <top>358</top>
+            <width>408</width>
+            <height>222</height>
+            <label />
+            <font>font13</font>
+            <align>center</align>
+            <aligny>center</aligny>
+            <textcolor>FFF5F5F7</textcolor>
+            <focusedcolor>FFFFFFFF</focusedcolor>
+            <texturefocus border="10">$INFO[Window.Property(settings_cta_focus)]</texturefocus>
+            <texturenofocus border="10">$INFO[Window.Property(settings_button)]</texturenofocus>
+            <onleft>503</onleft>
+            <onright>501</onright>
+            <onup>508</onup>
+            <ondown>508</ondown>
+        </control>
+        <control type="label">
+            <left>1442</left>
+            <top>380</top>
+            <width>350</width>
+            <height>28</height>
+            <font>font12</font>
+            <textcolor>FF858B98</textcolor>
+            <label>04</label>
+            <align>left</align>
+            <aligny>center</aligny>
+            <scroll>false</scroll>
+        </control>
+        <control type="label">
+            <left>1442</left>
+            <top>434</top>
+            <width>350</width>
+            <height>38</height>
+            <font>font13</font>
+            <textcolor>FFF5F5F7</textcolor>
+            <label>Synchronizace</label>
+            <align>left</align>
+            <aligny>center</aligny>
+            <scroll>false</scroll>
+        </control>
+        <control type="textbox">
+            <left>1442</left>
+            <top>488</top>
+            <width>350</width>
+            <height>70</height>
+            <font>font12</font>
+            <textcolor>FFF5F5F7</textcolor>
+            <label>Přenášení stavu mezi tvými zařízeními.</label>
+        </control>
+        <control type="button" id="505">
+            <left>96</left>
+            <top>628</top>
+            <width>408</width>
+            <height>222</height>
+            <label />
+            <font>font13</font>
+            <align>center</align>
+            <aligny>center</aligny>
+            <textcolor>FFF5F5F7</textcolor>
+            <focusedcolor>FFFFFFFF</focusedcolor>
+            <texturefocus border="10">$INFO[Window.Property(settings_cta_focus)]</texturefocus>
+            <texturenofocus border="10">$INFO[Window.Property(settings_button)]</texturenofocus>
+            <onleft>508</onleft>
+            <onright>506</onright>
+            <onup>501</onup>
+            <ondown>501</ondown>
+        </control>
+        <control type="label">
+            <left>122</left>
+            <top>650</top>
+            <width>350</width>
+            <height>28</height>
+            <font>font12</font>
+            <textcolor>FF858B98</textcolor>
+            <label>05</label>
+            <align>left</align>
+            <aligny>center</aligny>
+            <scroll>false</scroll>
+        </control>
+        <control type="label">
+            <left>122</left>
+            <top>704</top>
+            <width>350</width>
+            <height>38</height>
+            <font>font13</font>
+            <textcolor>FFF5F5F7</textcolor>
+            <label>Zálohy</label>
+            <align>left</align>
+            <aligny>center</aligny>
+            <scroll>false</scroll>
+        </control>
+        <control type="textbox">
+            <left>122</left>
+            <top>758</top>
+            <width>350</width>
+            <height>70</height>
+            <font>font12</font>
+            <textcolor>FFF5F5F7</textcolor>
+            <label>Uložení a obnovení nastavení a knihovny.</label>
+        </control>
+        <control type="button" id="506">
+            <left>536</left>
+            <top>628</top>
+            <width>408</width>
+            <height>222</height>
+            <label />
+            <font>font13</font>
+            <align>center</align>
+            <aligny>center</aligny>
+            <textcolor>FFF5F5F7</textcolor>
+            <focusedcolor>FFFFFFFF</focusedcolor>
+            <texturefocus border="10">$INFO[Window.Property(settings_cta_focus)]</texturefocus>
+            <texturenofocus border="10">$INFO[Window.Property(settings_button)]</texturenofocus>
+            <onleft>505</onleft>
+            <onright>507</onright>
+            <onup>502</onup>
+            <ondown>502</ondown>
+        </control>
+        <control type="label">
+            <left>562</left>
+            <top>650</top>
+            <width>350</width>
+            <height>28</height>
+            <font>font12</font>
+            <textcolor>FF858B98</textcolor>
+            <label>06</label>
+            <align>left</align>
+            <aligny>center</aligny>
+            <scroll>false</scroll>
+        </control>
+        <control type="label">
+            <left>562</left>
+            <top>704</top>
+            <width>350</width>
+            <height>38</height>
+            <font>font13</font>
+            <textcolor>FFF5F5F7</textcolor>
+            <label>Diagnostika</label>
+            <align>left</align>
+            <aligny>center</aligny>
+            <scroll>false</scroll>
+        </control>
+        <control type="textbox">
+            <left>562</left>
+            <top>758</top>
+            <width>350</width>
+            <height>70</height>
+            <font>font12</font>
+            <textcolor>FFF5F5F7</textcolor>
+            <label>Kontrola připojení a řešení potíží.</label>
+        </control>
+        <control type="button" id="507">
+            <left>976</left>
+            <top>628</top>
+            <width>408</width>
+            <height>222</height>
+            <label />
+            <font>font13</font>
+            <align>center</align>
+            <aligny>center</aligny>
+            <textcolor>FFF5F5F7</textcolor>
+            <focusedcolor>FFFFFFFF</focusedcolor>
+            <texturefocus border="10">$INFO[Window.Property(settings_cta_focus)]</texturefocus>
+            <texturenofocus border="10">$INFO[Window.Property(settings_button)]</texturenofocus>
+            <onleft>506</onleft>
+            <onright>508</onright>
+            <onup>503</onup>
+            <ondown>503</ondown>
+        </control>
+        <control type="label">
+            <left>1002</left>
+            <top>650</top>
+            <width>350</width>
+            <height>28</height>
+            <font>font12</font>
+            <textcolor>FF858B98</textcolor>
+            <label>07</label>
+            <align>left</align>
+            <aligny>center</aligny>
+            <scroll>false</scroll>
+        </control>
+        <control type="label">
+            <left>1002</left>
+            <top>704</top>
+            <width>350</width>
+            <height>38</height>
+            <font>font13</font>
+            <textcolor>FFF5F5F7</textcolor>
+            <label>Pokročilé nastavení</label>
+            <align>left</align>
+            <aligny>center</aligny>
+            <scroll>false</scroll>
+        </control>
+        <control type="textbox">
+            <left>1002</left>
+            <top>758</top>
+            <width>350</width>
+            <height>70</height>
+            <font>font12</font>
+            <textcolor>FFF5F5F7</textcolor>
+            <label>Všechna nastavení doplňku Kodi.</label>
+        </control>
+        <control type="button" id="508">
+            <left>1416</left>
+            <top>628</top>
+            <width>408</width>
+            <height>222</height>
+            <label />
+            <font>font13</font>
+            <align>center</align>
+            <aligny>center</aligny>
+            <textcolor>FFF5F5F7</textcolor>
+            <focusedcolor>FFFFFFFF</focusedcolor>
+            <texturefocus border="10">$INFO[Window.Property(settings_cta_focus)]</texturefocus>
+            <texturenofocus border="10">$INFO[Window.Property(settings_button)]</texturenofocus>
+            <onleft>507</onleft>
+            <onright>505</onright>
+            <onup>504</onup>
+            <ondown>504</ondown>
+        </control>
+        <control type="label">
+            <left>1442</left>
+            <top>650</top>
+            <width>350</width>
+            <height>28</height>
+            <font>font12</font>
+            <textcolor>FF858B98</textcolor>
+            <label>08</label>
+            <align>left</align>
+            <aligny>center</aligny>
+            <scroll>false</scroll>
+        </control>
+        <control type="label">
+            <left>1442</left>
+            <top>704</top>
+            <width>350</width>
+            <height>38</height>
+            <font>font13</font>
+            <textcolor>FFF5F5F7</textcolor>
+            <label>Zpět do KIVORY</label>
+            <align>left</align>
+            <aligny>center</aligny>
+            <scroll>false</scroll>
+        </control>
+        <control type="textbox">
+            <left>1442</left>
+            <top>758</top>
+            <width>350</width>
+            <height>70</height>
+            <font>font12</font>
+            <textcolor>FFF5F5F7</textcolor>
+            <label>Návrat k filmům a seriálům.</label>
+        </control>
+        <control type="label">
+            <left>96</left>
+            <top>986</top>
+            <width>1600</width>
+            <height>30</height>
+            <font>font12</font>
+            <textcolor>FF858B98</textcolor>
+            <label>Šipky  pohyb     OK  otevřít     Zpět  zavřít nastavení</label>
+            <align>left</align>
+            <aligny>center</aligny>
+            <scroll>false</scroll>
+        </control>
+    </controls>
+</window>
