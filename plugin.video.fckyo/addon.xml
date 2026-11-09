@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="KIVORA" version="0.47.4" provider-name="KIVORA Community">
+<addon id="plugin.video.fckyo" name="KIVORA" version="0.48.0" provider-name="KIVORA Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -22,6 +22,12 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.48.0 Cinema 3.0 – nový design[/B]
+- Jednodušší horní navigace a rozbalovací nabídka Moje KIVORA
+- Jednotné karty, výrazný výběr a čitelné názvy, rok i kvalita
+- Nový detail titulu s celým popisem a přehledné nastavení
+- Webshare, ČSFD, profily, historie a živá TV zůstávají zachovány
+
 [B]0.47.4 – TV rozhraní a seriály[/B]
 - Oddělené popisy a ovládání, horní menu s větším odstupem od okraje
 - Celý rámeček výběru, čitelné názvy a samostatné sloupce roku a kvality

@@ -32,7 +32,7 @@ class CinemaDetail(xbmcgui.WindowXMLDialog):
         card=self.card
         texture_map={
             'background':'background',
-            'fade':'fade',
+            'fade':'detailfade',
             'cta_focus':'cta_focus',
             'cta':'cta',
             'button':'button'
@@ -56,6 +56,11 @@ class CinemaDetail(xbmcgui.WindowXMLDialog):
             pass
 
     def onClick(self,control_id):
+        if control_id==305:
+            xbmcgui.Dialog().textviewer(
+                str(self.card.get('title') or 'Popis'),
+                str(self.description or 'Český popis zatím není k dispozici.'))
+            return
         commands={301:'open',302:'trailer',303:'favorite',304:'back'}
         if control_id in commands:
             self.result=commands[control_id]
@@ -69,7 +74,7 @@ class CinemaDetail(xbmcgui.WindowXMLDialog):
 def choose_detail(addon,textures,card,description):
     if not isinstance(card,dict) or card.get('kind') not in ('movie','show'):
         return 'back'
-    window=CinemaDetail('fckyo-detail-v1.xml',addon.getAddonInfo('path'),
+    window=CinemaDetail('fckyo-detail-v2.xml',addon.getAddonInfo('path'),
                         'Default','1080i')
     window.card=card
     window.textures=textures
