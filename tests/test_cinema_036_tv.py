@@ -27,7 +27,7 @@ class CinemaTV036Tests(unittest.TestCase):
 
     def test_version_and_preserved_plugin_identity(self):
         addon = ET.parse(PLUGIN / 'addon.xml').getroot()
-        self.assertEqual(addon.get('version'), '0.48.0')
+        self.assertEqual(addon.get('version'), '0.48.1')
         self.assertEqual(addon.get('id'), 'plugin.video.fckyo')
         self.assertEqual(addon.get('name'), 'KIVORA')
 
@@ -125,7 +125,7 @@ class CinemaTV036Tests(unittest.TestCase):
 
     def test_show_search_and_playback_logic_intact(self):
         logic = (PLUGIN / 'cinema_screen_v2.py').read_text(encoding='utf8')
-        for fragment in ("VERSION='0.48.0'", "'bluey_search'", "'genre_open'",
+        for fragment in ("VERSION='0.48.1'", "'bluey_search'", "'genre_open'",
                          "'catalog_more'", "'file'", "'movie'", "'show'",
                          'self._play_saved(c)', "self._refresh('files'"):
             self.assertIn(fragment, logic)

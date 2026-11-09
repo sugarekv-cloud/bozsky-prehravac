@@ -1048,7 +1048,7 @@ class CinemaService:
         remote=[]
         if self.suggest_fetch is not None:
             try:
-                remote=self.suggest_fetch(self.token,term,8) or []
+                remote=self.suggest_fetch(self.token,search_intent(term)[0],8) or []
             except Exception:
                 pass
         found=search_suggestions(term,remote,self.home_fast(),limit=5)
@@ -1088,9 +1088,15 @@ class CinemaService:
             cached_aliases=cached_title_aliases(title,self.home_fast())
             names=list(dict.fromkeys(names+cached_aliases))
             plan=(episode_query_plan(title,requested_season,requested_episode,md,limit=18)
-                  if requested_episode is not None else query_plan(title,md,limit=18))
+                  if requested_season is not None else query_plan(title,md,limit=18))
             # Prefer explicit localized/original names; include cached aliases.
-            plan=list(dict.fromkeys(plan[:2]+cached_aliases[:3]+plan[2:]))[:18]
+            cached_queries=cached_aliases[:3]
+            if requested_season is not None:
+                tag=' S%02d'%requested_season
+                if requested_episode is not None:
+                    tag+='E%02d'%requested_episode
+                cached_queries=[alias+tag for alias in cached_queries]
+            plan=list(dict.fromkeys(plan[:2]+cached_queries+plan[2:]))[:18]
             state={'plan':plan,'offsets':{},'done':set(),'cursor':0,
                    'matches':{},'cards':[],'pending':{'movie':[],'show':[]},
                    'attempted':0,'failed':0,
@@ -1140,10 +1146,11 @@ class CinemaService:
                 parsed=parse_video_name(f.get('name','')) or {}
                 if requested_year and parsed.get('year')!=requested_year:
                     continue
-                if requested_episode is not None and not (
+                if requested_season is not None and not (
                     parsed.get('kind')=='episode' and
                     parsed.get('season')==requested_season and
-                    parsed.get('episode')==requested_episode):
+                    (requested_episode is None or
+                     parsed.get('episode')==requested_episode)):
                     continue
                 ident=str(f['ident'])
                 if ident not in state['matches']:

@@ -79,7 +79,7 @@ class ScreenshotFixes040Tests(unittest.TestCase):
         addon = ET.parse(ADDON / 'addon.xml').getroot()
         self.assertEqual(addon.get('name'), 'KIVORA')
         self.assertEqual(addon.get('id'), 'plugin.video.fckyo')
-        self.assertEqual(addon.get('version'), '0.48.0')
+        self.assertEqual(addon.get('version'), '0.48.1')
         for ident in (101, 102, 103, 104, 105, 106, 107, 108, 109, 110):
             self.assertIsNotNone(self.skin.find(".//control[@id='%s']" % ident))
         for ident in range(401,414):

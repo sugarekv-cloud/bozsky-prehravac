@@ -118,6 +118,19 @@ def search_intent(query):
         season=int(match.group(1) or match.group(3))
         episode=int(match.group(2) or match.group(4))
         text=(text[:match.start()]+' '+text[match.end():]).strip(' ._-')
+    if match is None:
+        # Natural Czech/English season selectors; accents are optional.
+        natural=re.search(
+            r'(?i)(?<!\w)(\d{1,2})\.?\s*(?:s[eé]rie|[řr]ada)'
+            r'(?:\s*[,/ -]?\s*(\d{1,3})\.?\s*(?:d[ií]l|epizoda))?(?!\w)', text)
+        english=re.search(
+            r'(?i)(?<!\w)(?:season\s*|s)(\d{1,2})(?!\w)'
+            r'(?:\s*(?:episode|ep|e)\s*(\d{1,3})(?!\w))?', text)
+        selector=natural or english
+        if selector:
+            season=int(selector.group(1))
+            episode=int(selector.group(2)) if selector.group(2) else None
+            text=(text[:selector.start()]+' '+text[selector.end():]).strip(' ._-')
     title,year=title_and_year(text)
     return title,year,season,episode
 
@@ -223,10 +236,11 @@ def episode_query_plan(query, season, episode, metadata=None, limit=18):
     episode-index API. The ordinary title variants remain as fallbacks.
     """
     base=query_plan(query,metadata,limit=limit)
-    if not base or season is None or episode is None:
+    if not base or season is None:
         return base
-    tag='S%02dE%02d'%(int(season),int(episode))
-    alt='%dx%02d'%(int(season),int(episode))
+    tag=('S%02dE%02d'%(int(season),int(episode)) if episode is not None
+         else 'S%02d'%int(season))
+    alt='%dx%02d'%(int(season),int(episode)) if episode is not None else tag
     targeted=[]
     for title in base[:3]:
         targeted.append(title+' '+tag)
@@ -242,21 +256,25 @@ def search_suggestions(query, remote=None, home=None, limit=5):
     Remote Webshare /suggest results are input hints, not availability
     evidence. Revalidate every selected suggestion through normal search.
     """
-    requested=normalize(query)
+    from cinema_content_filter import explicit_text,safe_card,safe_file
+    query_title,year,season,episode=search_intent(query)
+    requested=normalize(query_title)
     if len(requested)<4:
         return []
     pool=[]
-    for title,original,year in MOVIE_SEEDS+SHOW_SEEDS:
+    for title,original,_seed_year in MOVIE_SEEDS+SHOW_SEEDS:
         pool.extend((title,original))
     if isinstance(home,dict):
         for item in (home.get('_all_movies') or [])+(home.get('_all_shows') or []):
-            if isinstance(item,dict) and item.get('ident') and item.get('files'):
+            if isinstance(item,dict) and safe_card(item) and item.get('ident') and item.get('files'):
                 pool.extend(str(item.get(k) or '') for k in ('title','raw','original'))
     for raw in (remote or [])[:25]:
         if isinstance(raw,dict):
+            if not safe_file(raw):
+                continue
             raw=raw.get('value') or raw.get('name') or ''
         raw=str(raw or '').strip()
-        if not raw:
+        if not raw or explicit_text(raw):
             continue
         parsed=parse_video_name(raw)
         pool.append(parsed['title'] if parsed else raw)
@@ -264,7 +282,7 @@ def search_suggestions(query, remote=None, home=None, limit=5):
     for item in pool:
         title=re.sub(r'[\[\]<>\r\n\t]', ' ',str(item or '')).strip()[:90]
         key=normalize(title)
-        if not key or key==requested or len(key)<4:
+        if not key or key==requested or len(key)<4 or explicit_text(title):
             continue
         score=SequenceMatcher(None,requested,key).ratio()
         # Very short incomplete names need a stronger prefix match.
@@ -272,7 +290,12 @@ def search_suggestions(query, remote=None, home=None, limit=5):
             score=max(score,0.82)
         if score>=0.75 and (key not in unique or score>unique[key][0]):
             unique[key]=(score,title)
-    return [item[1] for item in sorted(unique.values(),
+    suffix=(' ('+year+')') if year else ''
+    if season is not None:
+        suffix+=' S%02d'%season
+        if episode is not None:
+            suffix+='E%02d'%episode
+    return [item[1]+suffix for item in sorted(unique.values(),
             key=lambda pair:(-pair[0],len(pair[1]),pair[1].casefold()))[:limit]]
 
 
@@ -288,8 +311,8 @@ def is_title_match(parsed, names, kind=None, year=None):
         return False
     got=normalize(parsed['title'])
     targets=[normalize(s) for s in names if s]
-    return any(got==t or got.startswith(t+' ') or got.endswith(' '+t)
-               for t in targets if len(t)>=3)
+    return any(got==t or (len(t)>=3 and (got.startswith(t+' ') or
+               got.endswith(' '+t))) for t in targets if t)
 
 
 def matching_files(files, names, kind=None, year=None):

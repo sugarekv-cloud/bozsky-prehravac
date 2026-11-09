@@ -16,7 +16,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.48.0'
+VERSION='0.48.1'
 DRAWER_IDS=(201,208,202,203,205,104,105,109,107)
 
 
@@ -845,8 +845,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                         tile('KONTROLOVAT ÚČET WEBSHARE','settings')],
                         'FILMY A SERIÁLY',[],str(exc))
                     return
-                movies=self._filtered([c for c in found if c['kind']=='movie'])
-                shows=self._filtered([c for c in found if c['kind']=='show'])
+                movies=self._filtered([c for c in found if c['kind']=='movie'],keep_order=True)
+                shows=self._filtered([c for c in found if c['kind']=='show'],keep_order=True)
                 self.context=query
                 suggestions=[]
                 if not movies and not shows:

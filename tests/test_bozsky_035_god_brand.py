@@ -14,7 +14,7 @@ class DivineBrandingTests(unittest.TestCase):
     def test_chosen_kodi_name_and_permanent_technical_id(self):
         root=ET.parse(PLUGIN/'addon.xml').getroot()
         self.assertEqual(root.get('name'),'KIVORA')
-        self.assertEqual(root.get('version'),'0.48.0')
+        self.assertEqual(root.get('version'),'0.48.1')
         self.assertEqual(root.get('id'),'plugin.video.fckyo')
         self.assertEqual(root.findtext(".//summary"),
                          'KIVORA – filmy a seriály v Kodi')
