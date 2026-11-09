@@ -109,7 +109,7 @@ v Kodi na cílové TV, zejména dlouhých názvů, fontů aktivního skinu, menu
 prázdného katalogu a návratu z přehrávání. Automatické testy ji nenahrazují.
 
 
-### Vylepšení vyhledávání (připravené změny)
+### 0.48.1 – vylepšení vyhledávání
 
 - Výsledky zachovávají pořadí podle shody s dotazem i při nastaveném řazení katalogu podle hodnocení nebo roku.
 - Série a epizody lze hledat například jako `Bluey S02`, `Bluey 2. série`, `Bluey 2. série 3. díl` nebo `Bluey S02E03`.
