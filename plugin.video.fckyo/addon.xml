@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.fckyo" name="KIVORA" version="0.48.1" provider-name="KIVORA Community">
+<addon id="plugin.video.fckyo" name="KIVORA" version="0.49.0" provider-name="KIVORA Community">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.18.4"/>
@@ -22,6 +22,12 @@
             <icon>resources/icon.png</icon>
         </assets>
         <news>
+[B]0.49.0 – hledání podle náhledů[/B]
+- Procházení náhledů Webshare a vložení odkazu na soubor
+- Volitelné AI rozpoznání s vlastním API klíčem a potvrzením výsledku
+- Ruční přiřazení názvu filmu nebo epizody bez AI
+- Místní katalog potvrzených názvů pro hledání přejmenovaných souborů
+
 [B]0.48.1 – přesnější vyhledávání[/B]
 - Výsledky zachovávají pořadí podle shody s dotazem
 - Hledání celé série a zadání typu Bluey 2. série 3. díl

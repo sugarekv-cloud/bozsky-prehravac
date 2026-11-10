@@ -109,6 +109,20 @@ def parse_video_name(filename):
     return {'title':title, 'kind':kind, 'year':year, 'season':season, 'episode':episode}
 
 
+def parse_media_file(file):
+    """Use a locally user-confirmed identity while retaining the actual filename."""
+    if isinstance(file.get('_kivora_identity'),dict):
+        from cinema_visual_index import identity, eligible
+        try:
+            if not eligible(file):
+                return None
+            match=identity(file['_kivora_identity'])
+            return dict(match,season=match.get('season'),episode=match.get('episode'))
+        except ValueError:
+            return None
+    return parse_video_name(file.get('name') or '')
+
+
 def quality_score(file):
     name = file.get('name', '')
     try:

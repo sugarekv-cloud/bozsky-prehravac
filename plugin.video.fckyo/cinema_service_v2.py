@@ -40,6 +40,8 @@ class CinemaService:
         self.fetch=fetch
         self.suggest_fetch=suggest_fetch
         self.suggestion_cache={}
+        from cinema_visual_index import VisualIndex
+        self.visual_index=VisualIndex(profile)
         self.availability=availability
         self.metadata=catalogue
         self.calendar=calendar
@@ -1121,6 +1123,12 @@ class CinemaService:
         budget=12 if more else 7
         steps=0
         fresh=[]
+        # Confirmed identities bypass filename matching, never availability checks.
+        for file in self.visual_index.search(title,requested_year,requested_season,requested_episode):
+            ident=str(file['ident'])
+            if ident not in state['matches']:
+                state['matches'][ident]=file
+                fresh.append(file)
         while steps<budget and len(state['done'])<len(plan):
             index=state['cursor']%len(plan)
             state['cursor']+=1
@@ -1167,7 +1175,7 @@ class CinemaService:
                 # No arbitrary max page number: successive clicks continue
                 # to the end returned by Webshare for this exact alias.
                 state['offsets'][index]=next_offset
-        if state['attempted'] and state['failed']==state['attempted']:
+        if state['attempted'] and state['failed']==state['attempted'] and not fresh and not state['cards']:
             raise WebshareSearchUnavailable(
                 'Vyhledávání Webshare právě neodpovídá. Zkus to znovu.')
         # Verify only NEW files discovered by this batch. Previously validated
@@ -1239,6 +1247,10 @@ class CinemaService:
                 if fetched:
                     candidates.extend(matching_release(fetched,aliases,'movie',
                                         card.get('file_year') or ''))
+        for alias in aliases:
+            candidates.extend(matching_release(
+                self.visual_index.search(alias,card.get('file_year') or ''),
+                aliases,'movie',card.get('file_year') or ''))
         unique={f['ident']:f for f in candidates if f.get('ident')}
         return self.availability.check_files(
             choose_files(list(unique.values()),quality,language),limit=60)
@@ -1257,7 +1269,8 @@ class CinemaService:
                 other=collect_pages(self.fetch,self.token,original,max_pages=8)
                 if other:
                     entries.extend(other)
-            existing=card.get('files') or []
+            existing=list(card.get('files') or [])
+            existing.extend(self.visual_index.search(raw))
             aliases=list(card.get('aliases') or [])
             if original:
                 aliases.append(original)

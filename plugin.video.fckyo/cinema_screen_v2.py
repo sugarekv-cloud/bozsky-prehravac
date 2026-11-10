@@ -16,7 +16,7 @@ TOP_ACTIONS={
 }
 BACK_ACTIONS=(9,10,92,216)
 ROW_IDS=tuple(range(401,414))
-VERSION='0.48.1'
+VERSION='0.49.0'
 DRAWER_IDS=(201,208,202,203,205,104,105,109,107)
 
 
@@ -859,6 +859,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
                         shows=[tile('MOŽNÁ HLEDÁŠ: '+name,
                                     'search_retry',search_text=name)
                                for name in suggestions[:5]]
+                movies=list(movies)+[tile('HLEDAT PODLE NÁHLEDŮ / ODKAZU','visual_search',
+                    plot='Rozpoznání vybraných náhledů a katalog potvrzených názvů souborů.')]
                 has_more=getattr(self.service,'search_has_more',lambda *a:False)
                 if has_more(query):
                     movies=list(movies)+[tile('+ NAČÍST DALŠÍ STRÁNKY WEBSHARE',
@@ -985,6 +987,12 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
         elif action=='advanced':
             self._gear_legacy_menu()
 
+    def _visual_search(self):
+        from cinema_visual_ui import open_visual_search
+        query=open_visual_search(self.addon,self.service)
+        if query:
+            self._refresh('search',query)
+
     def _gear_legacy_menu(self):
         selected=xbmcgui.Dialog().select('KIVORA · rozšířená nastavení',[
             'Nastavení doplňku a přihlášení Webshare',
@@ -1000,9 +1008,12 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             'Zálohovat oblíbené a rozkoukané',
             'Obnovit oblíbené a rozkoukané ze zálohy',
             'Uživatelské profily',
-            'Synchronizace mezi televizemi (sdílená složka)'
+            'Synchronizace mezi televizemi (sdílená složka)',
+            'Hledání podle náhledů a potvrzená přiřazení'
         ])
-        if selected==0:
+        if selected==12:
+            self._visual_search()
+        elif selected==0:
             self._open_settings()
         elif selected==1:
             self._filters()
@@ -1493,6 +1504,8 @@ class CinemaScreen(xbmcgui.WindowXMLDialog):
             if callable(start):
                 start(force=True)
             self._screen('bluey',stack=False)
+        elif kind=='visual_search':
+            self._visual_search()
         elif kind=='search_retry':
             self._refresh('search',c.get('search_text') or '')
         elif kind=='search_more':
