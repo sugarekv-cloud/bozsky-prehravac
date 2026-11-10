@@ -118,7 +118,7 @@ prázdného katalogu a návratu z přehrávání. Automatické testy ji nenahraz
 - Webshare ověřování dostupnosti, ČSFD metadata a postupné načítání dalších výsledků zůstávají zachovány.
 
 
-### Hledání podle náhledů (vývojová větev)
+### 0.49.0 – hledání podle náhledů
 
 Ve výsledcích hledání je akce **HLEDAT PODLE NÁHLEDŮ / ODKAZU**. Je dostupná také v **Nastavení → Rozšířená nastavení → Hledání podle náhledů a potvrzená přiřazení**.
 
