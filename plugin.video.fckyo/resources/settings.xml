@@ -29,4 +29,9 @@
         <setting type="sep"/>
         <setting label="30051" id="experimental" type="bool" default="false" />
     </category>
+    <category label="Rozpoznávání videí">
+        <setting label="AI analyzuje jen náhledy vybrané uživatelem; použití API může být placené." type="lsep" />
+        <setting id="visual_api_key" label="OpenAI API klíč (obrazové rozpoznávání)" type="text" default="" option="hidden" />
+        <setting label="Bez API klíče funguje ruční přiřazení názvu k souboru." type="lsep" />
+    </category>
 </settings>

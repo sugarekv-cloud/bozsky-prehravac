@@ -116,3 +116,19 @@ prázdného katalogu a návratu z přehrávání. Automatické testy ji nenahraz
 - Opravy překlepů zachovávají zadaný rok i epizodu a filtrují explicitní obsah také v návrzích názvů.
 - Krátké názvy jako `Up` a `It` podporují přesnou shodu bez přimíchání delších názvů.
 - Webshare ověřování dostupnosti, ČSFD metadata a postupné načítání dalších výsledků zůstávají zachovány.
+
+
+### Hledání podle náhledů (vývojová větev)
+
+Ve výsledcích hledání je akce **HLEDAT PODLE NÁHLEDŮ / ODKAZU**. Je dostupná také v **Nastavení → Rozšířená nastavení → Hledání podle náhledů a potvrzená přiřazení**.
+
+1. Procházej náhledy posledních videí Webshare (po 100 souborech), zadej část názvu souboru, nebo vlož odkaz/identifikátor konkrétního souboru.
+2. Vyber **Rozpoznat náhledy pomocí AI**, nebo **Znám název – přiřadit ručně**.
+3. Ověř a potvrď název, rok a případně sérii/epizodu. Teprve potvrzení vytvoří místní spojení názvu se skutečným identifikátorem souboru.
+4. Další běžné hledání najde i soubor jako `12345678.mkv`; původní jméno zůstane zachováno. Dostupnost se nadále ověřuje na Webshare. Chybné přiřazení lze odstranit ve správě přiřazení.
+
+Automatické rozpoznávání používá OpenAI API (`gpt-4.1-mini`). V **nastavení doplňku → Rozpoznávání videí** zadej vlastní API klíč. Před každým rozpoznáním aplikace požádá o souhlas s odesláním vybraných náhledů a upozorní na možné čerpání kreditu. Odesílá nejvýše dva obrázky, každý do 4 MB; neposílá video, přihlášení Webshare ani název souboru. Klíč je uložen v nastavení Kodi, nikoli v katalogu přiřazení. Ruční přiřazení API klíč nepotřebuje.
+
+AI pouze navrhuje možné názvy; neurčuje automaticky číslo epizody a nic sama neukládá. Katalog je místní, nejvýše 2000 přiřazení. Funkce neprohledává obrázkem celý Webshare a neběží automaticky na pozadí. Neznámé náhledy mohou zůstat nerozpoznané. Dosavadní Webshare vyhledávání, ČSFD metadata a obsahový filtr zůstávají zachovány.
+
+Implementace je ověřena automatickými testy se simulovanými daty. Přesnost na skutečných videích, placené API volání ani obrazovky v běžícím Kodi zde nebyly ověřeny.

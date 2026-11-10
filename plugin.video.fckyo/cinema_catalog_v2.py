@@ -5,7 +5,7 @@ Titles/plot/art may come from Czech metadata. Cards NEVER come from metadata
 alone: every card is backed by a verified Webshare ident.
 """
 from collections import OrderedDict
-from novinky_catalogue import normalize, parse_video_name, quality_score
+from novinky_catalogue import normalize, parse_video_name, parse_media_file, quality_score
 from catalog_engine import file_label, file_score
 from cinema_content_filter import safe_file, safe_card
 
@@ -17,7 +17,7 @@ def acceptable(f):
             return False
     if str(f.get('available') or '1') == '0':
         return False
-    return safe_file(f) and bool(parse_video_name(f['name']))
+    return safe_file(f) and bool(parse_media_file(f))
 
 def groups(files, kind):
     by_key = OrderedDict()
@@ -26,7 +26,7 @@ def groups(files, kind):
         if not acceptable(f) or f['ident'] in seen:
             continue
         seen.add(f['ident'])
-        p = parse_video_name(f['name'])
+        p = parse_media_file(f)
         if kind == 'show' and p['kind'] not in ('episode','series'):
             continue
         if kind == 'movie' and p['kind'] != 'movie':
@@ -104,7 +104,7 @@ def grouped_episodes(files, title, aliases=()):
     for f in files:
         if not acceptable(f):
             continue
-        p=parse_video_name(f['name'])
+        p=parse_media_file(f)
         if p['kind']!='episode' or normalize(p['title']) not in wanted:
             continue
         if f['ident'] in seen:
@@ -158,7 +158,7 @@ def matching_release(files, aliases, kind='movie', year=''):
     for f in files or []:
         if not acceptable(f):
             continue
-        p=parse_video_name(f['name'])
+        p=parse_media_file(f)
         if normalize(p['title']) not in targets:
             continue
         if kind=='movie' and p['kind']!='movie':

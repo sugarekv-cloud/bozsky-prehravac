@@ -69,7 +69,7 @@ class SearchIntentTests(unittest.TestCase):
         rendered=[]
         win._fill=lambda *args,**kwargs:rendered.append(args)
         win._screen('search','Matrix')
-        self.assertEqual([c['title'] for c in rendered[0][1]], ['Matrix','Matrix Reloaded'])
+        self.assertEqual([c['title'] for c in rendered[0][1] if c['kind']=='movie'], ['Matrix','Matrix Reloaded'])
 
 
 if __name__=='__main__':
